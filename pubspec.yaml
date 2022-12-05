@@ -1,0 +1,42 @@
+name: table_now_store
+description: Table Now Store Version
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.15.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.2
+  get: ^4.6.1 # GetX 상태관리 라이브러리
+  validators: ^3.0.0 # 유효성 검사 라이브러리
+  fluttertoast: ^8.0.9 # 토스트(알림문구) 라이브러리
+  flutter_swiper: ^1.1.6 # 스와이퍼 라이브러리
+  intl: ^0.17.0 # 날짜 관련 라이브러리
+  percent_indicator: ^4.0.1 # 퍼센트 지표 라이브러리
+  image_picker: ^0.8.5+3 # 이미지 선택 라이브러리
+
+  iamport_flutter: ^0.10.1+4 # 아임포트 본인인증 라이브러리
+  kpostal: ^0.5.1 # 카카오 주소 API 라이브러리 (* 플러그인 설정 필요)
+
+  shared_preferences: ^2.0.8 # 로컬 저장용 라이브러리
+  path: ^1.8.0 # 로컬 저장소 경로 관련 라이브러리
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^1.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
