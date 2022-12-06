@@ -65,4 +65,42 @@ class UserRepository {
       return codeMsgRespDto.code;
     }
   }
+
+  // 비밀번호 찾기
+  Future<int> findPassword(Map data) async {
+    Response response = await _userProvider.findPassword(data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    return codeMsgRespDto.code; // 회원존재 (1), 회원없음 (0), 인증실패 (-1)
+  }
+
+  // 비밀번호 재설정
+  Future<int> resetPassword(Map data) async {
+    Response response = await _userProvider.resetPassword(data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    return codeMsgRespDto.code;
+  }
+
+  // 가입 여부 조회
+  Future<int> checkJoined(Map data) async {
+    Response response = await _userProvider.checkJoined(data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+
+    if (codeMsgRespDto.code == 1) {
+      return codeMsgRespDto.response; // 회원 존재 (1), 가입 가능 (0)
+    } else {
+      return -1; // 조회 실패 (-1)
+    }
+  }
+
+  // 아이디 중복확인
+  Future<int> checkUsername(String username) async {
+    Response response = await _userProvider.checkUsername(username);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+
+    if (codeMsgRespDto.code == 1) {
+      return codeMsgRespDto.response; // 이미 사용중 (1), 사용가능 (0)
+    } else {
+      return -1; // 조회 실패 (-1)
+    }
+  }
 }

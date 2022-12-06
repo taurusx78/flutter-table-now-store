@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/dto/user/find_id_req_dto.dart';
+import 'package:table_now_store/controller/dto/user/find_pw_req_dto.dart';
 import 'package:table_now_store/data/user/user_repository.dart';
 import 'package:validators/validators.dart';
 
@@ -19,7 +20,7 @@ class FindController extends GetxController {
   final authNumberFormKey = GlobalKey<FormState>();
   final authNumberFocusNode = FocusNode();
 
-  // 텍스트필드 입력 여부: 이메일/휴대폰번호 (0), 아이디 (1) 인증번호 (2)
+  // 텍스트필드 입력 여부: 이메일/휴대폰번호 (0), 아이디 (1), 인증번호 (2)
   List<RxBool> filled = [false.obs, false.obs, false.obs];
   final RxBool clicked = false.obs; // 인증번호 받기 버튼이 눌렸는지
 
@@ -55,18 +56,15 @@ class FindController extends GetxController {
   }
 
   // 비밀번호 찾기
-  // Future<int> findPassword(String method) async {
-  //   if (method == 'phone') {
-  //     data.text = data.text.replaceAll('-', '');
-  //   }
-  //   FindPwReq dto = FindPwReq(
-  //     method: method,
-  //     data: data.text.trim(),
-  //     username: username.text.trim(),
-  //     authNumber: authNumber.text,
-  //   );
-  //   return await _userRepository.findPassword(dto.toJson());
-  // }
+  Future<int> findPassword(String method) async {
+    FindPwReqDto dto = FindPwReqDto(
+      method: method,
+      data: data.text,
+      username: username.text,
+      authNumber: authNumber.text,
+    );
+    return await _userRepository.findPassword(dto.toJson());
+  }
 
   // 인증방법 변경
   void changeMethod(int index) {

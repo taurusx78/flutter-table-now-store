@@ -21,8 +21,7 @@ class FindIdResultPage extends StatelessWidget {
             color: Colors.black,
           ),
           onPressed: () {
-            // 로그인 페이지로 이동
-            Get.offAllNamed(Routes.login);
+            Get.back(); // 로그인 페이지로 이동
           },
         ),
       ),
@@ -123,7 +122,7 @@ class FindIdResultPage extends StatelessWidget {
         TwoRoundButtons(
           leftText: '회원가입',
           leftTapFunc: () {
-            Get.back();
+            Get.offAllNamed(Routes.agreement);
           },
           rightText: '아이디 다시찾기',
           rightTapFunc: () {

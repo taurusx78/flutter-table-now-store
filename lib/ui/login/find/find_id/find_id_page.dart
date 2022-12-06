@@ -244,6 +244,9 @@ class FindIdPage extends GetView<FindController> {
         var result = await controller.findId(method);
         if (result != -1) {
           // 1. 인증 성공
+          // FindId 페이지 제거
+          Navigator.pop(context);
+          // Find 페이지 제거
           Get.offNamed(Routes.findIdResult, arguments: [method, result]);
         } else {
           // 2. 인증 실패

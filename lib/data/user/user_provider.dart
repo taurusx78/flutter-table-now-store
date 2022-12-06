@@ -14,4 +14,17 @@ class UserProvider extends GetConnect {
 
   // 아이디 찾기
   Future<Response> findId(Map data) => post('$host/find/id', data);
+
+  // 비밀번호 찾기
+  Future<Response> findPassword(Map data) => post('$host/find/password', data);
+
+  // 비밀번호 재설정
+  Future<Response> resetPassword(Map data) => put('$host/reset/password', data);
+
+  // 가입 여부 조회
+  Future<Response> checkJoined(Map data) => post('$host/check/user', data);
+
+  // 아이디 중복확인
+  Future<Response> checkUsername(String username) =>
+      get('$host/check?username=$username');
 }

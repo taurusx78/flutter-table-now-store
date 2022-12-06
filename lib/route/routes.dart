@@ -5,6 +5,12 @@ import 'package:table_now_store/binding/user/find_binding.dart';
 import 'package:table_now_store/binding/user/join_binding.dart';
 import 'package:table_now_store/binding/user/login_binding.dart';
 import 'package:table_now_store/ui/join/agreement/agreement_page.dart';
+import 'package:table_now_store/ui/join/agreement/privacy_policy_page.dart';
+import 'package:table_now_store/ui/join/agreement/terms_conditions_page.dart';
+import 'package:table_now_store/ui/join/auth/auth_page.dart';
+import 'package:table_now_store/ui/join/auth/iamport_page.dart';
+import 'package:table_now_store/ui/join/join_page.dart';
+import 'package:table_now_store/ui/join/join_success_page.dart';
 import 'package:table_now_store/ui/login/find/find_id/find_id_page.dart';
 import 'package:table_now_store/ui/login/find/find_id/find_id_result_page.dart';
 import 'package:table_now_store/ui/login/find/find_page.dart';
@@ -25,7 +31,13 @@ abstract class Routes {
   static const resetPw = '/reset_pw';
 
   /* 회원가입 */
-  static const agreement = '/agree';
+  static const agreement = '/agreement';
+  static const termsConditions = '/terms_conditions';
+  static const privacyPolicy = '/privacy_policy';
+  static const auth = '/auth';
+  static const iamport = '/iamport';
+  static const join = '/join';
+  static const joinSuccess = '/join_success';
 
   /* 메인화면 */
   static const main = '/main';
@@ -72,6 +84,31 @@ class Pages {
       name: Routes.agreement,
       page: () => const AgreementPage(),
       binding: JoinBinding(),
+    ),
+    GetPage(
+      name: Routes.termsConditions,
+      page: () => TermsConditionsPage(),
+    ),
+    GetPage(
+      name: Routes.privacyPolicy,
+      page: () => PrivacyPolicyPage(),
+    ),
+    GetPage(
+      name: Routes.auth,
+      page: () => AuthPage(),
+    ),
+    GetPage(
+      name: Routes.iamport,
+      page: () => IamportPage(),
+    ),
+    GetPage(
+      name: Routes.join,
+      page: () => JoinPage(),
+      binding: JoinBinding(),
+    ),
+    GetPage(
+      name: Routes.joinSuccess,
+      page: () => const JoinSuccessPage(),
     ),
     /* 메인화면 */
     GetPage(

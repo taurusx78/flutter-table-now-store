@@ -19,9 +19,9 @@ ThemeData theme() {
     // highlightColor: primaryColor.withOpacity(0.1),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(5),
       ),
-      side: const BorderSide(width: 1.5, color: Colors.black26),
+      side: const BorderSide(width: 1.5, color: Colors.black12),
     ),
   );
 }

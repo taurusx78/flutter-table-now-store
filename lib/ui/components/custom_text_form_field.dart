@@ -7,6 +7,7 @@ class CustomTextFormField extends StatelessWidget {
   final dynamic controller;
   final FocusNode? focusNode;
   final TextInputType? keyboardType;
+  final bool? obscureText;
   final int? maxLength;
   final String? counterText; // 최대 글자수 표시 여부
   final bool? enabled;
@@ -20,6 +21,7 @@ class CustomTextFormField extends StatelessWidget {
     this.controller,
     this.focusNode,
     this.keyboardType,
+    this.obscureText,
     this.maxLength,
     this.counterText,
     this.enabled,
@@ -35,6 +37,7 @@ class CustomTextFormField extends StatelessWidget {
         controller: controller,
         focusNode: focusNode,
         keyboardType: keyboardType,
+        obscureText: obscureText ?? false,
         maxLength: maxLength,
         enabled: enabled ?? true,
         validator: validator,
