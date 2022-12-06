@@ -4,6 +4,7 @@ import 'package:table_now_store/binding/user/change_pw_binding.dart';
 import 'package:table_now_store/binding/user/find_binding.dart';
 import 'package:table_now_store/binding/user/join_binding.dart';
 import 'package:table_now_store/binding/user/login_binding.dart';
+import 'package:table_now_store/ui/image_page.dart';
 import 'package:table_now_store/ui/join/agreement/agreement_page.dart';
 import 'package:table_now_store/ui/join/agreement/privacy_policy_page.dart';
 import 'package:table_now_store/ui/join/agreement/terms_conditions_page.dart';
@@ -19,6 +20,7 @@ import 'package:table_now_store/ui/login/find/find_pw/find_pw_page.dart';
 import 'package:table_now_store/ui/login/find/find_pw/reset_pw_page.dart';
 import 'package:table_now_store/ui/login/login_page.dart';
 import 'package:table_now_store/ui/main_page.dart';
+import 'package:table_now_store/ui/manage/manage_page.dart';
 
 abstract class Routes {
   /* 로그인 & 회원찾기 */
@@ -41,6 +43,23 @@ abstract class Routes {
 
   /* 메인화면 */
   static const main = '/main';
+
+  /* 이미지 */
+  static const image = '/image';
+
+  /* 매장관리 */
+  static const manage = '/manage';
+  static const changeToday = '/change_today';
+  static const hoursInfo = '/hours_info';
+  static const holidaysInfo = '/holidays_info';
+  static const menuInfo = '/menu_info';
+  static const insideInfo = '/inside_info';
+  static const basicInfo = '/basic_info';
+  static const deleteStore = '/delete_store';
+
+  /* 매장알림 */
+  static const writeNotice = '/write_notice';
+  static const updateNotice = '/update_notice';
 }
 
 class Pages {
@@ -116,6 +135,60 @@ class Pages {
       page: () => MainPage(),
       binding: MainBinding(),
     ),
+    /* 이미지 */
+    GetPage(
+      name: Routes.image,
+      page: () => const ImagePage(),
+    ),
     /* 매장관리 */
+    GetPage(
+      name: Routes.manage,
+      page: () => ManagePage(),
+    ),
+    // GetPage(
+    //   name: Routes.changeToday,
+    //   page: () => ChangeTodayPage(),
+    // ),
+    // GetPage(
+    //   name: Routes.hoursInfo,
+    //   page: () => HoursInfoPage(),
+    //   binding: HoursBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.holidaysInfo,
+    //   page: () => HolidaysInfoPage(),
+    //   binding: HolidaysBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.menuInfo,
+    //   page: () => MenuInfoPage(),
+    //   binding: MenuBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.insideInfo,
+    //   page: () => InsideInfoPage(),
+    //   binding: InsideBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.basicInfo,
+    //   page: () => BasicInfoPage(),
+    //   binding: BasicBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.deleteStore,
+    //   page: () => DeleteStorePage(),
+    //   binding: DeleteStoreBinding(),
+    // ),
+    /* 매장알림 */
+    // GetPage(
+    //   name: Routes.writeNotice,
+    //   page: () => WriteNoticePage(),
+    //   binding: SaveNoticeBinding(),
+    // ),
+    // GetPage(
+    //   name: Routes.updateNotice,
+    //   page: () => UpdateNoticePage(),
+    //   binding: SaveNoticeBinding(),
+    // ),
   ];
 }
