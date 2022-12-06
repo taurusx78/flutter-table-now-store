@@ -176,7 +176,7 @@ class AgreementPage extends GetView<JoinController> {
         activated: controller.agreed[0].value,
         tapFunc: () {
           // 본인인증 완료 여부 초기화
-          controller.changeCanJoin(false);
+          controller.userCanJoin(false);
           // 본인인증된 사용자 정보 초기화
           controller.setUserInfo('', '', '');
           // 본인인증 페이지로 이동

@@ -67,7 +67,7 @@ class AuthPage extends GetView<JoinController> {
     return Obx(
       () => Material(
         borderRadius: BorderRadius.circular(5),
-        color: !controller.canJoin.value ? Colors.white : lightGrey,
+        color: !controller.userCanJoin.value ? Colors.white : lightGrey,
         child: InkWell(
           borderRadius: BorderRadius.circular(5),
           child: Container(
@@ -76,7 +76,7 @@ class AuthPage extends GetView<JoinController> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(
-                color: !controller.canJoin.value ? primaryColor : lightGrey,
+                color: !controller.userCanJoin.value ? primaryColor : lightGrey,
               ),
             ),
             child: Center(
@@ -85,13 +85,13 @@ class AuthPage extends GetView<JoinController> {
                       children: [
                         Icon(
                           Icons.account_circle_rounded,
-                          color: !controller.canJoin.value
+                          color: !controller.userCanJoin.value
                               ? primaryColor
                               : Colors.black54,
                           size: 30,
                         ),
                         const SizedBox(width: 10),
-                        !controller.canJoin.value
+                        !controller.userCanJoin.value
                             ? const Text(
                                 '휴대폰 본인인증 하기',
                                 style: TextStyle(
@@ -118,7 +118,7 @@ class AuthPage extends GetView<JoinController> {
                     ),
             ),
           ),
-          onTap: !controller.canJoin.value
+          onTap: !controller.userCanJoin.value
               ? () async {
                   Map<String, String>? authResult = {'success': 'true'};
                   // Map<String, String>? authResult; // 본인인증 결과 데이터
@@ -147,7 +147,7 @@ class AuthPage extends GetView<JoinController> {
                       showToast(context, '이미 가입한 회원입니다.', 2000);
                     } else if (result == 0) {
                       // 3-2. 가입 가능
-                      controller.changeCanJoin(true);
+                      controller.changeUserCanJoin(true);
                     } else {
                       // 3-3. 조회 실패
                       showErrorToast(context);
@@ -191,10 +191,10 @@ class AuthPage extends GetView<JoinController> {
     return Obx(
       () => StateRoundButton(
         text: '다음',
-        activated: controller.canJoin.value,
+        activated: controller.userCanJoin.value,
         tapFunc: () async {
-          // 회원가입 아이디, 이메일 상태 초기화
-          controller.initializeAllState();
+          // 회원가입 폼 초기화
+          controller.initializeJoinForm();
           // 다음 페이지의 텍스트필드 너비 설정
           double textFieldWidth = getScreenWidth(context) - 40 < 600
               ? getScreenWidth(context) - 125

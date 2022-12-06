@@ -27,4 +27,17 @@ class UserProvider extends GetConnect {
   // 아이디 중복확인
   Future<Response> checkUsername(String username) =>
       get('$host/check?username=$username');
+
+  // 이메일 인증번호 검증 (회원가입, 이메일 변경)
+  Future<Response> verifyEmail(Map data) => post('$host/verify/email', data);
+
+  // 이메일 변경
+  Future<Response> changeEmail(Map data) => put(
+        '$host/manager/email',
+        data,
+        headers: {'authorization': jwtToken ?? ''},
+      );
+
+  // 회원가입
+  Future<Response> join(Map data) => post('$host/join', data);
 }

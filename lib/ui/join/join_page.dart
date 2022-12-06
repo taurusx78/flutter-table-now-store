@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/user/join_controller.dart';
 import 'package:table_now_store/controller/user/timer_controller.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/info_row_text.dart';
 import 'package:table_now_store/ui/components/list_row_text.dart';
@@ -142,18 +143,19 @@ class JoinPage extends GetView<JoinController> {
         RoundButton(
           text: '회원가입',
           tapFunc: () {
-            // if (controller.usernameState.value == 0) {
-            //   if (controller.emailVerified.value) {
-            //     if (_pwFormKey.currentState!.validate() &&
-            //         _pwCheckFormKey.currentState!.validate()) {
-            //       _showDialog(context);
-            //     }
-            //   } else {
-            //     showToast(context, '이메일 인증을 완료해 주세요.', null);
-            //   }
-            // } else {
-            //   showToast(context, '아이디 중복확인을 완료해 주세요.', null);
-            // }
+            if (controller.usernameState.value == 0) {
+              if (controller.emailVerified.value) {
+                // 비밀번호 유효성 검사
+                if (controller.pwFormKey.currentState!.validate() &&
+                    controller.pwCheckFormKey.currentState!.validate()) {
+                  _showDialog(context);
+                }
+              } else {
+                showToast(context, '이메일 인증을 완료해 주세요.', null);
+              }
+            } else {
+              showToast(context, '아이디 중복확인을 완료해 주세요.', null);
+            }
           },
         ),
       ],
@@ -201,8 +203,8 @@ class JoinPage extends GetView<JoinController> {
                       }
                     })
                   : _buildCheckButton('다시입력', () {
-                      // 중복확인 여부 초기화
-                      controller.changeUsernameState(-1);
+                      // 아이디 중복확인 여부 초기화
+                      controller.initializeUsernameState();
                       // 텍스트필드 포커스 해제 (다른 텍스트필드로의 포커스 이동 방지)
                       FocusScope.of(context).unfocus();
                     }),
@@ -311,13 +313,13 @@ class JoinPage extends GetView<JoinController> {
                 key: controller.emailFormKey,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 child: CustomTextFormField(
-                  maxLength: 50,
-                  counterText: '',
                   width: textFieldWidth,
                   hint: '이메일을 입력해주세요.',
-                  enabled: !controller.emailClicked.value,
-                  keyboardType: TextInputType.emailAddress,
                   controller: controller.email,
+                  keyboardType: TextInputType.emailAddress,
+                  maxLength: 50,
+                  counterText: '',
+                  enabled: !controller.emailClicked.value,
                   validator: validateEmail(),
                 ),
               ),
@@ -327,11 +329,10 @@ class JoinPage extends GetView<JoinController> {
                   ? _buildCheckButton('인증하기', () async {
                       // 이메일 유효성 검사
                       if (controller.emailFormKey.currentState!.validate()) {
-                        // 인증번호 메일 전송
-                        // int result = await controller.sendAuthNumber();
-                        int result = 1;
+                        // 이메일 인증번호 요청
+                        int result = await controller.sendAuthNumber();
                         if (result == 1) {
-                          // controller.changeEmailClicked(true);
+                          controller.changeEmailClicked();
                           // 유효시간 5분 카운터 시작
                           _timerController.startTimer();
                           showToast(context, '입력하신 메일로 인증번호가 발송되었습니다.', null);
@@ -344,9 +345,7 @@ class JoinPage extends GetView<JoinController> {
                     })
                   : _buildCheckButton('다시입력', () {
                       // 이메일 인증여부 초기화
-                      // controller.initializeEmailAuth();
-                      // 이메일 텍스트필드 초기화
-                      // controller.initializeEmailTextField();
+                      controller.initializeEmailAuth();
                       // 타이머 종료
                       _timerController.endTimer();
                       // 텍스트필드 포커스 해제 (다른 텍스트필드로의 포커스 이동 방지)
@@ -367,7 +366,7 @@ class JoinPage extends GetView<JoinController> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // _buildAuthNumberTextField(context),
+                        _buildAuthNumberTextField(context, _timerController),
                         const SizedBox(height: 10),
                         _timerController.duration.value != 0
                             ? Column(
@@ -410,6 +409,151 @@ class JoinPage extends GetView<JoinController> {
                     ),
         )
       ],
+    );
+  }
+
+  Widget _buildAuthNumberTextField(context, timerController) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 인증번호 텍스트필드
+            Form(
+              key: controller.authNumberFormKey,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              child: CustomTextFormField(
+                width: textFieldWidth,
+                hint: '인증번호 입력',
+                controller: controller.authNumber,
+                focusNode: controller.authNumberFocusNode,
+                keyboardType: TextInputType.number,
+                maxLength: 6,
+                counterText: '',
+                validator: validateAuthNumber(),
+              ),
+            ),
+            const SizedBox(width: 5),
+            // 인증 관련 버튼
+            _buildCheckButton('인증완료', () async {
+              if (controller.authNumberFormKey.currentState!.validate()) {
+                // 텍스트필드 포커스 해제
+                FocusScope.of(context).unfocus();
+                // 이메일 인증번호 검증
+                int result = await controller.verityEmail();
+                if (result == 1) {
+                  // 1. 인증 성공 (1)
+                  controller.changeEmailVerified();
+                } else {
+                  // 2. 인증 실패 (-1)
+                  showToast(context, '인증번호가 일치하지 않습니다.', null);
+                }
+              }
+            })
+          ],
+        ),
+        const SizedBox(height: 10),
+        // 타이머
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: timerController.duration.value != 0
+              ? RichText(
+                  text: TextSpan(
+                    text: '남은시간  ',
+                    style: const TextStyle(color: Colors.black54),
+                    children: [
+                      TextSpan(
+                        text:
+                            '${timerController.minutes}:${timerController.seconds}',
+                        style: const TextStyle(color: primaryColor),
+                      ),
+                    ],
+                  ),
+                )
+              : InkWell(
+                  child: const Text(
+                    '인증번호 재전송',
+                    style: TextStyle(color: primaryColor),
+                  ),
+                  onTap: () async {
+                    // 인증번호 텍스트필드 초기화
+                    controller.initializeAuthTextField();
+                    // 인증번호 메일 전송
+                    int result = await controller.sendAuthNumber();
+                    if (result == 1) {
+                      // 유효시간 5분 카운터 시작
+                      timerController.startTimer();
+                      showToast(context, '입력하신 메일로 인증번호가 발송되었습니다.', null);
+                      // 인증번호 텍스트필드 포커스 주기
+                      controller.authNumberFocusNode.requestFocus();
+                    } else {
+                      showErrorToast(context);
+                    }
+                  },
+                ),
+        ),
+        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+  void _showDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      builder: (BuildContext context2) {
+        return CustomDialog(
+          title: '회원가입을 완료 하시겠습니까?',
+          checkFunc: () async {
+            Navigator.pop(context2);
+            _showProcessingDialog(context);
+          },
+        );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      builder: (BuildContext context2) {
+        // 회원가입 진행
+        controller.join().then((name) {
+          if (name != '') {
+            // 1. 가입 성공 (가입 성공 페이지로 이동)
+            Get.offAllNamed(Routes.joinSuccess);
+          } else {
+            // 2. 가입 실패 (로그인 페이지로 이동)
+            Get.offAllNamed(Routes.login);
+          }
+        });
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          title: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: const [
+                SizedBox(
+                  width: 50,
+                  height: 50,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
+                SizedBox(height: 30),
+                Text(
+                  '잠시만 기다려 주세요...',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

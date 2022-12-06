@@ -103,4 +103,24 @@ class UserRepository {
       return -1; // 조회 실패 (-1)
     }
   }
+
+  // 이메일 인증번호 검증 (회원가입, 이메일 변경)
+  Future<int> verifyEmail(Map data) async {
+    Response response = await _userProvider.verifyEmail(data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    return codeMsgRespDto.code; // 인증 성공 (1), 실패 (-1)
+  }
+
+  // 회원가입
+  Future<String> join(Map data) async {
+    Response response = await _userProvider.join(data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+
+    // 회원가입 성공 시, 회원 이름 리턴
+    if (codeMsgRespDto.code == 1) {
+      return codeMsgRespDto.response['name'];
+    } else {
+      return '';
+    }
+  }
 }

@@ -36,7 +36,7 @@ class JoinSuccessPage extends StatelessWidget {
                   const SizedBox(height: 50),
                   // 시작 버튼
                   RoundButton(
-                    text: '시작하기',
+                    text: '로그인 하러가기',
                     tapFunc: () {
                       // 로그인 페이지로 이동
                       Get.offAllNamed(Routes.login);

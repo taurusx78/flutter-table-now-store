@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/user/join_req_dto.dart';
 import 'package:table_now_store/data/user/user_repository.dart';
 
 class JoinController extends GetxController {
@@ -11,7 +12,7 @@ class JoinController extends GetxController {
   final RxInt allAgreed = 0.obs;
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-  final RxBool canJoin = false.obs; // 가입 가능 여부
+  final RxBool userCanJoin = false.obs; // 사용자 가입 가능 여부
   final RxString name = ''.obs; // 이름
   final RxString phone = ''.obs; // 휴대폰번호
   final RxString uniqueKey = ''.obs; // 개인고유식별키
@@ -46,7 +47,31 @@ class JoinController extends GetxController {
   // 아이디 중복확인
   Future<void> checkUsername() async {
     int result = await _userRepository.checkUsername(username.text);
-    changeUsernameState(result);
+    usernameState.value = result;
+  }
+
+  // 이메일 인증번호 요청
+  Future<int> sendAuthNumber() async {
+    return await _userRepository.sendAuthNumber(email.text, null);
+  }
+
+  // 이메일 인증번호 검증
+  Future<int> verityEmail() async {
+    Map<String, String> data = {'authNumber': authNumber.text};
+    return await _userRepository.verifyEmail(data);
+  }
+
+  // 회원가입
+  Future<String> join() async {
+    JoinReqDto dto = JoinReqDto(
+      username: username.text,
+      password: password.text,
+      name: name.value,
+      phone: phone.value,
+      uniqueKey: uniqueKey.value,
+      email: email.text,
+    );
+    return await _userRepository.join(dto.toJson());
   }
 
   // 약관 동의 여부 변경
@@ -79,9 +104,9 @@ class JoinController extends GetxController {
     }
   }
 
-  // 가입 가능 여부 변경
-  void changeCanJoin(value) {
-    canJoin.value = value;
+  // 사용자 가입 가능 여부 변경
+  void changeUserCanJoin(value) {
+    userCanJoin.value = value;
   }
 
   // 본인인증된 사용자 정보 설정
@@ -91,15 +116,45 @@ class JoinController extends GetxController {
     this.uniqueKey.value = uniqueKey;
   }
 
-  // 회원가입 아이디, 이메일 상태 초기화
-  void initializeAllState() {
+  // 회원가입 폼 초기화
+  void initializeJoinForm() {
+    username.text = '';
+    password.text = '';
+    passwordCheck.text = '';
+    email.text = '';
+    authNumber.text = '';
+
     usernameState.value = -1;
     emailClicked.value = false;
     emailVerified.value = false;
   }
 
-  // 아이디 중복확인 여부 변경
-  void changeUsernameState(int value) {
-    usernameState.value = value;
+  // 아이디 중복확인 여부 초기화
+  void initializeUsernameState() {
+    username.text = '';
+    usernameState.value = -1;
+  }
+
+  // 이메일 인증받기 버튼 클릭됨
+  void changeEmailClicked() {
+    emailClicked.value = true;
+  }
+
+  // 이메일 인증 여부 초기화
+  void initializeEmailAuth() {
+    email.text = '';
+    authNumber.text = '';
+    emailClicked.value = false;
+    emailVerified.value = false;
+  }
+
+  // 이메일 인증완료
+  void changeEmailVerified() {
+    emailVerified.value = true;
+  }
+
+  // 인증번호 텍스트필드 초기화
+  void initializeAuthTextField() {
+    authNumber.text = '';
   }
 }
