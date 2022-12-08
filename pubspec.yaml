@@ -22,6 +22,7 @@ dependencies:
   intl: ^0.17.0 # 날짜 관련 라이브러리
   percent_indicator: ^4.0.1 # 퍼센트 지표 라이브러리
   image_picker: ^0.8.5+3 # 이미지 선택 라이브러리
+  flutter_datetime_picker: ^1.5.1 # 시간 선택 라이브러리
 
   iamport_flutter: ^0.10.1+4 # 아임포트 본인인증 라이브러리
   kpostal: ^0.5.1 # 카카오 주소 API 라이브러리 (* 플러그인 설정 필요)
@@ -40,3 +41,4 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/icons/

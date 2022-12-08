@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:table_now_store/ui/custom_color.dart';
+
+import 'custom_dialog_button.dart';
 
 class CustomDialog extends StatelessWidget {
   final String title;
@@ -53,45 +54,21 @@ class CustomDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // 취소 버튼
-            _buildDialogButton(
-              '취소',
-              () {
+            CustomDialogButton(
+              text: '취소',
+              tapFunc: () {
                 Navigator.pop(context); // alertDialog 닫기
               },
             ),
             const SizedBox(width: 10),
             // 확인 버튼
-            _buildDialogButton('확인', checkFunc),
+            CustomDialogButton(
+              text: '확인',
+              tapFunc: checkFunc,
+            ),
           ],
         )
       ],
-    );
-  }
-
-  Widget _buildDialogButton(String text, dynamic tapFunc) {
-    return Container(
-      width: 70,
-      height: 35,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: primaryColor),
-      ),
-      child: Material(
-        borderRadius: BorderRadius.circular(20),
-        color: text == '확인' ? primaryColor : Colors.white,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(20),
-          child: Center(
-            child: Text(
-              text,
-              style: TextStyle(
-                color: text == '확인' ? Colors.white : primaryColor,
-              ),
-            ),
-          ),
-          onTap: tapFunc,
-        ),
-      ),
     );
   }
 }

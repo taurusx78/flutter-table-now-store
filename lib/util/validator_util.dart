@@ -94,3 +94,14 @@ Function validateJoinPasswordCheck() {
     }
   };
 }
+
+// 알림 제목 & 내용 유효성 검사
+Function validateNotice() {
+  return (String? value) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else {
+      return null;
+    }
+  };
+}

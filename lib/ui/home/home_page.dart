@@ -230,6 +230,7 @@ class HomePage extends GetView<MainController> {
                 ),
                 onTap: () async {
                   // 1. 매장관리 페이지 이동 전, 데이터 세팅
+                  // *** 또는 나의 매장 1개 조회 후 데이터 세팅 ***
                   ManageController _manageController =
                       Get.put(ManageController());
                   _manageController.initializeAllData(
@@ -293,28 +294,30 @@ class HomePage extends GetView<MainController> {
   }
 
   Widget _buildNoStoreBox(context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          '등록된 매장이 없습니다.',
-          style: TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 10),
-        const Text(
-          '나의 매장을 등록해보세요!',
-          style: TextStyle(fontSize: 18),
-        ),
-        const SizedBox(height: 30),
-        IconTextRoundButton(
-          icon: Icons.storefront_outlined,
-          text: '매장 등록하기',
-          tapFunc: () {
-            // 매장등록 인트로 페이지로 이동
-            controller.changeCurIndex(1);
-          },
-        ),
-      ],
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Text(
+            '등록된 매장이 없습니다.',
+            style: TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 10),
+          const Text(
+            '나의 매장을 등록해보세요!',
+            style: TextStyle(fontSize: 18),
+          ),
+          const SizedBox(height: 30),
+          IconTextRoundButton(
+            icon: Icons.storefront_outlined,
+            text: '매장 등록하기',
+            tapFunc: () {
+              // 매장등록 인트로 페이지로 이동
+              controller.changeCurIndex(1);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

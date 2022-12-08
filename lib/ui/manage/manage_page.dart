@@ -147,7 +147,7 @@ class ManagePage extends GetView<ManageController> {
                     if (today != null) {
                       if (today.state != null) {
                         // 수정된 오늘의 영업시간 반영
-                        // controller.changeToday(today);
+                        controller.changeToday(today);
                         showToast(context, '영업시간을 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -165,7 +165,7 @@ class ManagePage extends GetView<ManageController> {
                     if (today != null) {
                       if (today.state != null) {
                         // 수정된 오늘의 영업시간 반영
-                        // controller.changeToday(today);
+                        controller.changeToday(today);
                         showToast(context, '정기휴무를 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -345,7 +345,7 @@ class ManagePage extends GetView<ManageController> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         TodayPage(storeId: storeId),
-        TablesPage(),
+        TablesPage(storeId: storeId),
         NoticePage(storeId: storeId),
       ],
     );

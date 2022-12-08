@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_now_store/controller/store/manage_controller.dart';
+import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
@@ -16,6 +17,7 @@ class TodayPage extends GetView<ManageController> {
   TodayPage({Key? key, required this.storeId}) : super(key: key);
 
   List<String> holiday = ['', '영업일', '정기휴무', '임시휴무', '임시휴무'];
+  var today;
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +29,19 @@ class TodayPage extends GetView<ManageController> {
           margin: const EdgeInsets.fromLTRB(30, 50, 30, 30),
           child: Obx(() {
             if (controller.loaded.value) {
-              var today = controller.today.value!;
+              today = controller.today.value!;
               return Column(
                 children: [
                   // 오늘 날짜 & 영업상태
-                  _buildTodayStateText(today),
+                  _buildTodayStateText(),
                   const SizedBox(height: 30),
                   _buildDivider(),
                   // 영업시간
-                  _buildHoursBox(today),
+                  _buildHoursBox(),
                   _buildDivider(),
                   const SizedBox(height: 30),
                   // 오늘의 영업시간 변경 버튼
-                  _buildChangeTodayButton(context, today),
+                  _buildChangeTodayButton(context),
                   const SizedBox(height: 30),
                   // 전체 영업시간 변경 안내 문구
                   _buildChangeHoursGuide(context),
@@ -62,7 +64,7 @@ class TodayPage extends GetView<ManageController> {
     );
   }
 
-  Widget _buildTodayStateText(Today today) {
+  Widget _buildTodayStateText() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -81,7 +83,7 @@ class TodayPage extends GetView<ManageController> {
     );
   }
 
-  Widget _buildHoursBox(Today today) {
+  Widget _buildHoursBox() {
     if (today.holidayType == 1) {
       // 1. 영업일인 경우
       return Column(
@@ -124,29 +126,33 @@ class TodayPage extends GetView<ManageController> {
     );
   }
 
-  Widget _buildChangeTodayButton(context, Today today) {
+  Widget _buildChangeTodayButton(context) {
     return RoundButton(
       text: '오늘의 영업시간 변경',
       tapFunc: () async {
-        // 오늘의 영업시간 다시조회 (데이터 동기화)
+        // 1. 오늘의 영업시간 다시조회 (데이터 동기화)
         await controller.findToday(storeId);
+        // 2. 페이지 이동 전 데이터 세팅
+        Get.put(UpdateTodayController()).initializeTodayData(today);
+        // 3. 오늘의 영업시간 변경 페이지로 이동
         Get.toNamed(Routes.changeToday, arguments: [storeId, today])!
             .then((result) async {
-          // value: 변경성공 (Today), 변경실패 (-1), 임시휴무 알림 존재 (-2)
+          // result: 수정 성공 (Today), 임시휴무 알림 존재 (-2), 수정 실패 (-1)
           if (result.runtimeType == Today) {
             // 수정된 오늘의 영업시간 반영
-            // controller.changeToday(value);
+            controller.changeToday(result);
             showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
           } else if (result == -2) {
             // 정기휴무 -> 임시휴무 영업상태 변경 반영
-            // controller.changeToday(Today(
-            //   holidayType: 3,
-            //   businessHours: '없음',
-            //   breakTime: '없음',
-            //   lastOrder: '없음',
-            //   state: '임시휴무',
-            // ));
-            showToast(context, '변경에 실패하였습니다.\n임시휴무 알림을 수정 또는 삭제해주세요.', 3000);
+            controller.changeToday(Today(
+              holidayType: 3,
+              businessHours: '없음',
+              breakTime: '없음',
+              lastOrder: '없음',
+              state: '임시휴무',
+            ));
+            showToast(
+                context, '변경에 실패하였습니다.\n임시휴무가 설정된 알림을 수정 또는 삭제해 주세요.', 3000);
           } else if (result == -1) {
             showToast(context, '권한이 없는 사용자입니다.', null);
           }
@@ -180,7 +186,7 @@ class TodayPage extends GetView<ManageController> {
                   if (today != null) {
                     if (today.state != null) {
                       // 수정된 오늘의 영업시간 반영
-                      // controller.changeToday(today);
+                      controller.changeToday(today);
                       showToast(context, '영업시간을 수정하였습니다.', null);
                     } else {
                       showErrorToast(context);

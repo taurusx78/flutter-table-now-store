@@ -33,6 +33,19 @@ class StoreRepository {
     }
   }
 
+  // 오늘의 영업시간 수정
+  Future<dynamic> updateToday(int storeId, Map data) async {
+    Response response = await _storeProvider.updateToday(storeId, data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+
+    // 성공 (Today), 임시휴무 알림 존재 (-2), 실패 (-1)
+    if (codeMsgRespDto.code == 1) {
+      return Today.fromJson(codeMsgRespDto.response);
+    } else {
+      return codeMsgRespDto.code;
+    }
+  }
+
   // 잔여테이블 수 조회
   Future<dynamic> findTables(int storeId) async {
     Response response = await _storeProvider.findTables(storeId);
@@ -42,6 +55,19 @@ class StoreRepository {
       return Tables.fromJson(codeMsgRespDto.response);
     } else {
       return null;
+    }
+  }
+
+  // 잔여테이블 수 수정
+  Future<dynamic> updateTables(int storeId, Map data) async {
+    Response response = await _storeProvider.updateTables(storeId, data);
+    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+
+    // 성공 시 Tables, 수정 불가 (임시중지중) -2, 실패 -1 리턴
+    if (codeMsgRespDto.code == 1) {
+      return Tables.fromJson(codeMsgRespDto.response);
+    } else {
+      return codeMsgRespDto.code;
     }
   }
 }
