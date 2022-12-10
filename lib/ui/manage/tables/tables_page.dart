@@ -16,6 +16,8 @@ class TablesPage extends GetView<ManageController> {
 
   @override
   Widget build(BuildContext context) {
+    print('테이블 정보 빌드');
+
     return Center(
       child: SingleChildScrollView(
         child: Container(
@@ -214,8 +216,8 @@ class TablesPage extends GetView<ManageController> {
                     showErrorToast(context);
                   }
                 } else {
-                  showToast(context, '오늘은 ${controller.today.value!.state}입니다.',
-                      null);
+                  showToast(
+                      context, '${controller.today.value!.state}입니다.', null);
                 }
               },
             ),

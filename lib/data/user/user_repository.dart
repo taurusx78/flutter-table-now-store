@@ -46,47 +46,47 @@ class UserRepository {
   // 인증번호 요청
   Future<int> sendAuthNumber(String? email, String? phone) async {
     Response response = await _userProvider.sendAuthNumber(email, phone);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
-    return codeMsgRespDto.code;
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code;
   }
 
   // 아이디 찾기
   Future<dynamic> findId(Map data) async {
     Response response = await _userProvider.findId(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
 
-    if (codeMsgRespDto.code == 1) {
+    if (dto.code == 1) {
       // 1. 인증 성공 & 회원 존재
-      dynamic temp = codeMsgRespDto.response;
+      dynamic temp = dto.response;
       return FindIdRespDto.fromJson(temp);
     } else {
       // 2. 인증 성공 & 회원 없음 (0)
       // 3. 인증 실패 (-1)
-      return codeMsgRespDto.code;
+      return dto.code;
     }
   }
 
   // 비밀번호 찾기
   Future<int> findPassword(Map data) async {
     Response response = await _userProvider.findPassword(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
-    return codeMsgRespDto.code; // 회원존재 (1), 회원없음 (0), 인증실패 (-1)
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code; // 회원존재 (1), 회원없음 (0), 인증실패 (-1)
   }
 
   // 비밀번호 재설정
   Future<int> resetPassword(Map data) async {
     Response response = await _userProvider.resetPassword(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
-    return codeMsgRespDto.code;
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code;
   }
 
   // 가입 여부 조회
   Future<int> checkJoined(Map data) async {
     Response response = await _userProvider.checkJoined(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
 
-    if (codeMsgRespDto.code == 1) {
-      return codeMsgRespDto.response; // 회원 존재 (1), 가입 가능 (0)
+    if (dto.code == 1) {
+      return dto.response; // 회원 존재 (1), 가입 가능 (0)
     } else {
       return -1; // 조회 실패 (-1)
     }
@@ -95,10 +95,10 @@ class UserRepository {
   // 아이디 중복확인
   Future<int> checkUsername(String username) async {
     Response response = await _userProvider.checkUsername(username);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
 
-    if (codeMsgRespDto.code == 1) {
-      return codeMsgRespDto.response; // 이미 사용중 (1), 사용가능 (0)
+    if (dto.code == 1) {
+      return dto.response; // 이미 사용중 (1), 사용가능 (0)
     } else {
       return -1; // 조회 실패 (-1)
     }
@@ -107,18 +107,18 @@ class UserRepository {
   // 이메일 인증번호 검증 (회원가입, 이메일 변경)
   Future<int> verifyEmail(Map data) async {
     Response response = await _userProvider.verifyEmail(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
-    return codeMsgRespDto.code; // 인증 성공 (1), 실패 (-1)
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code; // 인증 성공 (1), 실패 (-1)
   }
 
   // 회원가입
   Future<String> join(Map data) async {
     Response response = await _userProvider.join(data);
-    CodeMsgRespDto codeMsgRespDto = CodeMsgRespDto.fromJson(response.body);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
 
     // 회원가입 성공 시, 회원 이름 리턴
-    if (codeMsgRespDto.code == 1) {
-      return codeMsgRespDto.response['name'];
+    if (dto.code == 1) {
+      return dto.response['name'];
     } else {
       return '';
     }

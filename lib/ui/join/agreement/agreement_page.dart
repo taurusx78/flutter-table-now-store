@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/user/join_controller.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
@@ -89,10 +90,7 @@ class AgreementPage extends GetView<JoinController> {
             },
           ),
         ),
-        Container(
-          height: 1,
-          color: blueGrey,
-        ),
+        const CustomDivider(top: 0, bottom: 0),
         // 이용약관 동의
         Obx(
           () => _buildTermsCheckBox(

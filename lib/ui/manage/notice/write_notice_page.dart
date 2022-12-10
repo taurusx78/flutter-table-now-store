@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
+import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/util/validator_util.dart';
 
 import 'components/holiday_switch.dart';
 import 'components/notice_dialog.dart';
-import 'components/notice_image_uploader.dart';
 
 class WriteNoticePage extends GetView<SaveNoticeController> {
   WriteNoticePage({Key? key}) : super(key: key);
@@ -53,7 +53,12 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
                   HolidaySwitch(),
                   const SizedBox(height: 50),
                   // 이미지 업로드
-                  NoticeImageUploader(),
+                  ImageUploader(
+                    type: 'notice',
+                    title: '사진',
+                    guideText: '최대 2장, 한 장당 5MB 이하',
+                    controller: controller,
+                  ),
                   const SizedBox(height: 50),
                   // 알림 폼
                   _buildNoticeForm(context),

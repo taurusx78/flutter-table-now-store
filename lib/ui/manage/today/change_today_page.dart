@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -49,10 +50,10 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                _buildDivider(),
+                const CustomDivider(),
                 // 휴무 여부
                 _buildHoursSwitch('오늘 휴무', 0),
-                _buildDivider(),
+                const CustomDivider(),
                 // 영업시간 정보
                 Obx(
                   () => !controller.switchState[0].value
@@ -67,14 +68,6 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Container(
-      height: 1,
-      color: blueGrey,
-      margin: const EdgeInsets.symmetric(vertical: 20),
     );
   }
 
@@ -115,7 +108,7 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
         const SizedBox(height: 30),
         // 24시 영업 여부
         _buildHoursSwitch('24시 영업', 1),
-        _buildDivider(),
+        const CustomDivider(),
         // 휴게시간 유무
         _buildHoursSwitch('휴게시간 있음', 2),
         if (controller.switchState[2].value)
@@ -133,7 +126,7 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
               ),
             ],
           ),
-        _buildDivider(),
+        const CustomDivider(),
         // 주문마감시간 유무
         _buildHoursSwitch('주문마감 설정하기', 3),
         if (controller.switchState[3].value)
@@ -142,7 +135,7 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
             padding: const EdgeInsets.only(top: 30),
             child: _buildTimePicker(context, '주문마감시간', 4),
           ),
-        _buildDivider(),
+        const CustomDivider(),
       ],
     );
   }
@@ -166,7 +159,7 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
                 color: primaryColor,
               ),
             ),
-            onPressed: () async {
+            onPressed: () {
               DatePicker.showTime12hPicker(
                 context,
                 currentTime: DateTime.now(),

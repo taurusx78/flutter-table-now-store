@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/store/main_controller.dart';
 import 'package:table_now_store/controller/store/manage_controller.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/icon_text_round_button.dart';
 import 'package:table_now_store/ui/components/store_state_text.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -29,6 +30,7 @@ class HomePage extends GetView<MainController> {
                     height: 1.5,
                     color: blueGrey,
                   ),
+                  const CustomDivider(height: 1.5, top: 0, bottom: 0),
                   // 나의 매장 목록
                   Obx(
                     () => controller.loaded.value

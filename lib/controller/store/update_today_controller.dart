@@ -76,6 +76,7 @@ class UpdateTodayController extends GetxController {
     }
   }
 
+  // Switch 버튼 상태 변경
   void changeSwitchState(int type, bool value, Today today) {
     switchState[type].value = value;
     // 24시 운영 여부
@@ -90,7 +91,7 @@ class UpdateTodayController extends GetxController {
     }
   }
 
-  // 시간 변경
+  // 설정된 시간 변경
   void changeTime(int type, time) {
     String changedTime =
         '${time.hour}'.padLeft(2, '0') + ':' + '${time.minute}'.padLeft(2, '0');

@@ -16,7 +16,7 @@ class SaveNoticeController extends GetxController {
   final RxString holidayEndDate = '종료일'.obs;
 
   // 기존 이미지는 String, 새로 추가된 이미지는 XFile 타입
-  RxList<dynamic> noticeImageList = [].obs;
+  RxList<dynamic> imageList = [].obs;
   final ImagePicker _picker = ImagePicker();
 
   var title = TextEditingController();
@@ -31,7 +31,7 @@ class SaveNoticeController extends GetxController {
   Future<void> selectImages() async {
     final List<dynamic>? _selectedImages = await _picker.pickMultiImage();
     if (_selectedImages != null) {
-      noticeImageList.addAll(_selectedImages);
+      imageList.addAll(_selectedImages);
     }
   }
 
@@ -40,8 +40,7 @@ class SaveNoticeController extends GetxController {
     completed.value = false;
 
     // XFile 타입을 File 타입으로 변경
-    List<File> fileList =
-        noticeImageList.map((image) => File(image.path)).toList();
+    List<File> fileList = imageList.map((image) => File(image.path)).toList();
     // File 타입을 MultipartFile 타입으로 변경
     List<MultipartFile> multipartFileList = fileList
         .map((file) =>
@@ -70,7 +69,7 @@ class SaveNoticeController extends GetxController {
     ]; // 삭제된 이미지 Url 리스트 초기화
     List<File> fileList = []; // 추가된 이미지 파일 리스트
 
-    for (var item in noticeImageList) {
+    for (var item in imageList) {
       if (item.runtimeType == String) {
         deletedImageUrlList.remove(item);
       } else {
@@ -113,7 +112,7 @@ class SaveNoticeController extends GetxController {
     hasHoliday.value = false;
     holidayStartDate.value = '시작일';
     holidayEndDate.value = '종료일';
-    noticeImageList.value = [];
+    imageList.value = [];
     title.text = '';
     content.text = '';
   }
@@ -130,10 +129,10 @@ class SaveNoticeController extends GetxController {
     }
     // 2. 알림 첨부사진
     if (notice.imageUrlList.isEmpty) {
-      noticeImageList.value = [];
+      imageList.value = [];
     } else {
       // 리스트 깊은 복사 (같은 주소 공간 참조하지 않음)
-      noticeImageList.value = [...notice.imageUrlList];
+      imageList.value = [...notice.imageUrlList];
     }
     // 3. 제목 및 내용
     title = TextEditingController(text: notice.title);
@@ -170,11 +169,6 @@ class SaveNoticeController extends GetxController {
       }
     }
     return '';
-  }
-
-  // 선택된 이미지 삭제
-  void deleteNoticeImage(int index) {
-    noticeImageList.removeAt(index);
   }
 
   // 임시휴무 정보 얻기

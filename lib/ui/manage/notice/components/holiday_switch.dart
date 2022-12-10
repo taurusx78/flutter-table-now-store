@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/info_row_text.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -16,11 +17,7 @@ class HolidaySwitch extends StatelessWidget {
       children: [
         // 스위치 버튼
         _buildHolidaySwitchButton(),
-        Container(
-          height: 1,
-          color: blueGrey,
-          margin: const EdgeInsets.only(top: 20),
-        ),
+        const CustomDivider(top: 20, bottom: 0),
         // 날짜 선택 버튼
         Obx(
           () => controller.hasHoliday.value
@@ -83,11 +80,7 @@ class HolidaySwitch extends StatelessWidget {
           text: '임시휴무가 설정된 알림은 휴무 종료 시 알림이 자동 삭제됩니다.',
           margin: 40,
         ),
-        Container(
-          height: 1,
-          color: blueGrey,
-          margin: const EdgeInsets.only(top: 15),
-        ),
+        const CustomDivider(top: 15, bottom: 0),
       ],
     );
   }

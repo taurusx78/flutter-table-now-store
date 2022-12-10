@@ -5,6 +5,7 @@ import 'package:table_now_store/controller/store/manage_controller.dart';
 import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
@@ -21,6 +22,8 @@ class TodayPage extends GetView<ManageController> {
 
   @override
   Widget build(BuildContext context) {
+    print('오늘의 영업시간 빌드');
+
     return Align(
       alignment: Alignment.topCenter,
       child: SingleChildScrollView(
@@ -35,10 +38,10 @@ class TodayPage extends GetView<ManageController> {
                   // 오늘 날짜 & 영업상태
                   _buildTodayStateText(),
                   const SizedBox(height: 30),
-                  _buildDivider(),
+                  const CustomDivider(),
                   // 영업시간
                   _buildHoursBox(),
-                  _buildDivider(),
+                  const CustomDivider(),
                   const SizedBox(height: 30),
                   // 오늘의 영업시간 변경 버튼
                   _buildChangeTodayButton(context),
@@ -53,14 +56,6 @@ class TodayPage extends GetView<ManageController> {
           }),
         ),
       ),
-    );
-  }
-
-  Widget _buildDivider() {
-    return Container(
-      height: 1,
-      color: blueGrey,
-      margin: const EdgeInsets.symmetric(vertical: 20),
     );
   }
 
@@ -90,10 +85,10 @@ class TodayPage extends GetView<ManageController> {
         children: [
           // 영업시간
           _buildHoursText('영업시간', today.businessHours),
-          _buildDivider(),
+          const CustomDivider(),
           // 휴게시간
           _buildHoursText('휴게시간', today.breakTime),
-          _buildDivider(),
+          const CustomDivider(),
           // 주문마감시간
           _buildHoursText('주문마감시간', today.lastOrder),
         ],

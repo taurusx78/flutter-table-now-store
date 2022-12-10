@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/store/holidays_controller.dart';
+import 'package:table_now_store/controller/store/hours_controller.dart';
+import 'package:table_now_store/controller/store/inside_controller.dart';
 import 'package:table_now_store/controller/store/manage_controller.dart';
+import 'package:table_now_store/controller/store/menu_controller.dart';
+import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 import 'package:table_now_store/ui/manage/tables/tables_page.dart';
@@ -138,16 +144,17 @@ class ManagePage extends GetView<ManageController> {
                 const SizedBox(height: 15),
                 _buildHeaderText(Icons.access_time_rounded, '영업시간'),
                 // 영업시간 설정
-                _buildBodyButton(context, '영업시간 설정', () async {
+                _buildBodyButton(context, '영업시간 설정', () {
                   Navigator.pop(context);
                   // 영업시간 조회 및 초기화 (비동기 실행)
-                  // Get.put(HoursController()).findHours(storeId);
+                  Get.put(HoursController()).findHours(storeId);
                   Get.toNamed(Routes.hoursInfo, arguments: storeId)!
-                      .then((today) {
-                    if (today != null) {
-                      if (today.state != null) {
+                      .then((result) {
+                    // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
+                    if (result != null) {
+                      if (result.runtimeType == Today) {
                         // 수정된 오늘의 영업시간 반영
-                        controller.changeToday(today);
+                        controller.changeToday(result);
                         showToast(context, '영업시간을 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -156,16 +163,17 @@ class ManagePage extends GetView<ManageController> {
                   });
                 }),
                 // 정기휴무 설정
-                _buildBodyButton(context, '정기휴무 설정', () async {
+                _buildBodyButton(context, '정기휴무 설정', () {
                   Navigator.pop(context);
                   // 정기휴무 조회 및 초기화 (비동기 실행)
-                  // Get.put(HolidaysController()).findHolidays(storeId);
+                  Get.put(HolidaysController()).findHolidays(storeId);
                   Get.toNamed(Routes.holidaysInfo, arguments: storeId)!
-                      .then((today) {
-                    if (today != null) {
-                      if (today.state != null) {
+                      .then((result) {
+                    // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
+                    if (result != null) {
+                      if (result.state != null) {
                         // 수정된 오늘의 영업시간 반영
-                        controller.changeToday(today);
+                        controller.changeToday(result);
                         showToast(context, '정기휴무를 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -176,14 +184,15 @@ class ManagePage extends GetView<ManageController> {
                 const SizedBox(height: 10),
                 _buildHeaderText(Icons.book_outlined, '메뉴'),
                 // 메뉴 관리
-                _buildBodyButton(context, '메뉴 관리', () async {
+                _buildBodyButton(context, '메뉴 관리', () {
                   Navigator.pop(context);
                   // 메뉴정보 조회 및 초기화 (비동기 실행)
-                  // Get.put(MenuController()).findMenu(storeId);
+                  Get.put(MenuController()).findMenu(storeId);
                   Get.toNamed(Routes.menuInfo, arguments: storeId)!
-                      .then((value) {
-                    if (value != null) {
-                      if (value == 1) {
+                      .then((result) {
+                    // 수정 성공 (1), 실패 (-1)
+                    if (result != null) {
+                      if (result == 1) {
                         showToast(context, '메뉴를 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -194,14 +203,15 @@ class ManagePage extends GetView<ManageController> {
                 const SizedBox(height: 10),
                 _buildHeaderText(Icons.storefront_outlined, '매장'),
                 // 매장내부정보
-                _buildBodyButton(context, '매장내부정보', () async {
+                _buildBodyButton(context, '매장내부정보', () {
                   Navigator.pop(context);
                   // 매장내부정보 조회 및 초기화 (비동기 실행)
-                  // Get.put(InsideController()).findInside(storeId);
+                  Get.put(InsideController()).findInside(storeId);
                   Get.toNamed(Routes.insideInfo, arguments: storeId)!
-                      .then((updateInsideResp) {
-                    if (updateInsideResp != null) {
-                      if (updateInsideResp.allTableCount != null) {
+                      .then((result) {
+                    // 수정 성공 (UpdateInsideRespDto), 실패 (-1), 뒤로가기 (null)
+                    if (result != null) {
+                      if (result.allTableCount != null) {
                         // 수정된 전체테이블 수 반영
                         // controller.changeTables(updateInsideResp);
                         showToast(context, '매장내부정보를 수정하였습니다.', null);
@@ -212,7 +222,7 @@ class ManagePage extends GetView<ManageController> {
                   });
                 }),
                 // 기본정보
-                _buildBodyButton(context, '기본정보', () async {
+                _buildBodyButton(context, '기본정보', () {
                   Navigator.pop(context);
                   // 기본정보 조회 (비동기 실행)
                   // Get.put(BasicController()).findBasic(storeId);
@@ -230,16 +240,12 @@ class ManagePage extends GetView<ManageController> {
                     }
                   });
                 }),
-                Container(
-                  height: 1,
-                  color: blueGrey,
-                  margin: const EdgeInsets.symmetric(vertical: 10),
-                ),
+                const CustomDivider(top: 10, bottom: 10),
                 _buildHeaderText(Icons.insert_chart_outlined, '매장통계'),
-                _buildBodyButton(context, '매장 조회수', () async {
+                _buildBodyButton(context, '매장 조회수', () {
                   Navigator.pop(context);
-                  // 페이지 이동 전 미리 매장 조회수 조회
-                  // await _updateStoreController.findInsideById(store.id);
+                  // 페이지 이동 전 미리 매장 조회수 조회 (비동기 실행)
+                  // _updateStoreController.findInsideById(store.id);
                   // _updateStoreController.initializeInsidePage();
                   // Get.toNamed(Routes.insideInfo);
                 }),
