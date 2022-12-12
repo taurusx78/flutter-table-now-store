@@ -5,7 +5,7 @@ import 'package:table_now_store/data/notice/notice.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
-import 'package:table_now_store/ui/components/loading_round_button.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/two_round_buttons.dart';
 import 'package:table_now_store/util/validator_util.dart';
 
@@ -108,23 +108,19 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
         ),
         const SizedBox(height: 70),
         // 수정/삭제 버튼
-        Obx(
-          () => controller.completed.value
-              ? TwoRoundButtons(
-                  leftText: '삭제',
-                  leftTapFunc: () {
-                    _showDialog(context, '삭제');
-                  },
-                  rightText: '수정',
-                  rightTapFunc: () {
-                    if (controller.titleFormKey.currentState!.validate() &&
-                        controller.contentFormKey.currentState!.validate()) {
-                      _showDialog(context, '수정');
-                    }
-                  },
-                  padding: 40,
-                )
-              : const LoadingRoundButton(),
+        TwoRoundButtons(
+          leftText: '삭제',
+          leftTapFunc: () {
+            _showDialog(context, '삭제');
+          },
+          rightText: '수정',
+          rightTapFunc: () {
+            if (controller.titleFormKey.currentState!.validate() &&
+                controller.contentFormKey.currentState!.validate()) {
+              _showDialog(context, '수정');
+            }
+          },
+          padding: 40,
         ),
       ],
     );
@@ -138,27 +134,41 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
       context: context,
       barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
       builder: (BuildContext context2) {
+        return NoticeDialog(
+          title: '알림을 $text하시겠습니까?',
+          noticeTitle: controller.title.text,
+          holiday: holiday,
+          tapFunc: () {
+            Navigator.pop(context2);
+            _showProcessingDialog(context, text);
+          },
+        );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context, String text) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
         if (text == '수정') {
-          return NoticeDialog(
-            title: '알림을 수정하시겠습니까?',
-            noticeTitle: controller.title.text,
-            holiday: holiday,
-            tapFunc: () async {
-              Navigator.pop(context2);
-              int result = await controller.updateById(storeId, notice);
-              Get.back(result: [text, result]);
-            },
-          );
+          // 알림 수정 진행
+          controller.updateById(storeId, notice).then((value) {
+            // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+            Navigator.pop(context);
+            Get.back(result: [text, value]);
+          });
         } else {
-          return NoticeDialog(
-            title: '알림을 삭제하시겠습니까?',
-            tapFunc: () async {
-              Navigator.pop(context2);
-              int result = await controller.deleteById(storeId, notice.id);
-              Get.back(result: [text, result]);
-            },
-          );
+          // 알림 삭제 진행
+          controller.deleteById(storeId, notice.id).then((value) {
+            Navigator.pop(context);
+            Get.back(result: [text, value]);
+          });
         }
+
+        return LoadingContainer(text: '$text중');
       },
     );
   }

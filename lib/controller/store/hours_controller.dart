@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/dto/store/update_hours_req_dto.dart';
 import 'package:table_now_store/data/store/model/hours.dart';
-import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/data/store/store_repository.dart';
 
 class HoursController extends GetxController {
@@ -26,7 +25,6 @@ class HoursController extends GetxController {
   ].obs;
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-  final RxBool updated = true.obs; // 수정 완료 여부
 
   // 영업시간 조회 및 데이터 초기화
   Future<void> findHours(int storeId) async {
@@ -38,7 +36,6 @@ class HoursController extends GetxController {
 
   // 영업시간 수정
   Future<dynamic> updateHours(int storeId) async {
-    updated.value = false;
     UpdateHoursReqDto dto = UpdateHoursReqDto(
       openTimeList: timeList[0],
       closeTimeList: timeList[1],
@@ -49,7 +46,6 @@ class HoursController extends GetxController {
       lastOrderList: timeList[4],
     );
     dynamic today = await _storeRepository.updateHours(storeId, dto.toJson());
-    updated.value = true;
     return today;
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:table_now_store/controller/store/hours_controller.dart';
 import 'package:table_now_store/controller/store/manage_controller.dart';
 import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
@@ -175,13 +176,14 @@ class TodayPage extends GetView<ManageController> {
               ),
               onTap: () async {
                 // 전체 영업시간 조회 및 초기화 (비동기 실행)
-                // Get.put(HoursController()).findHours(storeId);
+                Get.put(HoursController()).findHours(storeId);
                 Get.toNamed(Routes.hoursInfo, arguments: storeId)!
-                    .then((today) {
-                  if (today != null) {
-                    if (today.state != null) {
+                    .then((result) {
+                  // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
+                  if (result != null) {
+                    if (result.runtimeType == Today) {
                       // 수정된 오늘의 영업시간 반영
-                      controller.changeToday(today);
+                      controller.changeToday(result);
                       showToast(context, '영업시간을 수정하였습니다.', null);
                     } else {
                       showErrorToast(context);

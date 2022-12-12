@@ -4,8 +4,8 @@ import 'package:table_now_store/controller/store/hours_controller.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/hours_list.dart';
 import 'package:table_now_store/ui/components/info_row_text.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
-import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
@@ -59,15 +59,11 @@ class HoursInfoPage extends GetView<HoursController> {
                         const HoursList(),
                         const SizedBox(height: 50),
                         // 수정 버튼
-                        Obx(
-                          () => controller.updated.value
-                              ? RoundButton(
-                                  text: '수정',
-                                  tapFunc: () {
-                                    _showDialog(context);
-                                  },
-                                )
-                              : const LoadingRoundButton(),
+                        RoundButton(
+                          text: '수정',
+                          tapFunc: () {
+                            _showDialog(context);
+                          },
                         ),
                       ],
                     ),
@@ -88,11 +84,27 @@ class HoursInfoPage extends GetView<HoursController> {
           title: '영업시간을 수정하시겠습니까?',
           checkFunc: () async {
             Navigator.pop(context2);
-            // 영업시간 수정
-            dynamic result = await controller.updateHours(storeId);
-            Get.back(result: result);
+            _showProcessingDialog(context);
           },
         );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
+        // 영업시간 수정 진행
+        controller.updateHours(storeId).then((value) {
+          // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+          Navigator.pop(context);
+          Get.back(result: value);
+        });
+
+        return const LoadingContainer(text: '수정중');
       },
     );
   }

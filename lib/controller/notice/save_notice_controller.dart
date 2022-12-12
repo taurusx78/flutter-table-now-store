@@ -25,8 +25,6 @@ class SaveNoticeController extends GetxController {
   final titleFormKey = GlobalKey<FormState>();
   final contentFormKey = GlobalKey<FormState>();
 
-  final RxBool completed = true.obs; // DB 요청 처리 완료 여부
-
   // 갤러리에서 사진 선택
   Future<void> selectImages() async {
     final List<dynamic>? _selectedImages = await _picker.pickMultiImage();
@@ -37,8 +35,6 @@ class SaveNoticeController extends GetxController {
 
   // 알림 등록
   Future<int> save(int storeId) async {
-    completed.value = false;
-
     // XFile 타입을 File 타입으로 변경
     List<File> fileList = imageList.map((image) => File(image.path)).toList();
     // File 타입을 MultipartFile 타입으로 변경
@@ -56,14 +52,11 @@ class SaveNoticeController extends GetxController {
     );
 
     int result = await _noticeRepository.save(storeId, dto.toJson());
-    completed.value = true;
     return result;
   }
 
   // 알림 수정
   Future<int> updateById(int storeId, Notice notice) async {
-    completed.value = false;
-
     List<String> deletedImageUrlList = [
       ...notice.imageUrlList
     ]; // 삭제된 이미지 Url 리스트 초기화
@@ -95,15 +88,12 @@ class SaveNoticeController extends GetxController {
 
     int result =
         await _noticeRepository.updateById(storeId, notice.id, dto.toJson());
-    completed.value = true;
     return result;
   }
 
   // 알림 삭제
   Future<int> deleteById(int storeId, int noticeId) async {
-    completed.value = false;
     int result = await _noticeRepository.deleteById(storeId, noticeId);
-    completed.value = true;
     return result;
   }
 
@@ -122,6 +112,8 @@ class SaveNoticeController extends GetxController {
     // 1. 임시휴무
     if (notice.holidayStartDate == '') {
       hasHoliday.value = false;
+      holidayStartDate.value = '시작일';
+      holidayEndDate.value = '종료일';
     } else {
       hasHoliday.value = true;
       holidayStartDate.value = notice.holidayStartDate.replaceAll('.', '-');

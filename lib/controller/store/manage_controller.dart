@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/dto/store/update_basic_resp_dto.dart';
+import 'package:table_now_store/controller/dto/store/update_inside_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_tables_req_dto.dart';
 import 'package:table_now_store/data/store/model/tables.dart';
 import 'package:table_now_store/data/store/model/today.dart';
@@ -107,7 +108,7 @@ class ManageController extends GetxController {
   Future<void> changeAvailablePercent(int storeId) async {
     // 잔여테이블 수 > 전체테이블 수 오류 제거
     if (tables.value!.tableCount > tables.value!.allTableCount) {
-      // await updateTableCount(storeId, 2, false);
+      await updateTableCount(storeId, 2, false);
     }
     availablePercent.value =
         tables.value!.tableCount / tables.value!.allTableCount;
@@ -128,13 +129,14 @@ class ManageController extends GetxController {
     tableColor.value = color;
   }
 
-// 수정된 전체테이블 수 반영
-// void changeTables(UpdateInsideResp? dto) {
-//   tables.value = Tables(
-//     allTableCount: dto!.allTableCount,
-//     tableCount: dto.tableCount,
-//     paused: tables.value.paused,
-//     modifiedDate: tables.value.modifiedDate,
-//   );
-// }
+  // 수정된 전체테이블 수 반영
+  void changeTables(UpdateInsideRespDto dto) {
+    tables.value = Tables(
+      allTableCount: dto.allTableCount,
+      tableCount: dto.tableCount,
+      paused: tables.value!.paused,
+      modifiedDate: tables.value!.modifiedDate,
+    );
+    availablePercent.value = 1;
+  }
 }

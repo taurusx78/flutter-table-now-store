@@ -19,7 +19,6 @@ class HolidaysController extends GetxController {
   final RxString holidaysInfo = ''.obs;
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-  final RxBool updated = true.obs; // 수정 완료 여부
 
   // 정기휴무 조회 및 초기화
   Future<void> findHolidays(int storeId) async {
@@ -42,10 +41,8 @@ class HolidaysController extends GetxController {
 
   // 정기휴무 수정
   Future<dynamic> updateHolidays(int storeId) async {
-    updated.value = false;
     Map<String, String> data = {'holidays': holidaysInfo.value};
     dynamic today = await _storeRepository.updateHolidays(storeId, data);
-    updated.value = true;
     return today;
   }
 

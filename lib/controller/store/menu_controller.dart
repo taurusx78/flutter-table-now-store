@@ -15,7 +15,6 @@ class MenuController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-  final RxBool updated = true.obs; // 수정 완료 여부
 
   // 갤러리에서 사진 선택
   Future<void> selectImages() async {
@@ -39,8 +38,6 @@ class MenuController extends GetxController {
 
   // 메뉴 수정
   Future<int> updateMenu(int storeId) async {
-    updated.value = false;
-
     List<String> deletedImageUrlList = [
       ...menu!.imageUrlList
     ]; // 삭제된 이미지 Url 리스트 초기화
@@ -64,7 +61,6 @@ class MenuController extends GetxController {
       deletedImageUrlList: deletedImageUrlList,
     );
     int result = await _storeRepository.updateMenu(storeId, dto.toJson());
-    updated.value = true;
     return result;
   }
 }

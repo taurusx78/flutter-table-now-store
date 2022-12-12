@@ -4,7 +4,7 @@ import 'package:table_now_store/controller/notice/save_notice_controller.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
-import 'package:table_now_store/ui/components/loading_round_button.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/util/validator_util.dart';
 
@@ -62,6 +62,17 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
                   const SizedBox(height: 50),
                   // 알림 폼
                   _buildNoticeForm(context),
+                  const SizedBox(height: 70),
+                  // 등록 버튼
+                  RoundButton(
+                    text: '등록',
+                    tapFunc: () {
+                      if (controller.titleFormKey.currentState!.validate() &&
+                          controller.contentFormKey.currentState!.validate()) {
+                        _showDialog(context);
+                      }
+                    },
+                  )
                 ],
               ),
             ),
@@ -133,21 +144,6 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
             validator: validateNotice(),
           ),
         ),
-        const SizedBox(height: 70),
-        // 등록 버튼
-        Obx(
-          () => controller.completed.value
-              ? RoundButton(
-                  text: '등록',
-                  tapFunc: () {
-                    if (controller.titleFormKey.currentState!.validate() &&
-                        controller.contentFormKey.currentState!.validate()) {
-                      _showDialog(context);
-                    }
-                  },
-                )
-              : const LoadingRoundButton(),
-        ),
       ],
     );
   }
@@ -164,13 +160,29 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
           title: '알림을 등록하시겠습니까?',
           noticeTitle: controller.title.text,
           holiday: holiday,
-          tapFunc: () async {
+          tapFunc: () {
             Navigator.pop(context2);
-            // 알림 등록 성공 (1), 실패 (-1)
-            int result = await controller.save(storeId);
-            Get.back(result: result);
+            _showProcessingDialog(context);
           },
         );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
+        // 알림 등록 진행
+        controller.save(storeId).then((value) {
+          // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+          Navigator.pop(context);
+          Get.back(result: value); // 등록 성공 (1), 실패 (-1)
+        });
+
+        return const LoadingContainer(text: '등록중');
       },
     );
   }

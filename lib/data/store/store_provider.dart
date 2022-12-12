@@ -79,4 +79,11 @@ class StoreProvider extends GetConnect {
             'multipart/form-data; boundary=<calculated when request is sent>',
         headers: {'authorization': jwtToken ?? ''},
       );
+
+  // 매장삭제
+  Future<Response> deleteById(int id, Map data) => post(
+        '$host/manager/store/$id',
+        data,
+        headers: {'authorization': jwtToken ?? ''},
+      );
 }

@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/dto/code_msg_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/my_store_resp_dto.dart';
+import 'package:table_now_store/controller/dto/store/update_basic_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_inside_resp_dto.dart';
 import 'package:table_now_store/data/store/store_provider.dart';
 
+import 'model/basic.dart';
 import 'model/holidays.dart';
 import 'model/hours.dart';
 import 'model/inside.dart';
@@ -166,5 +168,36 @@ class StoreRepository {
     } else {
       return -1; // 실패 시 -1 리턴
     }
+  }
+
+  // 기본정보 조회
+  Future<Basic?> findBasic(int storeId) async {
+    Response response = await _storeProvider.findBasic(storeId);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+
+    if (dto.code == 1) {
+      return Basic.fromJson(dto.response);
+    } else {
+      return null;
+    }
+  }
+
+  // 기본정보 수정
+  Future<dynamic> updateBasic(int storeId, Map<String, dynamic> data) async {
+    Response response = await _storeProvider.updateBasic(storeId, data);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+
+    if (dto.code == 1) {
+      return UpdateBasicRespDto.fromJson(dto.response);
+    } else {
+      return -1; // 실패 시 -1 리턴
+    }
+  }
+
+  // 매장삭제
+  Future<int> deleteById(int storeId, Map data) async {
+    Response response = await _storeProvider.deleteById(storeId, data);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code; // 성공 (1), 권한없음 (-1), 비밀번호 불일치 (-2)
   }
 }

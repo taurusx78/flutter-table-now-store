@@ -105,3 +105,39 @@ Function validateNotice() {
     }
   };
 }
+
+// 매장 전화번호 유효성 검사
+Function validateStorePhone() {
+  return (String? value) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (!isNumeric(value)) {
+      return '전화번호는 - 를 제외한 숫자로 입력해 주세요.';
+    } else if (value.length < 7 || value.length > 8) {
+      return '전화번호 길이가 너무 짧습니다.';
+    } else {
+      return null;
+    }
+  };
+}
+
+// URL 유효성 검사
+Function validateWebsite() {
+  return (String? value) {
+    if (value != null && !isURL(value)) {
+      return '올바른 URL 형식으로 입력해 주세요.';
+    }
+    return null;
+  };
+}
+
+// 텍스트필드 공백 여부 유효성 검사
+Function validateTextField() {
+  return (String? value) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else {
+      return null;
+    }
+  };
+}

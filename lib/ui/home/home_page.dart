@@ -185,7 +185,10 @@ class HomePage extends GetView<MainController> {
                                   const SizedBox(height: 10),
                                   // 주소
                                   Text(
-                                    store.address.replaceAll('', '\u{200B}'),
+                                    store.address.replaceAll('', '\u{200B}') +
+                                        ', ' +
+                                        store.detailAddress
+                                            .replaceAll('', '\u{200B}'),
                                     style:
                                         const TextStyle(color: Colors.black54),
                                     overflow: TextOverflow.ellipsis,

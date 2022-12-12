@@ -9,3 +9,4 @@ const darkNavy = Color(0xff2e3e5e);
 const red = Color(0xFFF61B55);
 const yellow = Color(0xFFFBC02D);
 const green = Color(0xFF5ACE5F);
+const blue = Color(0xFF038AF1);

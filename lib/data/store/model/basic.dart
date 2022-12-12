@@ -4,6 +4,7 @@ class Basic {
   final String category; // 카테고리
   final String phone; // 전화번호
   final String address; // 도로명주소
+  final String detailAddress; // 상세주소
   final String jibunAddress; // 지번주소
   final double latitude; // 위도
   final double longitude; // 경도
@@ -18,6 +19,7 @@ class Basic {
     required this.category,
     required this.phone,
     required this.address,
+    required this.detailAddress,
     required this.jibunAddress,
     required this.latitude,
     required this.longitude,
@@ -34,6 +36,7 @@ class Basic {
         category = json['category'],
         phone = json['phone'],
         address = json['address'],
+        detailAddress = json['detailAddress'],
         jibunAddress = json['jibunAddress'],
         latitude = json['latitude'],
         longitude = json['longitude'],

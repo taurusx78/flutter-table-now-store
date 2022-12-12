@@ -19,7 +19,6 @@ class InsideController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-  final RxBool updated = true.obs; // 수정 완료 여부
 
   // 갤러리에서 사진 선택
   Future<void> selectImages() async {
@@ -44,8 +43,6 @@ class InsideController extends GetxController {
 
   // 매장내부정보 수정
   Future<dynamic> updateInside(int storeId) async {
-    updated.value = false;
-
     List<String> deletedImageUrlList = [
       ...inside!.imageUrlList
     ]; // 삭제된 이미지 Url 리스트 초기화
@@ -70,7 +67,6 @@ class InsideController extends GetxController {
         deletedImageUrlList: deletedImageUrlList);
     UpdateInsideRespDto updateInsideResp =
         await _storeRepository.updateInside(storeId, dto.toJson());
-    updated.value = true;
     return updateInsideResp;
   }
 

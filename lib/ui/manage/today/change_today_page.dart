@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
@@ -7,7 +6,7 @@ import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_divider.dart';
-import 'package:table_now_store/ui/components/loading_round_button.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
@@ -62,7 +61,12 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
                 ),
                 const SizedBox(height: 30),
                 // 수정 버튼
-                _buildUpdateButton(context),
+                RoundButton(
+                  text: '변경',
+                  tapFunc: () {
+                    _showDialog(context);
+                  },
+                ),
               ],
             ),
           ),
@@ -185,19 +189,6 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
     );
   }
 
-  Widget _buildUpdateButton(context) {
-    return Obx(
-      () => controller.completed.value
-          ? RoundButton(
-              text: '변경',
-              tapFunc: () {
-                _showDialog(context);
-              },
-            )
-          : const LoadingRoundButton(),
-    );
-  }
-
   void _showDialog(context) {
     showDialog(
       context: context,
@@ -207,11 +198,27 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
           title: '영업시간을 변경하시겠습니까?',
           checkFunc: () async {
             Navigator.pop(context2);
-            // 수정된 오늘의 영업시간 DB에 반영
-            var result = await controller.updateToday(storeId);
-            Get.back(result: result);
+            _showProcessingDialog(context);
           },
         );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
+        // 오늘의 영업시간 수정 진행
+        controller.updateToday(storeId).then((value) {
+          // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+          Navigator.pop(context);
+          Get.back(result: value);
+        });
+
+        return const LoadingContainer(text: '변경중');
       },
     );
   }

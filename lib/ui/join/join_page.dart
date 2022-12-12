@@ -7,6 +7,7 @@ import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/info_row_text.dart';
 import 'package:table_now_store/ui/components/list_row_text.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -506,7 +507,7 @@ class JoinPage extends GetView<JoinController> {
       builder: (BuildContext context2) {
         return CustomDialog(
           title: '회원가입을 완료 하시겠습니까?',
-          checkFunc: () async {
+          checkFunc: () {
             Navigator.pop(context2);
             _showProcessingDialog(context);
           },
@@ -519,6 +520,7 @@ class JoinPage extends GetView<JoinController> {
     showDialog(
       context: context,
       barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 회원가입 진행
         controller.join().then((name) {
@@ -531,28 +533,7 @@ class JoinPage extends GetView<JoinController> {
           }
         });
 
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          title: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Column(
-              children: const [
-                SizedBox(
-                  width: 50,
-                  height: 50,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                ),
-                SizedBox(height: 30),
-                Text(
-                  '잠시만 기다려 주세요...',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-        );
+        return const LoadingContainer(text: '가입중');
       },
     );
   }

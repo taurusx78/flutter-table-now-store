@@ -76,6 +76,15 @@ abstract class Routes {
   /* 매장알림 */
   static const writeNotice = '/write_notice';
   static const updateNotice = '/update_notice';
+
+  /* 매장등록 */
+  static const checkRegistered = '/check_registered';
+  static const criteria = '/criteria';
+  static const enterBasic = '/enter_basic';
+  static const enterInside = '/enter_inside';
+  static const enterMenu = '/enter_menu';
+  static const enterHolidays = '/enter_holidays';
+  static const enterHours = '/enter_hours';
 }
 
 class Pages {

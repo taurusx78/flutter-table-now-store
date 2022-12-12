@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/store/update_basic_resp_dto.dart';
+import 'package:table_now_store/controller/dto/store/update_inside_resp_dto.dart';
+import 'package:table_now_store/controller/store/basic_controller.dart';
 import 'package:table_now_store/controller/store/holidays_controller.dart';
 import 'package:table_now_store/controller/store/hours_controller.dart';
 import 'package:table_now_store/controller/store/inside_controller.dart';
@@ -171,7 +174,7 @@ class ManagePage extends GetView<ManageController> {
                       .then((result) {
                     // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
                     if (result != null) {
-                      if (result.state != null) {
+                      if (result.runtimeType == Today) {
                         // 수정된 오늘의 영업시간 반영
                         controller.changeToday(result);
                         showToast(context, '정기휴무를 수정하였습니다.', null);
@@ -211,9 +214,9 @@ class ManagePage extends GetView<ManageController> {
                       .then((result) {
                     // 수정 성공 (UpdateInsideRespDto), 실패 (-1), 뒤로가기 (null)
                     if (result != null) {
-                      if (result.allTableCount != null) {
+                      if (result.runtimeType == UpdateInsideRespDto) {
                         // 수정된 전체테이블 수 반영
-                        // controller.changeTables(updateInsideResp);
+                        controller.changeTables(result);
                         showToast(context, '매장내부정보를 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);
@@ -225,14 +228,15 @@ class ManagePage extends GetView<ManageController> {
                 _buildBodyButton(context, '기본정보', () {
                   Navigator.pop(context);
                   // 기본정보 조회 (비동기 실행)
-                  // Get.put(BasicController()).findBasic(storeId);
+                  Get.put(BasicController()).findBasic(storeId);
                   Get.toNamed(Routes.basicInfo, arguments: storeId)!
-                      .then((updateBasicResp) {
-                    if (updateBasicResp != null) {
-                      if (updateBasicResp.name != null) {
+                      .then((result) {
+                    // 수정 성공 (UpdateBasicRespDto), 실패 (-1), 뒤로가기 (null)
+                    if (result != null) {
+                      if (result.runtimeType == UpdateBasicRespDto) {
                         // 수정된 매장명 & 대표사진 반영
-                        controller.setStoreInfo(updateBasicResp.name,
-                            updateBasicResp.basicImageUrl);
+                        controller.setStoreInfo(
+                            result.name, result.basicImageUrl);
                         showToast(context, '기본정보를 수정하였습니다.', null);
                       } else {
                         showErrorToast(context);

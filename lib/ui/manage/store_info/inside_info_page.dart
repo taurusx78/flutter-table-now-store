@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/store/inside_controller.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
-import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/table_count_text_field.dart';
@@ -64,34 +64,28 @@ class InsideInfoPage extends GetView<InsideController> {
                           ),
                           const SizedBox(height: 70),
                           // 수정 버튼
-                          controller.updated.value
-                              ? RoundButton(
-                                  text: '수정',
-                                  tapFunc: () {
-                                    // 테이블 수 입력 여부
-                                    if (controller
-                                        .allTableCount.text.isNotEmpty) {
-                                      // 테이블 수 0~500 범위의 숫자 여부
-                                      if (controller.validateAllTableCount()) {
-                                        if (controller.imageList.isNotEmpty) {
-                                          _showDialog(context);
-                                        } else {
-                                          showToast(context,
-                                              '내부사진을 최소 1장 올려주세요.', null);
-                                        }
-                                      } else {
-                                        showToast(
-                                            context,
-                                            '전체테이블 수는 0~500 범위의\n숫자로 입력해 주세요.',
-                                            1500);
-                                      }
-                                    } else {
-                                      showToast(
-                                          context, '전체테이블 수를 입력해 주세요.', null);
-                                    }
-                                  },
-                                )
-                              : const LoadingRoundButton()
+                          RoundButton(
+                            text: '수정',
+                            tapFunc: () {
+                              // 테이블 수 입력 여부
+                              if (controller.allTableCount.text.isNotEmpty) {
+                                // 테이블 수 0~500 범위의 숫자 여부
+                                if (controller.validateAllTableCount()) {
+                                  if (controller.imageList.isNotEmpty) {
+                                    _showDialog(context);
+                                  } else {
+                                    showToast(
+                                        context, '내부사진을 최소 1장 올려주세요.', null);
+                                  }
+                                } else {
+                                  showToast(context,
+                                      '전체테이블 수는 0~500 범위의\n숫자로 입력해 주세요.', 1500);
+                                }
+                              } else {
+                                showToast(context, '전체테이블 수를 입력해 주세요.', null);
+                              }
+                            },
+                          ),
                         ],
                       ),
                     ),
@@ -112,11 +106,27 @@ class InsideInfoPage extends GetView<InsideController> {
           title: '매장내부정보를 수정하시겠습니까?',
           checkFunc: () async {
             Navigator.pop(context2);
-            // 매장내부정보 수정
-            dynamic result = await controller.updateInside(storeId);
-            Get.back(result: result);
+            _showProcessingDialog(context);
           },
         );
+      },
+    );
+  }
+
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
+        // 매장내부정보 수정 진행
+        controller.updateInside(storeId).then((value) {
+          // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+          Navigator.pop(context);
+          Get.back(result: value);
+        });
+
+        return const LoadingContainer(text: '수정중');
       },
     );
   }

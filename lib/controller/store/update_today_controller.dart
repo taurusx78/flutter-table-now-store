@@ -21,11 +21,8 @@ class UpdateTodayController extends GetxController {
     '22:00'.obs, // 주문 마감시간 (4)
   ];
 
-  final RxBool completed = true.obs; // 오늘의 영업시간 수정 완료 여부
-
   // 오늘의 영업시간 수정
   Future<dynamic> updateToday(int storeId) async {
-    completed.value = false;
     UpdateTodayReqDto dto;
     if (!switchState[0].value) {
       // 1. 영업일인 경우
@@ -47,7 +44,6 @@ class UpdateTodayController extends GetxController {
       );
     }
     var result = await _storeRepository.updateToday(storeId, dto.toJson());
-    completed.value = true;
     return result;
   }
 
