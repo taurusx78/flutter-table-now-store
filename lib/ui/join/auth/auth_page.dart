@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:table_now_store/controller/user/auth_controller.dart';
 import 'package:table_now_store/controller/user/join_controller.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
+import 'package:table_now_store/ui/components/warning_row_text.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 import 'package:table_now_store/ui/screen_size.dart';
 
 class AuthPage extends GetView<JoinController> {
-  AuthPage({Key? key}) : super(key: key);
-
-  final AuthController _authController = Get.put(AuthController());
+  const AuthPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +49,10 @@ class AuthPage extends GetView<JoinController> {
                 _buildIamportAuthButton(context),
                 const SizedBox(height: 20),
                 // 경고 문구
-                _buildWarningText(context),
+                const WarningRowText(
+                  text: '타인의 개인정보를 도용하여 가입한 경우, 서비스 이용 제한 및 법적 제재를 받으실 수 있습니다.',
+                  margin: 60,
+                ),
                 const SizedBox(height: 50),
                 // 다음 버튼
                 _buildNextButton(context),
@@ -159,31 +160,6 @@ class AuthPage extends GetView<JoinController> {
               : null,
         ),
       ),
-    );
-  }
-
-  Widget _buildWarningText(context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Padding(
-          padding: EdgeInsets.only(top: 3, right: 5),
-          child: Icon(
-            Icons.warning_amber_rounded,
-            size: 18,
-            color: red,
-          ),
-        ),
-        SizedBox(
-          width: getScreenWidth(context) - 60 < 600
-              ? getScreenWidth(context) - 85
-              : 575,
-          child: const Text(
-            '타인의 개인정보를 도용하여 가입한 경우, 서비스 이용 제한 및 법적 제재를 받으실 수 있습니다.',
-            style: TextStyle(fontSize: 15, color: darkNavy),
-          ),
-        ),
-      ],
     );
   }
 

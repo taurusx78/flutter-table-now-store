@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:table_now_store/controller/dto/store/save_store_req_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_menu_req_dto.dart';
 import 'package:table_now_store/data/store/model/menu.dart';
 import 'package:table_now_store/data/store/store_repository.dart';
@@ -51,10 +52,7 @@ class MenuController extends GetxController {
       }
     }
     // File 타입을 MultipartFile 타입으로 변경
-    List<MultipartFile> multipartFileList = fileList
-        .map((file) =>
-            MultipartFile(file.path, filename: file.path.split('/').last))
-        .toList();
+    List<MultipartFile> multipartFileList = fileToMultipartFile(fileList);
 
     UpdateMenuReqDto dto = UpdateMenuReqDto(
       imageFileList: multipartFileList,
@@ -62,5 +60,23 @@ class MenuController extends GetxController {
     );
     int result = await _storeRepository.updateMenu(storeId, dto.toJson());
     return result;
+  }
+
+  // 메뉴정보 등록 페이지에서 입력된 정보 SaveStoreReqDto 객체에 추가
+  SaveStoreReqDto setMenuInfo(SaveStoreReqDto dto) {
+    // 이미지 타입 변경
+    List<File> fileList = imageList.map((image) => File(image.path)).toList();
+    List<MultipartFile> multipartFileList = fileToMultipartFile(fileList);
+    dto.setMenuInfo(multipartFileList);
+    return dto;
+  }
+
+  // File 타입을 MultipartFile 타입으로 변경
+  List<MultipartFile> fileToMultipartFile(List<File> fileList) {
+    List<MultipartFile> multipartFileList = fileList
+        .map((file) =>
+            MultipartFile(file.path, filename: file.path.split('/').last))
+        .toList();
+    return multipartFileList;
   }
 }

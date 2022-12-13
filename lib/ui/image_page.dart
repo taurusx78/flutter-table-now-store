@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:table_now_store/util/host.dart';
 
 class ImagePage extends StatefulWidget {
@@ -42,10 +45,12 @@ class _ImagePageState extends State<ImagePage> {
         itemCount: totalCount,
         itemBuilder: (context, index) {
           return InteractiveViewer(
-            child: Image.network(
-              '$host/image?type=$type&filename=${imageUrlList[index]}',
-              fit: BoxFit.fitWidth,
-            ),
+            child: imageUrlList[index].runtimeType != XFile
+                ? Image.network(
+                    '$host/image?type=$type&filename=${imageUrlList[index]}',
+                    fit: BoxFit.fitWidth,
+                  )
+                : Image.file(File(imageUrlList[index].path)),
             maxScale: 3,
           );
         },

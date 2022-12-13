@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/store/save_store_req_dto.dart';
 import 'package:table_now_store/data/store/model/holidays.dart';
 import 'package:table_now_store/data/store/store_repository.dart';
 
@@ -105,5 +106,11 @@ class HolidaysController extends GetxController {
       }
     }
     return content;
+  }
+
+  // 정기휴무 등록 페이지에서 입력된 정보 SaveStoreReqDto 객체에 추가
+  SaveStoreReqDto setHolidaysInfo(SaveStoreReqDto dto) {
+    dto.setHolidaysInfo(holidaysInfo.value);
+    return dto;
   }
 }

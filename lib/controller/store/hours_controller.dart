@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/store/save_store_req_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_hours_req_dto.dart';
 import 'package:table_now_store/data/store/model/hours.dart';
 import 'package:table_now_store/data/store/store_repository.dart';
@@ -110,5 +111,37 @@ class HoursController extends GetxController {
         timeList[4][day] = timeList[1][day];
       }
     }
+  }
+
+  // 영업시간 등록 페이지에서 입력된 정보 SaveStoreReqDto 객체에 추가
+  SaveStoreReqDto setHoursInfo(SaveStoreReqDto dto) {
+    List<List<String>> hours = hoursDataProcessing();
+    dto.setHoursInfo(hours);
+    return dto;
+  }
+
+  // 영업시간 데이터 가공
+  List<List<String>> hoursDataProcessing() {
+    List<String> businessHoursList = [];
+    List<String> breakTimeList = [];
+    List<String> lastOrderList = [];
+
+    for (int d = 0; d < 7; d++) {
+      // 1. 영업시간
+      businessHoursList.add(timeList[0][d] + '-' + timeList[1][d]);
+      // 2. 휴게시간
+      if (switchState[1][d]) {
+        breakTimeList.add(timeList[2][d] + '-' + timeList[3][d]);
+      } else {
+        breakTimeList.add('없음');
+      }
+      // 3. 주문마감시간
+      if (switchState[2][d]) {
+        lastOrderList.add(timeList[4][d]);
+      } else {
+        lastOrderList.add('없음');
+      }
+    }
+    return [businessHoursList, breakTimeList, lastOrderList];
   }
 }

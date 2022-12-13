@@ -7,7 +7,6 @@ import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/manage/store_info/components/modified_text.dart';
-import 'package:table_now_store/ui/screen_size.dart';
 
 class HolidaysInfoPage extends GetView<HolidaysController> {
   HolidaysInfoPage({Key? key}) : super(key: key);
@@ -47,12 +46,7 @@ class HolidaysInfoPage extends GetView<HolidaysController> {
                             modifiedDate: controller.holidays!.modifiedDate),
                         const SizedBox(height: 50),
                         // 정기휴무 유무
-                        HolidaySelectButton(
-                          isUpdatePage: true,
-                          width: getScreenWidth(context) - 40 < 600
-                              ? (getScreenWidth(context) - 40) / 2 - 5
-                              : 295,
-                        ),
+                        const HolidaySelectButton(isUpdatePage: true),
                         const SizedBox(height: 20),
                         // 정기휴무 목록
                         _buildHolidayList(),

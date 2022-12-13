@@ -29,6 +29,27 @@ class StoreRepository {
     }
   }
 
+  // 등록여부조회
+  Future<int> checkExist(
+      String name, String category, String phone, String address) async {
+    Response response =
+        await _storeProvider.checkExist(name, category, phone, address);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+
+    if (dto.code == 1) {
+      return dto.response; // 있음 (1), 없음 (0)
+    } else {
+      return -1; // 조회 실패
+    }
+  }
+
+  // 매장등록
+  Future<int> save(Map<String, dynamic> data) async {
+    Response response = await _storeProvider.save(data);
+    CodeMsgRespDto codeMsgResp = CodeMsgRespDto.fromJson(response.body);
+    return codeMsgResp.code; // 성공 (1), 실패 (-1)
+  }
+
   // 오늘의 영업시간 조회
   Future<Today?> findToday(int storeId) async {
     Response response = await _storeProvider.findToday(storeId);

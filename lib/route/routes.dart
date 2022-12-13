@@ -37,6 +37,13 @@ import 'package:table_now_store/ui/manage/store_info/hours_info_page.dart';
 import 'package:table_now_store/ui/manage/store_info/inside_info_page.dart';
 import 'package:table_now_store/ui/manage/store_info/menu_info_page.dart';
 import 'package:table_now_store/ui/manage/today/change_today_page.dart';
+import 'package:table_now_store/ui/register/check_registered_page.dart';
+import 'package:table_now_store/ui/register/criteria_page.dart';
+import 'package:table_now_store/ui/register/enter_basic_page.dart';
+import 'package:table_now_store/ui/register/enter_holidays_page.dart';
+import 'package:table_now_store/ui/register/enter_hours_page.dart';
+import 'package:table_now_store/ui/register/enter_inside_page.dart';
+import 'package:table_now_store/ui/register/enter_menu_page.dart';
 
 abstract class Routes {
   /* 로그인 & 회원찾기 */
@@ -139,7 +146,7 @@ class Pages {
     ),
     GetPage(
       name: Routes.auth,
-      page: () => AuthPage(),
+      page: () => const AuthPage(),
     ),
     GetPage(
       name: Routes.iamport,
@@ -214,6 +221,41 @@ class Pages {
       name: Routes.updateNotice,
       page: () => UpdateNoticePage(),
       binding: SaveNoticeBinding(),
+    ),
+    /* 매장등록 */
+    GetPage(
+      name: Routes.checkRegistered,
+      page: () => CheckRegisteredPage(),
+      binding: BasicBinding(),
+    ),
+    GetPage(
+      name: Routes.criteria,
+      page: () => const CriteriaPage(),
+    ),
+    GetPage(
+      name: Routes.enterBasic,
+      page: () => EnterBasicPage(),
+      binding: BasicBinding(),
+    ),
+    GetPage(
+      name: Routes.enterInside,
+      page: () => EnterInsidePage(),
+      binding: InsideBinding(),
+    ),
+    GetPage(
+      name: Routes.enterMenu,
+      page: () => EnterMenuPage(),
+      binding: MenuBinding(),
+    ),
+    GetPage(
+      name: Routes.enterHolidays,
+      page: () => EnterHolidaysPage(),
+      binding: HolidaysBinding(),
+    ),
+    GetPage(
+      name: Routes.enterHours,
+      page: () => EnterHoursPage(),
+      binding: HoursBinding(),
     ),
   ];
 }

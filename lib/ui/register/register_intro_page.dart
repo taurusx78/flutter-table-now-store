@@ -25,7 +25,7 @@ class RegisterIntroPage extends StatelessWidget {
                   RoundButton(
                     text: '신규 매장 등록하기',
                     tapFunc: () {
-                      // Get.toNamed(Routes.checkRegistered);
+                      Get.toNamed(Routes.checkRegistered);
                     },
                   ),
                   const SizedBox(height: 30),
@@ -34,7 +34,7 @@ class RegisterIntroPage extends StatelessWidget {
                     icon: Icons.policy_outlined,
                     text: '매장등록기준',
                     tapFunc: () {
-                      // Get.toNamed(Routes.criteria);
+                      Get.toNamed(Routes.criteria);
                     },
                   ),
                 ],

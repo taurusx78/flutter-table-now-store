@@ -124,10 +124,21 @@ Function validateStorePhone() {
 // URL 유효성 검사
 Function validateWebsite() {
   return (String? value) {
-    if (value != null && !isURL(value)) {
+    if (value!.isNotEmpty && !isURL(value)) {
       return '올바른 URL 형식으로 입력해 주세요.';
     }
     return null;
+  };
+}
+
+// 매장명 유효성 검사
+Function validateStoreName() {
+  return (String? value) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else {
+      return null;
+    }
   };
 }
 

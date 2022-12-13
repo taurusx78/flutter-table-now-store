@@ -7,6 +7,20 @@ class StoreProvider extends GetConnect {
   Future<Response> findAllMyStore(String? jwtToken) =>
       get('$host/manager/store', headers: {'authorization': jwtToken ?? ''});
 
+  // 등록여부조회
+  Future<Response> checkExist(
+          String name, String category, String phone, String address) =>
+      get('$host/check/store?name=$name&category=$category&phone=$phone&address=$address');
+
+  // 매장등록
+  Future<Response> save(Map<String, dynamic> data) => post(
+        '$host/manager/store', FormData(data),
+        // 사진 파일이 포함된 데이터 전송을 위한 Content-Type 설정
+        contentType:
+            'multipart/form-data; boundary=<calculated when request is sent>',
+        headers: {'authorization': jwtToken ?? ''},
+      );
+
   // 오늘의 영업시간 조회
   Future<Response> findToday(int id) => get('$host/store/$id/todayHours');
 

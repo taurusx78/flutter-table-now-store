@@ -3,19 +3,20 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/store/holidays_controller.dart';
 import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/custom_color.dart';
+import 'package:table_now_store/ui/screen_size.dart';
 
 class HolidaySelectButton extends GetView<HolidaysController> {
   final bool isUpdatePage; // 정기휴무 수정 페이지인지
-  final double width; // 토클 버튼 너비
 
-  const HolidaySelectButton({
-    Key? key,
-    required this.isUpdatePage,
-    required this.width,
-  }) : super(key: key);
+  const HolidaySelectButton({Key? key, required this.isUpdatePage})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    double width = getScreenWidth(context) - 40 < 600
+        ? (getScreenWidth(context) - 40) / 2 - 5
+        : 295;
+
     return Column(
       children: [
         // 정기휴무 유무
@@ -24,7 +25,7 @@ class HolidaySelectButton extends GetView<HolidaysController> {
         // 정기휴무 주차 및 요일
         Obx(
           () => controller.hasHoliday.value
-              ? _buildHolidayToggleButton(context)
+              ? _buildHolidayToggleButton(context, width)
               : const SizedBox(),
         ),
       ],
@@ -56,7 +57,7 @@ class HolidaySelectButton extends GetView<HolidaysController> {
     );
   }
 
-  Widget _buildHolidayToggleButton(context) {
+  Widget _buildHolidayToggleButton(context, width) {
     return Column(
       children: [
         Row(
