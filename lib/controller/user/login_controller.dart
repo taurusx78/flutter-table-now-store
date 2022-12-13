@@ -46,11 +46,8 @@ class LoginController extends GetxController {
   // 로그인 버튼 활성화 여부 확인
   void checkButtonActivated() {
     // 아이디 4~20자, 비밀번호 8~20자로 입력된 경우, 버튼 활성화
-    if (username.text.trim().length >= 4 && password.text.length >= 1) {
-      activated.value = true;
-    } else {
-      activated.value = false;
-    }
+    activated.value =
+        username.text.trim().length >= 4 && password.text.length >= 8;
   }
 
   // 텍스트필드 초기화

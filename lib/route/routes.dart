@@ -7,10 +7,12 @@ import 'package:table_now_store/binding/store/hours_binding.dart';
 import 'package:table_now_store/binding/store/inside_binding.dart';
 import 'package:table_now_store/binding/store/main_binding.dart';
 import 'package:table_now_store/binding/store/menu_binding.dart';
+import 'package:table_now_store/binding/user/change_email_binding.dart';
 import 'package:table_now_store/binding/user/change_pw_binding.dart';
 import 'package:table_now_store/binding/user/find_binding.dart';
 import 'package:table_now_store/binding/user/join_binding.dart';
 import 'package:table_now_store/binding/user/login_binding.dart';
+import 'package:table_now_store/binding/user/withdrawal_binding.dart';
 import 'package:table_now_store/ui/image_page.dart';
 import 'package:table_now_store/ui/join/agreement/agreement_page.dart';
 import 'package:table_now_store/ui/join/agreement/privacy_policy_page.dart';
@@ -37,6 +39,21 @@ import 'package:table_now_store/ui/manage/store_info/hours_info_page.dart';
 import 'package:table_now_store/ui/manage/store_info/inside_info_page.dart';
 import 'package:table_now_store/ui/manage/store_info/menu_info_page.dart';
 import 'package:table_now_store/ui/manage/today/change_today_page.dart';
+import 'package:table_now_store/ui/mypage/app_notice/app_notice_page.dart';
+import 'package:table_now_store/ui/mypage/customer_service/customer_service_page.dart';
+import 'package:table_now_store/ui/mypage/customer_service/faq_page.dart';
+import 'package:table_now_store/ui/mypage/extra/extra_page.dart';
+import 'package:table_now_store/ui/mypage/extra/license_page.dart';
+import 'package:table_now_store/ui/mypage/help/help_page.dart';
+import 'package:table_now_store/ui/mypage/policy/location_terms_page.dart';
+import 'package:table_now_store/ui/mypage/policy/policy_page.dart';
+import 'package:table_now_store/ui/mypage/policy/privacy_policy_page2.dart';
+import 'package:table_now_store/ui/mypage/policy/terms_conditions_page2.dart';
+import 'package:table_now_store/ui/mypage/profile/change_email_page.dart';
+import 'package:table_now_store/ui/mypage/profile/change_phone_page.dart';
+import 'package:table_now_store/ui/mypage/profile/change_pw_page.dart';
+import 'package:table_now_store/ui/mypage/profile/profile_page.dart';
+import 'package:table_now_store/ui/mypage/profile/withdrawal_page.dart';
 import 'package:table_now_store/ui/register/check_registered_page.dart';
 import 'package:table_now_store/ui/register/criteria_page.dart';
 import 'package:table_now_store/ui/register/enter_basic_page.dart';
@@ -92,6 +109,23 @@ abstract class Routes {
   static const enterMenu = '/enter_menu';
   static const enterHolidays = '/enter_holidays';
   static const enterHours = '/enter_hours';
+
+  /* 내정보 */
+  static const profile = '/profile';
+  static const changePw = '/change_pw';
+  static const changePhone = '/change_phone';
+  static const changeEmail = '/change_email';
+  static const withdrawal = '/withdrawal';
+  static const appNotice = '/app_notice';
+  static const help = '/help';
+  static const customerService = '/customer_service';
+  static const faq = '/faq';
+  static const policy = '/policy';
+  static const termsConditions2 = '/terms_conditions2';
+  static const privacyPolicy2 = '/privacy_policy2';
+  static const locationTerms = '/location_terms';
+  static const extra = '/extra';
+  static const license = '/license';
 }
 
 class Pages {
@@ -256,6 +290,72 @@ class Pages {
       name: Routes.enterHours,
       page: () => EnterHoursPage(),
       binding: HoursBinding(),
+    ),
+    /* 내정보 */
+    GetPage(
+      name: Routes.profile,
+      page: () => const ProfilePage(),
+      binding: MainBinding(),
+    ),
+    GetPage(
+      name: Routes.changePw,
+      page: () => ChangePwPage(),
+      binding: ChangePwBinding(),
+    ),
+    GetPage(
+      name: Routes.changePhone,
+      page: () => ChangePhonePage(),
+      // binding: ChangePhoneBinding(),
+    ),
+    GetPage(
+      name: Routes.changeEmail,
+      page: () => ChangeEmailPage(),
+      binding: ChangeEmailBinding(),
+    ),
+    GetPage(
+      name: Routes.withdrawal,
+      page: () => WithdrawalPage(),
+      binding: WithdrawalBinding(),
+    ),
+    GetPage(
+      name: Routes.appNotice,
+      page: () => const AppNoticePage(),
+    ),
+    GetPage(
+      name: Routes.help,
+      page: () => const HelpPage(),
+    ),
+    GetPage(
+      name: Routes.customerService,
+      page: () => const CustomerServicePage(),
+    ),
+    GetPage(
+      name: Routes.faq,
+      page: () => const FAQPage(),
+    ),
+    GetPage(
+      name: Routes.policy,
+      page: () => const PolicyPage(),
+    ),
+    GetPage(
+      name: Routes.termsConditions2,
+      page: () => const TermsConditionsPage2(),
+    ),
+    GetPage(
+      name: Routes.privacyPolicy2,
+      page: () => const PrivacyPolicyPage2(),
+    ),
+    GetPage(
+      name: Routes.locationTerms,
+      page: () => const LocationTermsPage(),
+    ),
+    GetPage(
+      name: Routes.extra,
+      page: () => const ExtraPage(),
+    ),
+    GetPage(
+      name: Routes.license,
+      page: () => const LicensePage(),
     ),
   ];
 }

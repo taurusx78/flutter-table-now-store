@@ -55,16 +55,33 @@ Function validateUsername() {
   };
 }
 
-// 비밀번호 재설정 유효성 검사
-Function validatePassword() {
+// 현재 비밀번호 유효성 검사 (비밀번호 변경)
+Function validateCurPassword() {
+  return (String? value) {
+    if (value!.length < 8) {
+      return '비밀번호는 8자 이상입니다.';
+    } else {
+      return null;
+    }
+  };
+}
+
+// 새 비밀번호 유효성 검사
+Function validateNewPassword(String? curPassword) {
   return (String? value) {
     // 영어 대소문자, 숫자, 특수문자를 포함한 8~20자
     Pattern pattern =
         r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?~^<>,.&+=])[A-Za-z\d$@$!%*#?~^<>,.&+=]{8,20}$';
     RegExp regExp = RegExp(pattern.toString());
 
-    if (!regExp.hasMatch(value!)) {
-      return '영어 대소문자, 숫자, 특수문자를 포함한 8~20자로 입력해 주세요.';
+    if (curPassword != null) {
+      if (curPassword == value!) {
+        return '현재 비밀번호와 다른 새 비밀번호를 입력해 주세요.';
+      } else if (!regExp.hasMatch(value)) {
+        return '영어 대소문자, 숫자, 특수문자를 포함한 8~20자로 입력해 주세요.';
+      } else {
+        return null;
+      }
     } else {
       return null;
     }

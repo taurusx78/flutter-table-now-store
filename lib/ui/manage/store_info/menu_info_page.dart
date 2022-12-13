@@ -46,25 +46,7 @@ class MenuInfoPage extends GetView<MenuController> {
                         ModifiedText(
                             modifiedDate: controller.menu!.modifiedDate),
                         const SizedBox(height: 50),
-                        // 메뉴 사진
-                        ImageUploader(
-                          type: 'menu',
-                          title: '메뉴사진',
-                          guideText: '최대 20장, 한 장당 5MB 이하',
-                          controller: controller,
-                        ),
-                        const SizedBox(height: 70),
-                        // 수정 버튼
-                        RoundButton(
-                          text: '수정',
-                          tapFunc: () {
-                            if (controller.imageList.isNotEmpty) {
-                              _showDialog(context);
-                            } else {
-                              showToast(context, '메뉴사진을 최소 1장 올려주세요.', null);
-                            }
-                          },
-                        ),
+                        _buildMenuInfoBox(context),
                       ],
                     ),
                   ),
@@ -72,6 +54,32 @@ class MenuInfoPage extends GetView<MenuController> {
               )
             : const LoadingIndicator(),
       ),
+    );
+  }
+
+  Widget _buildMenuInfoBox(context) {
+    return Column(
+      children: [
+        // 메뉴 사진
+        ImageUploader(
+          type: 'menu',
+          title: '메뉴사진',
+          guideText: '최대 20장, 한 장당 5MB 이하',
+          controller: controller,
+        ),
+        const SizedBox(height: 70),
+        // 수정 버튼
+        RoundButton(
+          text: '수정',
+          tapFunc: () {
+            if (controller.imageList.isNotEmpty) {
+              _showDialog(context);
+            } else {
+              showToast(context, '메뉴사진을 최소 1장 올려주세요.', null);
+            }
+          },
+        ),
+      ],
     );
   }
 

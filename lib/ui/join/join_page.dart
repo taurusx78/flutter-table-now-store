@@ -271,7 +271,7 @@ class JoinPage extends GetView<JoinController> {
             obscureText: true,
             maxLength: 20,
             counterText: '',
-            validator: validatePassword(),
+            validator: validateNewPassword(null),
           ),
         ),
         const SizedBox(height: 10),

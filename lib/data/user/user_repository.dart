@@ -43,6 +43,19 @@ class UserRepository {
     return result;
   }
 
+  // 회원가입
+  Future<String> join(Map data) async {
+    Response response = await _userProvider.join(data);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+
+    // 회원가입 성공 시, 회원 이름 리턴
+    if (dto.code == 1) {
+      return dto.response['name'];
+    } else {
+      return '';
+    }
+  }
+
   // 인증번호 요청
   Future<int> sendAuthNumber(String? email, String? phone) async {
     Response response = await _userProvider.sendAuthNumber(email, phone);
@@ -111,16 +124,30 @@ class UserRepository {
     return dto.code; // 인증 성공 (1), 실패 (-1)
   }
 
-  // 회원가입
-  Future<String> join(Map data) async {
-    Response response = await _userProvider.join(data);
+  // 비밀번호 변경
+  Future<int> changePassword(Map data) async {
+    Response response = await _userProvider.changePassword(data);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code;
+  }
+
+  // 이메일 변경
+  Future<int> changeEmail(Map data) async {
+    Response response = await _userProvider.changeEmail(data);
+    CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+    return dto.code;
+  }
+
+  // 회원탈퇴
+  Future<String?> withdrawal(Map data) async {
+    Response response = await _userProvider.withdrawal(data);
     CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
 
-    // 회원가입 성공 시, 회원 이름 리턴
+    // 회원탈퇴 성공 시, 회원 이름 리턴
     if (dto.code == 1) {
       return dto.response['name'];
     } else {
-      return '';
+      return null;
     }
   }
 }

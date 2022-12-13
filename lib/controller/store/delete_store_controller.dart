@@ -5,6 +5,7 @@ import 'package:table_now_store/data/store/store_repository.dart';
 class DeleteStoreController extends GetxController {
   final StoreRepository _storeRepository = StoreRepository();
   final password = TextEditingController();
+  final curPwFormKey = GlobalKey<FormState>();
   final RxBool activated = false.obs; // 매장삭제 버튼 활성화 여부
 
   @override
@@ -24,10 +25,6 @@ class DeleteStoreController extends GetxController {
   // 매장삭제 버튼 활성화 여부 확인
   void checkButtonActivated() {
     // 비밀번호 8~20자로 입력된 경우, 버튼 활성화
-    if (password.text.length >= 1) {
-      activated.value = true;
-    } else {
-      activated.value = false;
-    }
+    activated.value = password.text.length >= 8;
   }
 }

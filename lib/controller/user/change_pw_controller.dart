@@ -19,7 +19,6 @@ class ChangePwController extends GetxController {
 
   // 텍스트필드 입력 여부: 현재 비밀번호 (0), 새 비밀번호 (1), 새 비밀번호 확인 (2)
   List<RxBool> filled = [false.obs, false.obs, false.obs];
-  final RxBool completed = true.obs; // 비밀번호 변경 요청 완료 여부
 
   @override
   void onInit() {
@@ -41,20 +40,19 @@ class ChangePwController extends GetxController {
   }
 
   // 비밀번호 변경
-  // Future<int> changePassword() async {
-  //   completed.value = false;
-  //   ChangePwReqDto dto = ChangePwReqDto(
-  //     curPassword: curPassword.text,
-  //     newPassword: newPassword.text,
-  //   );
-  //   int result = await _userRepository.changePassword(dto.toJson());
-  //   completed.value = true;
-  //   return result;
-  // }
+  Future<int> changePassword() async {
+    ChangePwReqDto dto = ChangePwReqDto(
+      curPassword: curPassword.text,
+      newPassword: newPassword.text,
+    );
+    int result = await _userRepository.changePassword(dto.toJson());
+    return result;
+  }
 
   // 텍스트필드 입력 여부
   void checkFilled() {
     // 현재 비밀번호
+    filled[0].value = curPassword.text.length >= 8;
 
     // 새 비밀번호
     // 영어 대소문자, 숫자, 특수문자를 포함한 8~20자

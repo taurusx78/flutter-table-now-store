@@ -70,21 +70,6 @@ class BasicInfoPage extends GetView<BasicController> {
                           const SizedBox(height: 50),
                           // 기본정보 폼
                           _buildBasicInfoForm(context),
-                          const SizedBox(height: 70),
-                          // 수정 버튼
-                          RoundButton(
-                            text: '수정',
-                            tapFunc: () {
-                              if (_formKey.currentState!.validate()) {
-                                if (controller.imageList.isNotEmpty) {
-                                  _showDialog(context);
-                                } else {
-                                  showToast(
-                                      context, '대표사진을 최소 1장 올려주세요.', null);
-                                }
-                              }
-                            },
-                          ),
                         ],
                       ),
                     ),
@@ -211,6 +196,20 @@ class BasicInfoPage extends GetView<BasicController> {
             keyboardType: TextInputType.url,
             maxLength: 100,
             validator: validateWebsite(),
+          ),
+          const SizedBox(height: 70),
+          // 수정 버튼
+          RoundButton(
+            text: '수정',
+            tapFunc: () {
+              if (_formKey.currentState!.validate()) {
+                if (controller.imageList.isNotEmpty) {
+                  _showDialog(context);
+                } else {
+                  showToast(context, '대표사진을 최소 1장 올려주세요.', null);
+                }
+              }
+            },
           ),
         ],
       ),

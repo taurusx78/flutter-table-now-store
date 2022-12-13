@@ -31,26 +31,7 @@ class EnterMenuPage extends GetView<MenuController> {
                 // 안내 문구
                 _buildGuideText(),
                 const SizedBox(height: 50),
-                // 메뉴사진
-                ImageUploader(
-                  type: 'menu',
-                  title: '메뉴사진',
-                  guideText: '최대 20장, 한 장당 5MB 이하',
-                  controller: controller,
-                ),
-                const SizedBox(height: 70),
-                // 다음 버튼
-                RoundButton(
-                  text: '다음',
-                  tapFunc: () {
-                    if (controller.imageList.isNotEmpty) {
-                      controller.setMenuInfo(store);
-                      Get.toNamed(Routes.enterHolidays, arguments: store);
-                    } else {
-                      showToast(context, '메뉴 사진을 최소 1장 올려주세요.', null);
-                    }
-                  },
-                ),
+                _buildMenuInfoBox(context),
               ],
             ),
           ),
@@ -82,6 +63,33 @@ class EnterMenuPage extends GetView<MenuController> {
               ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMenuInfoBox(context) {
+    return Column(
+      children: [
+        // 메뉴사진
+        ImageUploader(
+          type: 'menu',
+          title: '메뉴사진',
+          guideText: '최대 20장, 한 장당 5MB 이하',
+          controller: controller,
+        ),
+        const SizedBox(height: 70),
+        // 다음 버튼
+        RoundButton(
+          text: '다음',
+          tapFunc: () {
+            if (controller.imageList.isNotEmpty) {
+              controller.setMenuInfo(store);
+              Get.toNamed(Routes.enterHolidays, arguments: store);
+            } else {
+              showToast(context, '메뉴 사진을 최소 1장 올려주세요.', null);
+            }
+          },
         ),
       ],
     );

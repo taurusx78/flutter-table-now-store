@@ -62,17 +62,6 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
                   const SizedBox(height: 50),
                   // 알림 폼
                   _buildNoticeForm(context),
-                  const SizedBox(height: 70),
-                  // 등록 버튼
-                  RoundButton(
-                    text: '등록',
-                    tapFunc: () {
-                      if (controller.titleFormKey.currentState!.validate() &&
-                          controller.contentFormKey.currentState!.validate()) {
-                        _showDialog(context);
-                      }
-                    },
-                  )
                 ],
               ),
             ),
@@ -144,6 +133,17 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
             validator: validateNotice(),
           ),
         ),
+        const SizedBox(height: 70),
+        // 등록 버튼
+        RoundButton(
+          text: '등록',
+          tapFunc: () {
+            if (controller.titleFormKey.currentState!.validate() &&
+                controller.contentFormKey.currentState!.validate()) {
+              _showDialog(context);
+            }
+          },
+        )
       ],
     );
   }

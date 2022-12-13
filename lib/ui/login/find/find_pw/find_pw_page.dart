@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:table_now_store/controller/user/find_controller.dart';
 import 'package:table_now_store/controller/user/timer_controller.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/auth_number_guide_text.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
-import 'package:table_now_store/ui/components/list_row_text.dart';
+import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -14,6 +15,8 @@ class FindPwPage extends GetView<FindController> {
   FindPwPage({Key? key}) : super(key: key);
 
   final String method = Get.arguments; // 인증 방법 (이메일 또는 휴대폰번호)
+
+  final TimerController _timerController = Get.put(TimerController());
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +62,6 @@ class FindPwPage extends GetView<FindController> {
                   const SizedBox(height: 20),
                   // 아이디 & 이메일 또는 휴대폰번호 폼
                   _buildIdDataForm(context),
-                  // 인증번호 폼
-                  Obx(
-                    () => controller.clicked.value
-                        ? _buildAuthForm(context)
-                        : const SizedBox(),
-                  ),
                 ],
               ),
             ),
@@ -143,31 +140,36 @@ class FindPwPage extends GetView<FindController> {
                     }
                   },
                 )
-              : const SizedBox(),
+              : _buildAuthForm(context),
         ),
       ],
     );
   }
 
   Widget _buildAuthForm(context) {
-    final TimerController timerController = Get.put(TimerController());
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // 인증번호
-        _buildAuthNumberTextField(context, timerController),
+        _buildAuthNumberTextField(context),
         const SizedBox(height: 30),
         // 안내 문구
-        _buildGuideText(timerController),
+        AuthNumberGuideText(),
         const SizedBox(height: 50),
         // 인증 완료 버튼
-        _buildCompleteButton(context, timerController),
+        StateRoundButton(
+          text: '인증 완료',
+          activated: _timerController.duration.value != 0 &&
+              controller.filled[2].value,
+          tapFunc: () {
+            _showProcessingDialog(context);
+          },
+        ),
       ],
     );
   }
 
-  Widget _buildAuthNumberTextField(context, timerController) {
+  Widget _buildAuthNumberTextField(context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -181,6 +183,7 @@ class FindPwPage extends GetView<FindController> {
             keyboardType: TextInputType.number,
             maxLength: 6,
             counterText: '',
+            enabled: _timerController.duration.value > 0,
             validator: validateAuthNumber(),
           ),
         ),
@@ -188,7 +191,7 @@ class FindPwPage extends GetView<FindController> {
         Obx(
           () => Padding(
             padding: const EdgeInsets.only(left: 5),
-            child: timerController.duration.value != 0
+            child: _timerController.duration.value != 0
                 ? RichText(
                     text: TextSpan(
                       text: '남은시간  ',
@@ -196,7 +199,7 @@ class FindPwPage extends GetView<FindController> {
                       children: [
                         TextSpan(
                           text:
-                              '${timerController.minutes}:${timerController.seconds}',
+                              '${_timerController.minutes}:${_timerController.seconds}',
                           style: const TextStyle(color: primaryColor),
                         ),
                       ],
@@ -214,7 +217,7 @@ class FindPwPage extends GetView<FindController> {
                       int result = await controller.sendAuthNumber();
                       if (result == 1) {
                         // 유효시간 5분 카운터 시작
-                        timerController.startTimer();
+                        _timerController.startTimer();
                         showToast(context, '인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필트 포커스 주기
                         controller.authNumberFocusNode.requestFocus();
@@ -229,38 +232,15 @@ class FindPwPage extends GetView<FindController> {
     );
   }
 
-  Widget _buildGuideText(timerController) {
-    return Obx(
-      () => timerController.duration.value != 0
-          ? const ListRowText(
-              text: '인증번호 전송은 최대 1분까지 소요될 수 있습니다. 잠시만 기다려주세요.',
-              margin: 40,
-            )
-          : Column(
-              children: const [
-                ListRowText(
-                  text: '인증 유효시간이 만료되었습니다.',
-                  margin: 40,
-                ),
-                SizedBox(height: 5),
-                ListRowText(
-                  text: '인증번호를 다시 받으려면 인증번호 재전송 버튼을 눌러주세요.',
-                  color: darkNavy,
-                  margin: 40,
-                ),
-              ],
-            ),
-    );
-  }
-
-  Widget _buildCompleteButton(context, timerController) {
-    return Obx(
-      () => StateRoundButton(
-        text: '인증 완료',
-        activated:
-            timerController.duration.value != 0 && controller.filled[2].value,
-        tapFunc: () async {
-          int result = await controller.findPassword(method);
+  void _showProcessingDialog(context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
+      barrierColor: Colors.transparent,
+      builder: (BuildContext context2) {
+        controller.findPassword(method).then((result) {
+          // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
+          Navigator.pop(context);
           if (result == 1) {
             // 1. 인증성공 & 회원존재 (1)
             // FindPw 페이지 제거
@@ -277,9 +257,13 @@ class FindPwPage extends GetView<FindController> {
           } else {
             // 3. 인증실패 (-1)
             showToast(context, '인증번호가 일치하지 않습니다.', null);
+            // 인증번호 텍스트필트 포커스 주기
+            controller.authNumberFocusNode.requestFocus();
           }
-        },
-      ),
+        });
+
+        return const LoadingContainer(text: '조회중');
+      },
     );
   }
 }

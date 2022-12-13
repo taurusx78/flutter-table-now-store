@@ -8,6 +8,9 @@ class UserProvider extends GetConnect {
   // 로그인
   Future<Response> login(Map data) => post(loginHost, data);
 
+  // 회원가입
+  Future<Response> join(Map data) => post('$host/join', data);
+
   // 인증번호 요청
   Future<Response> sendAuthNumber(String? email, String? phone) =>
       get('$host/send?email=$email&phone=$phone');
@@ -31,6 +34,13 @@ class UserProvider extends GetConnect {
   // 이메일 인증번호 검증 (회원가입, 이메일 변경)
   Future<Response> verifyEmail(Map data) => post('$host/verify/email', data);
 
+  // 비밀번호 변경
+  Future<Response> changePassword(Map data) => put(
+        '$host/manager/password',
+        data,
+        headers: {'authorization': jwtToken ?? ''},
+      );
+
   // 이메일 변경
   Future<Response> changeEmail(Map data) => put(
         '$host/manager/email',
@@ -38,6 +48,10 @@ class UserProvider extends GetConnect {
         headers: {'authorization': jwtToken ?? ''},
       );
 
-  // 회원가입
-  Future<Response> join(Map data) => post('$host/join', data);
+  // 회원탈퇴
+  Future<Response> withdrawal(Map data) => post(
+        '$host/manager/withdrawal',
+        data,
+        headers: {'authorization': jwtToken ?? ''},
+      );
 }

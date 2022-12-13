@@ -8,6 +8,7 @@ import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
+import 'package:table_now_store/util/validator_util.dart';
 
 class DeleteStorePage extends GetView<DeleteStoreController> {
   DeleteStorePage({Key? key}) : super(key: key);
@@ -42,30 +43,19 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
               width: 600,
               margin: const EdgeInsets.fromLTRB(20, 0, 20, 30),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    '매장삭제 안내',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 40),
+                  Image.asset('assets/images/delete.png', width: 100),
+                  const SizedBox(height: 50),
                   // 안내 문구
                   _buildGuideText(),
                   const SizedBox(height: 50),
-                  // 비밀번호 입력
-                  CustomTextFormField(
-                    hint: '비밀번호를 입력해주세요.',
-                    controller: controller.password,
-                    obscureText: true,
-                    maxLength: 20,
-                    counterText: '',
-                  ),
-                  const SizedBox(height: 20),
-                  // 매장삭제 버튼
-                  Obx(
-                    () => StateRoundButton(
-                      text: '매장 삭제하기',
-                      activated: controller.activated.value,
-                      tapFunc: () {
-                        _showDialog(context);
-                      },
-                    ),
-                  ),
+                  // 비밀번호 확인 폼
+                  _buildPwCheckForm(context),
                 ],
               ),
             ),
@@ -77,14 +67,8 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
 
   Widget _buildGuideText() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          '매장삭제 안내',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 40),
-        Image.asset('assets/images/delete.png', width: 100),
-        const SizedBox(height: 50),
         RichText(
           text: TextSpan(
             text: name,
@@ -129,6 +113,37 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
                 text: ' 버튼을 눌러주세요.',
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPwCheckForm(context) {
+    return Column(
+      children: [
+        // 비밀번호
+        Form(
+          key: controller.curPwFormKey,
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          child: CustomTextFormField(
+            hint: '비밀번호를 입력해주세요.',
+            controller: controller.password,
+            obscureText: true,
+            maxLength: 20,
+            counterText: '',
+            validator: validateCurPassword(),
+          ),
+        ),
+        const SizedBox(height: 15),
+        // 매장삭제 버튼
+        Obx(
+          () => StateRoundButton(
+            text: '매장 삭제하기',
+            activated: controller.activated.value,
+            tapFunc: () {
+              _showDialog(context);
+            },
           ),
         ),
       ],

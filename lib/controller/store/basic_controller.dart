@@ -131,16 +131,12 @@ class BasicController extends GetxController {
 
   // 조회 버튼 활성화 여부 확인
   void checkButtonActivated() {
-    if (name.text.isNotEmpty && // 매장명 공백 아님
+    activated.value = name.text.isNotEmpty && // 매장명 공백 아님
         category.text.isNotEmpty && // 카테고리 공백 아님
         isNumeric(phone.text) && // 전화번호 7~8자 숫자
         phone.text.length >= 7 &&
         address.text.isNotEmpty && // 주소 공백 아님
-        detailAddress.text.isNotEmpty) {
-      activated.value = true;
-    } else {
-      activated.value = false;
-    }
+        detailAddress.text.isNotEmpty;
   }
 
   // 등록여부조회 페이지에서 입력된 정보를 바탕으로 SaveStoreReqDto 객체 생성

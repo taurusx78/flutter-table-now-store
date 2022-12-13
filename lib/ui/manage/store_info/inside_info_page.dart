@@ -52,40 +52,8 @@ class InsideInfoPage extends GetView<InsideController> {
                           ModifiedText(
                               modifiedDate: controller.inside!.insideModified),
                           const SizedBox(height: 50),
-                          // 전체테이블 수
-                          TableCountTextField(),
-                          const SizedBox(height: 50),
-                          // 매장 내부 사진
-                          ImageUploader(
-                            type: 'inside',
-                            title: '매장내부사진',
-                            guideText: '최대 10장, 한 장당 5MB 이하',
-                            controller: controller,
-                          ),
-                          const SizedBox(height: 70),
-                          // 수정 버튼
-                          RoundButton(
-                            text: '수정',
-                            tapFunc: () {
-                              // 테이블 수 입력 여부
-                              if (controller.allTableCount.text.isNotEmpty) {
-                                // 테이블 수 0~500 범위의 숫자 여부
-                                if (controller.validateAllTableCount()) {
-                                  if (controller.imageList.isNotEmpty) {
-                                    _showDialog(context);
-                                  } else {
-                                    showToast(
-                                        context, '내부사진을 최소 1장 올려주세요.', null);
-                                  }
-                                } else {
-                                  showToast(context,
-                                      '전체테이블 수는 0~500 범위의\n숫자로 입력해 주세요.', 1500);
-                                }
-                              } else {
-                                showToast(context, '전체테이블 수를 입력해 주세요.', null);
-                              }
-                            },
-                          ),
+                          // 내부정보 폼
+                          _buildInsideInfoForm(context),
                         ],
                       ),
                     ),
@@ -94,6 +62,45 @@ class InsideInfoPage extends GetView<InsideController> {
               : const LoadingIndicator(),
         ),
       ),
+    );
+  }
+
+  Widget _buildInsideInfoForm(context) {
+    return Column(
+      children: [
+        // 전체테이블 수
+        TableCountTextField(),
+        const SizedBox(height: 50),
+        // 매장 내부 사진
+        ImageUploader(
+          type: 'inside',
+          title: '매장내부사진',
+          guideText: '최대 10장, 한 장당 5MB 이하',
+          controller: controller,
+        ),
+        const SizedBox(height: 70),
+        // 수정 버튼
+        RoundButton(
+          text: '수정',
+          tapFunc: () {
+            // 테이블 수 입력 여부
+            if (controller.allTableCount.text.isNotEmpty) {
+              // 테이블 수 0~500 범위의 숫자 여부
+              if (controller.validateAllTableCount()) {
+                if (controller.imageList.isNotEmpty) {
+                  _showDialog(context);
+                } else {
+                  showToast(context, '내부사진을 최소 1장 올려주세요.', null);
+                }
+              } else {
+                showToast(context, '전체테이블 수는 0~500 범위의\n숫자로 입력해 주세요.', 1500);
+              }
+            } else {
+              showToast(context, '전체테이블 수를 입력해 주세요.', null);
+            }
+          },
+        ),
+      ],
     );
   }
 
