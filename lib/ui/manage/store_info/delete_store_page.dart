@@ -49,7 +49,11 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 40),
-                  Image.asset('assets/images/delete.png', width: 100),
+                  Image.asset(
+                    'assets/images/fail.png',
+                    width: 80,
+                    color: darkNavy,
+                  ),
                   const SizedBox(height: 50),
                   // 안내 문구
                   _buildGuideText(),
@@ -75,7 +79,7 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
             style: const TextStyle(
               fontSize: 17,
               fontWeight: FontWeight.bold,
-              color: blue,
+              color: primaryColor,
             ),
             children: const [
               TextSpan(
@@ -106,7 +110,7 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
                 text: '매장 삭제하기',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  color: blue,
+                  color: primaryColor,
                 ),
               ),
               TextSpan(

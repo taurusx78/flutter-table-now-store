@@ -17,9 +17,12 @@ Function validateEmail() {
 // 회원 휴대폰번호 유효성 검사
 Function validateUserPhone() {
   return (String? value) {
-    if (!isNumeric(value!) || value.length < 10 || value.length > 11) {
-      return '- 를 제외한 10~11자의 숫자로 입력해 주세요.';
+    if (!isNumeric(value!)) {
+      return '- 를 제외한 숫자로 입력해 주세요.';
     } else {
+      if (value.length < 10) {
+        return '휴대폰 번호가 너무 짧습니다.';
+      }
       return null;
     }
   };
@@ -48,7 +51,7 @@ Function validateUsername() {
     if (value!.isEmpty) {
       return '필수항목 입니다.';
     } else if (!regExp.hasMatch(value)) {
-      return '영어 소문자, 숫자로 구성된 4~12자로 입력해 주세요.';
+      return '영어 소문자, 숫자로 구성된 4~20자로 입력해 주세요.';
     } else {
       return null;
     }
@@ -59,7 +62,7 @@ Function validateUsername() {
 Function validateCurPassword() {
   return (String? value) {
     if (value!.length < 8) {
-      return '비밀번호는 8자 이상입니다.';
+      return '비밀번호는 8~20자로 입력해 주세요.';
     } else {
       return null;
     }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
@@ -26,10 +27,6 @@ class HomePage extends GetView<MainController> {
                 children: [
                   // 인트로
                   _buildGreetingText(),
-                  Container(
-                    height: 1.5,
-                    color: blueGrey,
-                  ),
                   const CustomDivider(height: 1.5, top: 0, bottom: 0),
                   // 나의 매장 목록
                   Obx(
@@ -299,7 +296,8 @@ class HomePage extends GetView<MainController> {
   }
 
   Widget _buildNoStoreBox(context) {
-    return Center(
+    return SizedBox(
+      height: 450,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

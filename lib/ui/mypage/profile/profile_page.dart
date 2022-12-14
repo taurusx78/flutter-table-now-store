@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/store/main_controller.dart';
 import 'package:table_now_store/route/routes.dart';
+import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
 class ProfilePage extends GetView<MainController> {
@@ -57,9 +58,10 @@ class ProfilePage extends GetView<MainController> {
                     style: const TextStyle(fontSize: 16, color: Colors.black54),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
+                const CustomDivider(
                   height: 2,
+                  top: 0,
+                  bottom: 0,
                   color: primaryColor,
                 ),
                 // 비밀번호
