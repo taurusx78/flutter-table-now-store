@@ -142,19 +142,19 @@ class AuthPage extends GetView<JoinController> {
                     controller.setUserInfo('김태리', '01012345678', '2');
 
                     // 3. DB에서 unique_key 중복여부 검사
-                    int result = await controller.checkJoined();
-                    if (result == 1) {
-                      // 3-1. 회원 존재
-                      showToast(context, '이미 가입한 회원입니다.', 2000);
-                    } else if (result == 0) {
-                      // 3-2. 가입 가능
-                      controller.changeUserCanJoin(true);
-                    } else {
-                      // 3-3. 조회 실패
-                      showErrorToast(context);
-                    }
+                    controller.checkJoined().then((result) {
+                      if (result == 1) {
+                        showToast(context, '이미 가입한 회원입니다.', 2000);
+                      } else if (result == 0) {
+                        controller.changeUserCanJoin(true);
+                      } else if (result == -1) {
+                        showToast(context, '본인인증에 실패하였습니다.\n다시 시도해 주세요.', 3000);
+                      } else if (result == -3) {
+                        showNetworkDisconnectedToast(context);
+                      }
+                    });
                   } else {
-                    showToast(context, '본인인증에 실패하였습니다.\n다시 시도해주세요.', 2000);
+                    showToast(context, '본인인증에 실패하였습니다.\n다시 시도해 주세요.', 3000);
                   }
                 }
               : null,

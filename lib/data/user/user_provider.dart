@@ -12,8 +12,13 @@ class UserProvider extends GetConnect {
   Future<Response> join(Map data) => post('$host/join', data);
 
   // 인증번호 요청
-  Future<Response> sendAuthNumber(String? email, String? phone) =>
-      get('$host/send?email=$email&phone=$phone');
+  Future<Response> sendAuthNumber(String? email, String? phone) {
+    if (email != null) {
+      return get('$host/send?email=$email');
+    } else {
+      return get('$host/send?phone=$phone');
+    }
+  }
 
   // 아이디 찾기
   Future<Response> findId(Map data) => post('$host/find/id', data);

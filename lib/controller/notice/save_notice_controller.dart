@@ -48,7 +48,7 @@ class SaveNoticeController extends GetxController {
       content: content.text,
       holidayStartDate: hasHoliday.value ? holidayStartDate.value : '',
       holidayEndDate: hasHoliday.value ? holidayEndDate.value : '',
-      imageFileList: multipartFileList,
+      addedImageFileList: multipartFileList,
     );
 
     int result = await _noticeRepository.save(storeId, dto.toJson());
@@ -82,7 +82,7 @@ class SaveNoticeController extends GetxController {
       holidayStartDate:
           holidayStartDate.value != '시작일' ? holidayStartDate.value : '',
       holidayEndDate: holidayEndDate.value != '종료일' ? holidayEndDate.value : '',
-      imageFileList: multipartFileList,
+      addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
 

@@ -33,8 +33,7 @@ class ChangeEmailController extends GetxController {
   // 이메일 인증번호 검증
   Future<int> verifyEmail() async {
     Map<String, String> data = {'authNumber': authNumber.text};
-    int result = await _userRepository.verifyEmail(data);
-    return result;
+    return await _userRepository.verifyEmail(data);
   }
 
   // 이메일 변경

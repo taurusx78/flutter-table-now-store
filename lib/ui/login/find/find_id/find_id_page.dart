@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/user/find_id_resp_dto.dart';
 import 'package:table_now_store/controller/user/find_controller.dart';
 import 'package:table_now_store/controller/user/timer_controller.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/auth_number_guide_text.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
+import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -110,22 +112,31 @@ class FindIdPage extends GetView<FindController> {
               ? StateRoundButton(
                   text: '인증번호 받기',
                   activated: controller.filled[0].value,
-                  tapFunc: () async {
+                  tapFunc: () {
                     controller.changeClicked(true);
                     // 인증번호 요청
-                    int result = await controller.sendAuthNumber();
-                    if (result == 1) {
-                      // 유효시간 5분 카운터 시작
-                      Get.put(TimerController()).startTimer();
-                      showToast(context, '인증번호가 발송되었습니다.', null);
-                      // 인증번호 텍스트필트 포커스 주기
-                      controller.authNumberFocusNode.requestFocus();
-                    } else {
-                      showErrorToast(context);
-                    }
+                    controller.sendAuthNumber().then((result) {
+                      if (result == 1) {
+                        // 유효시간 5분 카운터 시작
+                        Get.put(TimerController()).startTimer();
+                        showToast(context, '인증번호가 발송되었습니다.', null);
+                        // 인증번호 텍스트필트 포커스 주기
+                        controller.authNumberFocusNode.requestFocus();
+                      } else if (result == -1) {
+                        showToast(
+                          context,
+                          '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                          3000,
+                        );
+                      } else if (result == -3) {
+                        showNetworkDisconnectedToast(context);
+                      }
+                    });
                   },
                 )
-              : _buildAuthForm(context),
+              : controller.sent.value
+                  ? _buildAuthForm(context)
+                  : const LoadingRoundButton(),
         ),
       ],
     );
@@ -194,20 +205,27 @@ class FindIdPage extends GetView<FindController> {
                     '인증번호 재전송',
                     style: TextStyle(color: primaryColor),
                   ),
-                  onTap: () async {
+                  onTap: () {
                     // 인증번호 텍스트필드 초기화
                     controller.clearAuthTextField();
                     // 인증번호 요청
-                    int result = await controller.sendAuthNumber();
-                    if (result == 1) {
-                      // 유효시간 5분 카운터 시작
-                      _timerController.startTimer();
-                      showToast(context, '인증번호가 발송되었습니다.', null);
-                      // 인증번호 텍스트필트 포커스 주기
-                      controller.authNumberFocusNode.requestFocus();
-                    } else {
-                      showErrorToast(context);
-                    }
+                    controller.sendAuthNumber().then((result) {
+                      if (result == 1) {
+                        // 유효시간 5분 카운터 시작
+                        _timerController.startTimer();
+                        showToast(context, '인증번호가 발송되었습니다.', null);
+                        // 인증번호 텍스트필트 포커스 주기
+                        controller.authNumberFocusNode.requestFocus();
+                      } else if (result == -1) {
+                        showToast(
+                          context,
+                          '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                          3000,
+                        );
+                      } else if (result == -3) {
+                        showNetworkDisconnectedToast(context);
+                      }
+                    });
                   },
                 ),
         ),
@@ -221,21 +239,23 @@ class FindIdPage extends GetView<FindController> {
       barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
-        // 인증번호 검증: 인증성공 & 회원존재 (FindIdRespDto), 인증성공 & 회원없음 (0), 인증실패 (-1)
         controller.findId(method).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result != -1) {
-            // 1. 인증 성공
+          if (result.runtimeType == FindIdRespDto || result == 0) {
+            // 1. 인증 성공 (회원 존재 FindIdRespDto, 회원 없음 0)
             // FindId 페이지 제거
             Navigator.pop(context);
             // Find 페이지 제거 및 FindIdResult 페이지로 이동
             Get.offNamed(Routes.findIdResult, arguments: [method, result]);
-          } else {
-            // 2. 인증 실패
+          } else if (result == -1) {
+            // 2. 인증 or 유효성검사 실패
             showToast(context, '인증번호를 다시 확인해주세요.', null);
             // 인증번호 텍스트필트 포커스 주기
             controller.authNumberFocusNode.requestFocus();
+          } else if (result == -3) {
+            // 3. 네트워크 연결 안됨
+            showNetworkDisconnectedToast(context);
           }
         });
 

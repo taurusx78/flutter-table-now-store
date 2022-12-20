@@ -51,11 +51,12 @@ class MenuController extends GetxController {
         fileList.add(File(item.path));
       }
     }
+
     // File 타입을 MultipartFile 타입으로 변경
     List<MultipartFile> multipartFileList = fileToMultipartFile(fileList);
 
     UpdateMenuReqDto dto = UpdateMenuReqDto(
-      imageFileList: multipartFileList,
+      addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
     int result = await _storeRepository.updateMenu(storeId, dto.toJson());

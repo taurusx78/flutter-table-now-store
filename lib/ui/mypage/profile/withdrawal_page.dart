@@ -281,16 +281,16 @@ class WithdrawalPage extends GetView<WithdrawalController> {
       barrierDismissible: false, // Dialog 밖의 화면 터치 못하도록 설정
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
-        controller.withdrawal().then((name) {
+        controller.withdrawal().then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (name != null) {
-            // 1. 탈퇴 성공 (회원 이름)
-            Get.snackbar('알림', '$name님, 회원탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.');
+          if (result == 1) {
+            Get.snackbar('알림', '회원탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.');
             Get.offAllNamed(Routes.login);
-          } else {
-            // 2. 탈퇴 실패 (null)
-            showToast(context, '비밀번호가 일치하지 않습니다.', null);
+          } else if (result == -1) {
+            showToast(context, '비밀번호가 일치하지 않습니다.', 2000);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
           }
         });
 

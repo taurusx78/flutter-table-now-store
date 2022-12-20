@@ -27,10 +27,9 @@ class WithdrawalController extends GetxController {
   }
 
   // 회원탈퇴
-  Future<String?> withdrawal() async {
+  Future<int> withdrawal() async {
     Map<String, String> data = {'password': password.text};
-    String? name = await _userRepository.withdrawal(data);
-    return name;
+    return await _userRepository.withdrawal(data);
   }
 
   // 선택된 탈퇴 이유 변경

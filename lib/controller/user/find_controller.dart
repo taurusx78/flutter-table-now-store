@@ -22,6 +22,7 @@ class FindController extends GetxController {
 
   // 텍스트필드 입력 여부: 이메일/휴대폰번호 (0), 아이디 (1), 인증번호 (2)
   List<RxBool> filled = [false.obs, false.obs, false.obs];
+  final RxBool sent = true.obs; // 인증번호가 전송됐는지
   final RxBool clicked = false.obs; // 인증번호 받기 버튼이 눌렸는지
 
   @override
@@ -35,6 +36,7 @@ class FindController extends GetxController {
 
   // 인증번호 요청
   Future<int> sendAuthNumber() async {
+    sent.value = false;
     String email = '';
     String phone = '';
     if (method.value == 1) {
@@ -42,7 +44,9 @@ class FindController extends GetxController {
     } else if (method.value == 2) {
       phone = data.text;
     }
-    return await _userRepository.sendAuthNumber(email, phone);
+    int result = await _userRepository.sendAuthNumber(email, phone);
+    sent.value = true;
+    return result;
   }
 
   // 아이디 찾기
@@ -78,6 +82,7 @@ class FindController extends GetxController {
     username.text = '';
     authNumber.text = '';
     clicked.value = false;
+    sent.value = true;
     filled = [false.obs, false.obs, false.obs];
   }
 

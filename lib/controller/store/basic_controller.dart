@@ -111,7 +111,7 @@ class BasicController extends GetxController {
       longitude: longitude.value,
       description: description.text,
       website: website.text,
-      imageFileList: multipartFileList,
+      addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
     dynamic result = await _storeRepository.updateBasic(storeId, dto.toJson());

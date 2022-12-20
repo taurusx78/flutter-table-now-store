@@ -10,8 +10,8 @@ class UpdateBasicReqDto {
   final String description; // 상세설명
   final String website; // 웹사이트
 
-  final List<MultipartFile> imageFileList; // 대표사진 리스트
-  final List<String> deletedImageUrlList; // 삭제 요청 이미지 URL 리스트
+  final List<MultipartFile> addedImageFileList; // 추가된 대표사진 파일 리스트
+  final List<String> deletedImageUrlList; // 삭제된 대표사진 URL 리스트
 
   UpdateBasicReqDto({
     required this.phone,
@@ -22,7 +22,7 @@ class UpdateBasicReqDto {
     required this.longitude,
     required this.description,
     required this.website,
-    required this.imageFileList,
+    required this.addedImageFileList,
     required this.deletedImageUrlList,
   });
 
@@ -35,7 +35,7 @@ class UpdateBasicReqDto {
         'longitude': longitude,
         'description': description,
         'website': website,
-        'imageFileList': imageFileList,
+        'addedImageFileList': addedImageFileList,
         'deletedImageUrlList': deletedImageUrlList,
       };
 }

@@ -45,8 +45,7 @@ class ChangePwController extends GetxController {
       curPassword: curPassword.text,
       newPassword: newPassword.text,
     );
-    int result = await _userRepository.changePassword(dto.toJson());
-    return result;
+    return await _userRepository.changePassword(dto.toJson());
   }
 
   // 텍스트필드 입력 여부

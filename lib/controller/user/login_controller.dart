@@ -27,10 +27,10 @@ class LoginController extends GetxController {
   }
 
   // 로그인
-  Future<String> login() async {
+  Future<int> login() async {
     loaded.value = false;
     LoginReqDto dto = LoginReqDto(username.text.trim(), password.text);
-    String result = await _userRepository.login(dto.toJson());
+    int result = await _userRepository.login(dto.toJson());
     loaded.value = true;
     return result;
   }

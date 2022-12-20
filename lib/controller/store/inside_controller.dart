@@ -60,9 +60,10 @@ class InsideController extends GetxController {
     List<MultipartFile> multipartFileList = fileToMultipartFile(fileList);
 
     UpdateInsideReqDto dto = UpdateInsideReqDto(
-        allTableCount: int.parse(allTableCount.text),
-        imageFileList: multipartFileList,
-        deletedImageUrlList: deletedImageUrlList);
+      allTableCount: int.parse(allTableCount.text),
+      addedImageFileList: multipartFileList,
+      deletedImageUrlList: deletedImageUrlList,
+    );
     UpdateInsideRespDto updateInsideResp =
         await _storeRepository.updateInside(storeId, dto.toJson());
     return updateInsideResp;

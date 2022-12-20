@@ -45,9 +45,12 @@ class JoinController extends GetxController {
   }
 
   // 아이디 중복확인
-  Future<void> checkUsername() async {
+  Future<int> checkUsername() async {
     int result = await _userRepository.checkUsername(username.text);
-    usernameState.value = result;
+    if (result != -3) {
+      usernameState.value = result;
+    }
+    return result;
   }
 
   // 이메일 인증번호 요청
@@ -62,7 +65,7 @@ class JoinController extends GetxController {
   }
 
   // 회원가입
-  Future<String> join() async {
+  Future<int> join() async {
     JoinReqDto dto = JoinReqDto(
       username: username.text,
       password: password.text,

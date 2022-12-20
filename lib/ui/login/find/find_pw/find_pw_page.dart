@@ -6,6 +6,7 @@ import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/auth_number_guide_text.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
+import 'package:table_now_store/ui/components/loading_round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/state_round_button.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -125,22 +126,31 @@ class FindPwPage extends GetView<FindController> {
                   text: '인증번호 받기',
                   activated:
                       controller.filled[0].value && controller.filled[1].value,
-                  tapFunc: () async {
+                  tapFunc: () {
                     controller.changeClicked(true);
                     // 인증번호 요청
-                    int result = await controller.sendAuthNumber();
-                    if (result == 1) {
-                      // 유효시간 5분 카운터 시작
-                      Get.put(TimerController()).startTimer();
-                      showToast(context, '인증번호가 발송되었습니다.', null);
-                      // 인증번호 텍스트필트 포커스 주기
-                      controller.authNumberFocusNode.requestFocus();
-                    } else {
-                      showErrorToast(context);
-                    }
+                    controller.sendAuthNumber().then((result) {
+                      if (result == 1) {
+                        // 유효시간 5분 카운터 시작
+                        Get.put(TimerController()).startTimer();
+                        showToast(context, '인증번호가 발송되었습니다.', null);
+                        // 인증번호 텍스트필트 포커스 주기
+                        controller.authNumberFocusNode.requestFocus();
+                      } else if (result == -1) {
+                        showToast(
+                          context,
+                          '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                          3000,
+                        );
+                      } else if (result == -3) {
+                        showNetworkDisconnectedToast(context);
+                      }
+                    });
                   },
                 )
-              : _buildAuthForm(context),
+              : controller.sent.value
+                  ? _buildAuthForm(context)
+                  : const LoadingRoundButton(),
         ),
       ],
     );
@@ -210,20 +220,27 @@ class FindPwPage extends GetView<FindController> {
                       '인증번호 재전송',
                       style: TextStyle(color: primaryColor),
                     ),
-                    onTap: () async {
+                    onTap: () {
                       // 인증번호 텍스트필드 초기화
                       controller.clearAuthTextField();
-                      // 아이디 찾기 인증번호 요청
-                      int result = await controller.sendAuthNumber();
-                      if (result == 1) {
-                        // 유효시간 5분 카운터 시작
-                        _timerController.startTimer();
-                        showToast(context, '인증번호가 발송되었습니다.', null);
-                        // 인증번호 텍스트필트 포커스 주기
-                        controller.authNumberFocusNode.requestFocus();
-                      } else {
-                        showErrorToast(context);
-                      }
+                      // 인증번호 요청
+                      controller.sendAuthNumber().then((result) {
+                        if (result == 1) {
+                          // 유효시간 5분 카운터 시작
+                          Get.put(TimerController()).startTimer();
+                          showToast(context, '인증번호가 발송되었습니다.', null);
+                          // 인증번호 텍스트필트 포커스 주기
+                          controller.authNumberFocusNode.requestFocus();
+                        } else if (result == -1) {
+                          showToast(
+                            context,
+                            '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                            3000,
+                          );
+                        } else if (result == -3) {
+                          showNetworkDisconnectedToast(context);
+                        }
+                      });
                     },
                   ),
           ),
@@ -242,7 +259,7 @@ class FindPwPage extends GetView<FindController> {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
           if (result == 1) {
-            // 1. 인증성공 & 회원존재 (1)
+            // 1. 인증성공 & 회원존재
             // FindPw 페이지 제거
             Navigator.pop(context);
             // Find 페이지 제거
@@ -251,14 +268,17 @@ class FindPwPage extends GetView<FindController> {
               arguments: [controller.username.text, controller.authNumber.text],
             );
           } else if (result == 0) {
-            // 2. 인증성공 & 회원없음 (0)
+            // 2. 인증성공 & 회원없음
             Navigator.pop(context);
             Get.offNamed(Routes.findPwFail, arguments: method);
-          } else {
-            // 3. 인증실패 (-1)
+          } else if (result == -1) {
+            // 3. 인증 or 유효성검사 실패
             showToast(context, '인증번호가 일치하지 않습니다.', null);
             // 인증번호 텍스트필트 포커스 주기
             controller.authNumberFocusNode.requestFocus();
+          } else if (result == -3) {
+            // 4. 네트워크 연결 안됨
+            showNetworkDisconnectedToast(context);
           }
         });
 
