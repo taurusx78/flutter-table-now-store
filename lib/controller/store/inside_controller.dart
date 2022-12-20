@@ -64,9 +64,7 @@ class InsideController extends GetxController {
       addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
-    UpdateInsideRespDto updateInsideResp =
-        await _storeRepository.updateInside(storeId, dto.toJson());
-    return updateInsideResp;
+    return await _storeRepository.updateInside(storeId, dto.toJson());
   }
 
   // 전체테이블 수 변경

@@ -28,10 +28,10 @@ class UpdateTodayController extends GetxController {
       // 1. 영업일인 경우
       dto = UpdateTodayReqDto(
         holiday: false,
-        businessHours: timeList[0].value + '-' + timeList[1].value,
+        businessHours: timeList[0].value + ' - ' + timeList[1].value,
         breakTime: !switchState[2].value
             ? '없음'
-            : timeList[2].value + '-' + timeList[3].value,
+            : timeList[2].value + ' - ' + timeList[3].value,
         lastOrder: !switchState[3].value ? '없음' : timeList[4].value,
       );
     } else {
@@ -43,8 +43,7 @@ class UpdateTodayController extends GetxController {
         lastOrder: '없음',
       );
     }
-    var result = await _storeRepository.updateToday(storeId, dto.toJson());
-    return result;
+    return await _storeRepository.updateToday(storeId, dto.toJson());
   }
 
   // 오늘의 영업시간 데이터 초기화
@@ -53,14 +52,14 @@ class UpdateTodayController extends GetxController {
     // 영업일인 경우
     if (!switchState[0].value) {
       // 1. 영업시간
-      timeList[0].value = today.businessHours.substring(0, 5);
-      timeList[1].value = today.businessHours.substring(6);
+      timeList[0].value = today.businessHours.split(' - ')[0];
+      timeList[1].value = today.businessHours.split(' - ')[1];
       switchState[1].value = (timeList[0].value == timeList[1].value);
       // 2. 휴게시간
       switchState[2].value = today.breakTime == '없음' ? false : true;
       if (switchState[2].value) {
-        timeList[2].value = today.breakTime.substring(0, 5);
-        timeList[3].value = today.breakTime.substring(6);
+        timeList[2].value = today.breakTime.split(' - ')[0];
+        timeList[3].value = today.breakTime.split(' - ')[1];
       }
       // 3. 주문마감시간
       switchState[3].value = today.lastOrder == '없음' ? false : true;
@@ -81,8 +80,8 @@ class UpdateTodayController extends GetxController {
         timeList[0].value = '00:00';
         timeList[1].value = '00:00';
       } else {
-        timeList[0].value = today.businessHours.substring(0, 5);
-        timeList[1].value = today.businessHours.substring(6);
+        timeList[0].value = today.businessHours.split(' - ')[0];
+        timeList[1].value = today.businessHours.split(' - ')[1];
       }
     }
   }

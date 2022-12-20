@@ -176,10 +176,10 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 알림 등록 진행
-        controller.save(storeId).then((value) {
+        controller.save(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          Get.back(result: value); // 등록 성공 (1), 실패 (-1)
+          Get.back(result: result);
         });
 
         return const LoadingContainer(text: '등록중');

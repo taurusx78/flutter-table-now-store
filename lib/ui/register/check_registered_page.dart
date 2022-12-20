@@ -257,33 +257,44 @@ class CheckRegisteredPage extends GetView<BasicController> {
           ? StateRoundButton(
               text: '등록여부 조회하기',
               activated: controller.activated.value,
-              tapFunc: () async {
+              tapFunc: () {
                 // 등록여부조회
-                int result = await _saveStoreController.checkExist(
+                _saveStoreController
+                    .checkExist(
                   controller.name.text,
                   controller.category.text,
-                  '${controller.areaCode.value}-${controller.phone.text}',
+                  '${controller.areaCode.value}-${controller.phone.text.replaceAllMapped(RegExp(r'(\d{3,4})(\d{4})'), (m) => '${m[1]}-${m[2]}')}',
                   controller.address.text,
-                );
-                if (result == 0) {
-                  _showDialog(
-                      context, '매장 등록이 가능합니다.', '입력한 정보로 신규 매장을 등록하시겠습니까?',
-                      () async {
-                    Navigator.pop(context);
-                    // 네이버지도 이미지 불러오기
-                    Get.put(LocationController()).getLocationMap(
-                        controller.longitude.value, controller.latitude.value);
-                    // 기본정보 입력 페이지로 이동 및 SaveStoreReqDto 객체 전달
-                    Get.toNamed(Routes.enterBasic,
-                        arguments: controller.makeSaveStoreReqDto());
-                  });
-                } else if (result == 1) {
-                  _showDialog(context, '이미 등록된 매장입니다.', '입력한 정보를 확인해 주세요.', () {
-                    Navigator.pop(context);
-                  });
-                } else {
-                  showErrorToast(context);
-                }
+                )
+                    .then((result) {
+                  if (result == 0) {
+                    _showDialog(
+                        context, '매장 등록이 가능합니다.', '입력한 정보로 신규 매장을 등록하시겠습니까?',
+                        () async {
+                      Navigator.pop(context);
+                      // 네이버지도 이미지 불러오기
+                      Get.put(LocationController()).getLocationMap(
+                          controller.longitude.value,
+                          controller.latitude.value);
+                      // 기본정보 입력 페이지로 이동 및 SaveStoreReqDto 객체 전달
+                      Get.toNamed(Routes.enterBasic,
+                          arguments: controller.makeSaveStoreReqDto());
+                    });
+                  } else if (result == 1) {
+                    _showDialog(context, '이미 등록된 매장입니다.', '입력한 정보를 다시 확인해 주세요.',
+                        () {
+                      Navigator.pop(context);
+                    });
+                  } else if (result == -1) {
+                    showToast(
+                      context,
+                      '매장 조회에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                      3000,
+                    );
+                  } else if (result == -3) {
+                    showNetworkDisconnectedToast(context);
+                  }
+                });
               },
             )
           : const LoadingRoundButton(),

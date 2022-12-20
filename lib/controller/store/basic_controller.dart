@@ -114,8 +114,7 @@ class BasicController extends GetxController {
       addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
-    dynamic result = await _storeRepository.updateBasic(storeId, dto.toJson());
-    return result;
+    return await _storeRepository.updateBasic(storeId, dto.toJson());
   }
 
   // 선택된 카테고리 항목 변경

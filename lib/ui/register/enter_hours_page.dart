@@ -133,12 +133,15 @@ class EnterHoursPage extends GetView<HoursController> {
         // 매장 등록 진행
         Get.put(SaveStoreController())
             .save(controller.setHoursInfo(store))
-            .then((value) {
-          Get.offAllNamed(Routes.main); // 매장 등록 후 메인페이지로 이동
-          if (value == 1) {
+            .then((result) {
+          Navigator.pop(context);
+          if (result == 1) {
+            Get.offAllNamed(Routes.main); // 매장 등록 후 메인페이지로 이동
             showToast(context, '매장이 등록되었습니다.', null);
-          } else {
-            showErrorToast(context);
+          } else if (result == -1) {
+            showToast(context, '매장 등록에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.', 3000);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
           }
         });
 

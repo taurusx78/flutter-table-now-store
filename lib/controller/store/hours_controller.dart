@@ -31,7 +31,9 @@ class HoursController extends GetxController {
   Future<void> findHours(int storeId) async {
     loaded.value = false;
     hours = await _storeRepository.findHours(storeId);
-    initializeHours(hours);
+    if (hours != null) {
+      initializeHours(hours);
+    }
     loaded.value = true;
   }
 
@@ -46,8 +48,7 @@ class HoursController extends GetxController {
       hasLastOrderList: switchState[2],
       lastOrderList: timeList[4],
     );
-    dynamic today = await _storeRepository.updateHours(storeId, dto.toJson());
-    return today;
+    return await _storeRepository.updateHours(storeId, dto.toJson());
   }
 
   // 영업시간 전체 초기화
@@ -128,10 +129,10 @@ class HoursController extends GetxController {
 
     for (int d = 0; d < 7; d++) {
       // 1. 영업시간
-      businessHoursList.add(timeList[0][d] + '-' + timeList[1][d]);
+      businessHoursList.add(timeList[0][d] + ' - ' + timeList[1][d]);
       // 2. 휴게시간
       if (switchState[1][d]) {
-        breakTimeList.add(timeList[2][d] + '-' + timeList[3][d]);
+        breakTimeList.add(timeList[2][d] + ' - ' + timeList[3][d]);
       } else {
         breakTimeList.add('없음');
       }

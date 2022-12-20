@@ -43,8 +43,7 @@ class HolidaysController extends GetxController {
   // 정기휴무 수정
   Future<dynamic> updateHolidays(int storeId) async {
     Map<String, String> data = {'holidays': holidaysInfo.value};
-    dynamic today = await _storeRepository.updateHolidays(storeId, data);
-    return today;
+    return await _storeRepository.updateHolidays(storeId, data);
   }
 
   // 정기휴무 유무 변경

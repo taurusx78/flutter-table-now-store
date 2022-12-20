@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/dto/store/update_basic_resp_dto.dart';
 import 'package:table_now_store/controller/store/basic_controller.dart';
 import 'package:table_now_store/controller/store/location_controller.dart';
 import 'package:table_now_store/ui/components/address_search_button.dart';
@@ -46,37 +47,45 @@ class BasicInfoPage extends GetView<BasicController> {
           title: const Text('기본정보'),
           elevation: 0.5,
         ),
-        body: Obx(
-          () => controller.loaded.value
-              ? Align(
-                  alignment: Alignment.topCenter,
-                  child: SingleChildScrollView(
-                    child: Container(
-                      width: 600,
-                      margin: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // 최종수정일
-                          ModifiedText(
-                              modifiedDate: controller.basic!.modifiedDate),
-                          const SizedBox(height: 50),
-                          // 매장명
-                          _buildStoreInfoBox('매장명', controller.basic!.name),
-                          const SizedBox(height: 50),
-                          // 카테고리 (업종)
-                          _buildStoreInfoBox(
-                              '카테고리(업종)', controller.basic!.category),
-                          const SizedBox(height: 50),
-                          // 기본정보 폼
-                          _buildBasicInfoForm(context),
-                        ],
-                      ),
+        body: Obx(() {
+          if (controller.loaded.value) {
+            if (controller.basic != null) {
+              return Align(
+                alignment: Alignment.topCenter,
+                child: SingleChildScrollView(
+                  child: Container(
+                    width: 600,
+                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // 최종수정일
+                        ModifiedText(
+                            modifiedDate: controller.basic!.modifiedDate),
+                        const SizedBox(height: 50),
+                        // 매장명
+                        _buildStoreInfoBox('매장명', controller.basic!.name),
+                        const SizedBox(height: 50),
+                        // 카테고리 (업종)
+                        _buildStoreInfoBox(
+                            '카테고리(업종)', controller.basic!.category),
+                        const SizedBox(height: 50),
+                        // 기본정보 폼
+                        _buildBasicInfoForm(context),
+                      ],
                     ),
                   ),
-                )
-              : const LoadingIndicator(),
-        ),
+                ),
+              );
+            } else {
+              return const Center(
+                child: Text('네트워크 연결을 확인해 주세요.'),
+              );
+            }
+          } else {
+            return const LoadingIndicator();
+          }
+        }),
       ),
     );
   }
@@ -239,10 +248,18 @@ class BasicInfoPage extends GetView<BasicController> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 기본정보 수정 진행
-        controller.updateBasic(storeId).then((value) {
+        controller.updateBasic(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          Get.back(result: value);
+          if (result.runtimeType == UpdateBasicRespDto) {
+            Get.back(result: result);
+          } else if (result == -1) {
+            showToast(context, '입력한 정보를 다시 확인해 주세요.', null);
+          } else if (result == -2) {
+            showToast(context, '권한이 없는 사용자입니다.', null);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
+          }
         });
 
         return const LoadingContainer(text: '수정중');

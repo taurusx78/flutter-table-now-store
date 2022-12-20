@@ -59,8 +59,7 @@ class MenuController extends GetxController {
       addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
-    int result = await _storeRepository.updateMenu(storeId, dto.toJson());
-    return result;
+    return await _storeRepository.updateMenu(storeId, dto.toJson());
   }
 
   // 메뉴정보 등록 페이지에서 입력된 정보 SaveStoreReqDto 객체에 추가

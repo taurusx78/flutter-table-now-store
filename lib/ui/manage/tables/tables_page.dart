@@ -18,33 +18,39 @@ class TablesPage extends GetView<ManageController> {
   Widget build(BuildContext context) {
     print('테이블 정보 빌드');
 
-    return Center(
-      child: SingleChildScrollView(
-        child: Container(
-          width: 600,
-          margin: const EdgeInsets.all(30),
-          child: Obx(() {
-            if (controller.loaded.value) {
-              tables = controller.tables.value!;
-              return Column(
-                children: [
-                  // 사용가능 테이블 수 정보
-                  _buildTableCountInfo(),
-                  const SizedBox(height: 20),
-                  // 업데이트 시간
-                  _buildUpdatedTimeText(),
-                  const SizedBox(height: 50),
-                  // 테이블 수 조작 버튼 모음
-                  _buildCountButtons(context),
-                ],
-              );
-            } else {
-              return const LoadingIndicator();
-            }
-          }),
-        ),
-      ),
-    );
+    return Obx(() {
+      if (controller.loaded.value) {
+        tables = controller.tables.value;
+        if (tables != null) {
+          return Center(
+            child: SingleChildScrollView(
+              child: Container(
+                width: 600,
+                margin: const EdgeInsets.all(30),
+                child: Column(
+                  children: [
+                    // 사용가능 테이블 수 정보
+                    _buildTableCountInfo(),
+                    const SizedBox(height: 20),
+                    // 업데이트 시간
+                    _buildUpdatedTimeText(),
+                    const SizedBox(height: 50),
+                    // 테이블 수 조작 버튼 모음
+                    _buildCountButtons(context),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text('네트워크 연결을 확인해 주세요.'),
+          );
+        }
+      } else {
+        return const LoadingIndicator();
+      }
+    });
   }
 
   Widget _buildTableCountInfo() {
@@ -212,8 +218,14 @@ class TablesPage extends GetView<ManageController> {
                       showToast(context, '임시중지를 먼저 해제해 주세요.', null);
                     }
                   }
-                  if (result != 1) {
-                    showErrorToast(context);
+
+                  // 유효성검사 실패 (-1), 권한 없음 (-2), 네트워크 연결 안됨 (-3)
+                  if (result == -1) {
+                    showToast(context, '부적절한 접근이 감지되었습니다.', null);
+                  } else if (result == -2) {
+                    showToast(context, '권한이 없는 사용자입니다.', null);
+                  } else if (result == -3) {
+                    showNetworkDisconnectedToast(context);
                   }
                 } else {
                   showToast(

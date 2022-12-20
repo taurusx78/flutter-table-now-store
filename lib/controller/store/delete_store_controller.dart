@@ -18,8 +18,7 @@ class DeleteStoreController extends GetxController {
   // 매장삭제
   Future<int> deleteById(int storeId) async {
     Map<String, String> data = {'password': password.text};
-    int result = await _storeRepository.deleteById(storeId, data);
-    return result;
+    return await _storeRepository.deleteById(storeId, data);
   }
 
   // 매장삭제 버튼 활성화 여부 확인

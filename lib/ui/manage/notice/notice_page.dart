@@ -62,14 +62,24 @@ class NoticePage extends StatelessWidget {
                           Get.put(SaveNoticeController())
                               .initializeSaveNoticePage();
                           Get.toNamed(Routes.writeNotice, arguments: storeId)!
-                              .then((result) async {
-                            // 성공 (1), 실패 (-1), 뒤로가기 (null)
-                            if (result == 1) {
-                              showToast(context, '알림이 등록되었습니다.', null);
-                              // 알림 전체 다시 조회
-                              await controller.findAll(storeId);
-                            } else if (result == -1) {
-                              showErrorToast(context);
+                              .then((result) {
+                            // 뒤로가기 시 null 리턴
+                            if (result != null) {
+                              if (result == 1) {
+                                showToast(context, '알림이 등록되었습니다.', null);
+                                // 알림 전체 다시 조회
+                                controller.findAll(storeId);
+                              } else if (result == -1) {
+                                showToast(
+                                  context,
+                                  '알림 등록에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                                  3000,
+                                );
+                              } else if (result == -2) {
+                                showToast(context, '권한이 없는 사용자입니다.', 2000);
+                              } else if (result == -3) {
+                                showNetworkDisconnectedToast(context);
+                              }
                             }
                           });
                         },
@@ -176,15 +186,23 @@ class NoticePage extends StatelessWidget {
             // 알림 수정 페이지 데이터 초기화
             Get.put(SaveNoticeController()).initializeUpdateNoticePage(notice);
             Get.toNamed(Routes.updateNotice, arguments: [storeId, notice])!
-                .then((result) async {
-              // 성공 (1), 실패 (-1), 뒤로가기 (null)
+                .then((result) {
+              // 뒤로가기 시 null 리턴
               if (result != null) {
                 if (result[1] == 1) {
                   showToast(context, '알림이 ${result[0]}되었습니다.', null);
                   // 알림 전체 다시 조회
-                  await controller.findAll(storeId);
+                  controller.findAll(storeId);
                 } else if (result[1] == -1) {
-                  showErrorToast(context);
+                  showToast(
+                    context,
+                    '알림 ${result[0]}에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                    3000,
+                  );
+                } else if (result[1] == -2) {
+                  showToast(context, '권한이 없는 사용자입니다.', 2000);
+                } else if (result[1] == -3) {
+                  showNetworkDisconnectedToast(context);
                 }
               }
             });

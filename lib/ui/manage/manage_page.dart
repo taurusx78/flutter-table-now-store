@@ -153,15 +153,11 @@ class ManagePage extends GetView<ManageController> {
                   Get.put(HoursController()).findHours(storeId);
                   Get.toNamed(Routes.hoursInfo, arguments: storeId)!
                       .then((result) {
-                    // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
-                    if (result != null) {
-                      if (result.runtimeType == Today) {
-                        // 수정된 오늘의 영업시간 반영
-                        controller.changeToday(result);
-                        showToast(context, '영업시간을 수정하였습니다.', null);
-                      } else {
-                        showErrorToast(context);
-                      }
+                    // 수정 성공 (Today), 뒤로가기 (null)
+                    if (result != null && result.runtimeType == Today) {
+                      // 수정된 오늘의 영업시간 반영
+                      controller.changeToday(result);
+                      showToast(context, '영업시간을 수정하였습니다.', null);
                     }
                   });
                 }),
@@ -172,15 +168,11 @@ class ManagePage extends GetView<ManageController> {
                   Get.put(HolidaysController()).findHolidays(storeId);
                   Get.toNamed(Routes.holidaysInfo, arguments: storeId)!
                       .then((result) {
-                    // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
-                    if (result != null) {
-                      if (result.runtimeType == Today) {
-                        // 수정된 오늘의 영업시간 반영
-                        controller.changeToday(result);
-                        showToast(context, '정기휴무를 수정하였습니다.', null);
-                      } else {
-                        showErrorToast(context);
-                      }
+                    // 수정 성공 (Today), 뒤로가기 (null)
+                    if (result != null && result.runtimeType == Today) {
+                      // 수정된 오늘의 영업시간 반영
+                      controller.changeToday(result);
+                      showToast(context, '정기휴무를 수정하였습니다.', null);
                     }
                   });
                 }),
@@ -191,17 +183,7 @@ class ManagePage extends GetView<ManageController> {
                   Navigator.pop(context);
                   // 메뉴정보 조회 및 초기화 (비동기 실행)
                   Get.put(MenuController()).findMenu(storeId);
-                  Get.toNamed(Routes.menuInfo, arguments: storeId)!
-                      .then((result) {
-                    // 수정 성공 (1), 실패 (-1)
-                    if (result != null) {
-                      if (result == 1) {
-                        showToast(context, '메뉴를 수정하였습니다.', null);
-                      } else {
-                        showErrorToast(context);
-                      }
-                    }
-                  });
+                  Get.toNamed(Routes.menuInfo, arguments: storeId);
                 }),
                 const SizedBox(height: 10),
                 _buildHeaderText(Icons.storefront_outlined, '매장'),
@@ -212,15 +194,12 @@ class ManagePage extends GetView<ManageController> {
                   Get.put(InsideController()).findInside(storeId);
                   Get.toNamed(Routes.insideInfo, arguments: storeId)!
                       .then((result) {
-                    // 수정 성공 (UpdateInsideRespDto), 실패 (-1), 뒤로가기 (null)
-                    if (result != null) {
-                      if (result.runtimeType == UpdateInsideRespDto) {
-                        // 수정된 전체테이블 수 반영
-                        controller.changeTables(result);
-                        showToast(context, '매장내부정보를 수정하였습니다.', null);
-                      } else {
-                        showErrorToast(context);
-                      }
+                    // 수정 성공 (UpdateInsideRespDto), 뒤로가기 (null)
+                    if (result != null &&
+                        result.runtimeType == UpdateInsideRespDto) {
+                      // 수정된 전체테이블 수 반영
+                      controller.changeTables(result);
+                      showToast(context, '매장내부정보를 수정하였습니다.', null);
                     }
                   });
                 }),
@@ -231,16 +210,13 @@ class ManagePage extends GetView<ManageController> {
                   Get.put(BasicController()).findBasic(storeId);
                   Get.toNamed(Routes.basicInfo, arguments: storeId)!
                       .then((result) {
-                    // 수정 성공 (UpdateBasicRespDto), 실패 (-1), 뒤로가기 (null)
-                    if (result != null) {
-                      if (result.runtimeType == UpdateBasicRespDto) {
-                        // 수정된 매장명 & 대표사진 반영
-                        controller.setStoreInfo(
-                            result.name, result.basicImageUrl);
-                        showToast(context, '기본정보를 수정하였습니다.', null);
-                      } else {
-                        showErrorToast(context);
-                      }
+                    // 수정 성공 (UpdateBasicRespDto), 뒤로가기 (null)
+                    if (result != null &&
+                        result.runtimeType == UpdateBasicRespDto) {
+                      // 수정된 매장명 & 대표사진 반영
+                      controller.setStoreInfo(
+                          result.name, result.basicImageUrl);
+                      showToast(context, '기본정보를 수정하였습니다.', null);
                     }
                   });
                 }),

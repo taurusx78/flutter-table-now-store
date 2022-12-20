@@ -50,9 +50,7 @@ class SaveNoticeController extends GetxController {
       holidayEndDate: hasHoliday.value ? holidayEndDate.value : '',
       addedImageFileList: multipartFileList,
     );
-
-    int result = await _noticeRepository.save(storeId, dto.toJson());
-    return result;
+    return await _noticeRepository.save(storeId, dto.toJson());
   }
 
   // 알림 수정
@@ -85,10 +83,7 @@ class SaveNoticeController extends GetxController {
       addedImageFileList: multipartFileList,
       deletedImageUrlList: deletedImageUrlList,
     );
-
-    int result =
-        await _noticeRepository.updateById(storeId, notice.id, dto.toJson());
-    return result;
+    return await _noticeRepository.updateById(storeId, notice.id, dto.toJson());
   }
 
   // 알림 삭제

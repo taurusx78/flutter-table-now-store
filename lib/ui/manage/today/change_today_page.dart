@@ -8,6 +8,7 @@ import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
+import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
 class ChangeTodayPage extends GetView<UpdateTodayController> {
@@ -212,10 +213,18 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 오늘의 영업시간 수정 진행
-        controller.updateToday(storeId).then((value) {
+        controller.updateToday(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          Get.back(result: value);
+          if (result >= 0) {
+            Get.back(result: result);
+          } else if (result == -1) {
+            showToast(context, '입력한 정보를 다시 확인해 주세요.', null);
+          } else if (result == -2) {
+            showToast(context, '권한이 없는 사용자입니다.', null);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
+          }
         });
 
         return const LoadingContainer(text: '변경중');

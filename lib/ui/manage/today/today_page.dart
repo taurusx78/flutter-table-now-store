@@ -25,39 +25,45 @@ class TodayPage extends GetView<ManageController> {
   Widget build(BuildContext context) {
     print('오늘의 영업시간 빌드');
 
-    return Align(
-      alignment: Alignment.topCenter,
-      child: SingleChildScrollView(
-        child: Container(
-          width: 600,
-          margin: const EdgeInsets.fromLTRB(30, 50, 30, 30),
-          child: Obx(() {
-            if (controller.loaded.value) {
-              today = controller.today.value!;
-              return Column(
-                children: [
-                  // 오늘 날짜 & 영업상태
-                  _buildTodayStateText(),
-                  const SizedBox(height: 30),
-                  const CustomDivider(),
-                  // 영업시간
-                  _buildHoursBox(),
-                  const CustomDivider(),
-                  const SizedBox(height: 30),
-                  // 오늘의 영업시간 변경 버튼
-                  _buildChangeTodayButton(context),
-                  const SizedBox(height: 30),
-                  // 전체 영업시간 변경 안내 문구
-                  _buildChangeHoursGuide(context),
-                ],
-              );
-            } else {
-              return const LoadingIndicator();
-            }
-          }),
-        ),
-      ),
-    );
+    return Obx(() {
+      if (controller.loaded.value) {
+        today = controller.today.value;
+        if (today != null) {
+          return Align(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              child: Container(
+                width: 600,
+                margin: const EdgeInsets.fromLTRB(30, 50, 30, 30),
+                child: Column(
+                  children: [
+                    // 오늘 날짜 & 영업상태
+                    _buildTodayStateText(),
+                    const SizedBox(height: 30),
+                    const CustomDivider(),
+                    // 영업시간
+                    _buildHoursBox(),
+                    const CustomDivider(),
+                    const SizedBox(height: 30),
+                    // 오늘의 영업시간 변경 버튼
+                    _buildChangeTodayButton(context),
+                    const SizedBox(height: 30),
+                    // 전체 영업시간 변경 안내 문구
+                    _buildChangeHoursGuide(context),
+                  ],
+                ),
+              ),
+            ),
+          );
+        } else {
+          return const Center(
+            child: Text('네크워크 연결을 확인해 주세요.'),
+          );
+        }
+      } else {
+        return const LoadingIndicator();
+      }
+    });
   }
 
   Widget _buildTodayStateText() {
@@ -132,25 +138,28 @@ class TodayPage extends GetView<ManageController> {
         Get.put(UpdateTodayController()).initializeTodayData(today);
         // 3. 오늘의 영업시간 변경 페이지로 이동
         Get.toNamed(Routes.changeToday, arguments: [storeId, today])!
-            .then((result) async {
-          // result: 수정 성공 (Today), 임시휴무 알림 존재 (-2), 수정 실패 (-1)
-          if (result.runtimeType == Today) {
-            // 수정된 오늘의 영업시간 반영
-            controller.changeToday(result);
-            showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
-          } else if (result == -2) {
-            // 정기휴무 -> 임시휴무 영업상태 변경 반영
-            controller.changeToday(Today(
-              holidayType: 3,
-              businessHours: '없음',
-              breakTime: '없음',
-              lastOrder: '없음',
-              state: '임시휴무',
-            ));
-            showToast(
-                context, '변경에 실패하였습니다.\n임시휴무가 설정된 알림을 수정 또는 삭제해 주세요.', 3000);
-          } else if (result == -1) {
-            showToast(context, '권한이 없는 사용자입니다.', null);
+            .then((result) {
+          // 뒤로가기 시 null 리턴
+          if (result != null) {
+            if (result.runtimeType == Today) {
+              // 수정된 오늘의 영업시간 반영
+              controller.changeToday(result);
+              showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
+            } else if (result == 0) {
+              // 정기휴무 -> 임시휴무 영업상태 변경 반영
+              controller.changeToday(Today(
+                holidayType: 3,
+                businessHours: '없음',
+                breakTime: '없음',
+                lastOrder: '없음',
+                state: '임시휴무',
+              ));
+              showToast(
+                context,
+                '영업시간 변경에 실패하였습니다.\n오늘 임시휴무가 설정된 알림을 수정 또는 삭제해 주세요.',
+                3500,
+              );
+            }
           }
         });
       },
@@ -179,15 +188,11 @@ class TodayPage extends GetView<ManageController> {
                 Get.put(HoursController()).findHours(storeId);
                 Get.toNamed(Routes.hoursInfo, arguments: storeId)!
                     .then((result) {
-                  // 수정 성공 (Today), 실패 (-1), 뒤로가기 (null)
-                  if (result != null) {
-                    if (result.runtimeType == Today) {
-                      // 수정된 오늘의 영업시간 반영
-                      controller.changeToday(result);
-                      showToast(context, '영업시간을 수정하였습니다.', null);
-                    } else {
-                      showErrorToast(context);
-                    }
+                  // 수정 성공 (Today), 뒤로가기 (null)
+                  if (result != null && result.runtimeType == Today) {
+                    // 수정된 오늘의 영업시간 반영
+                    controller.changeToday(result);
+                    showToast(context, '영업시간을 수정하였습니다.', null);
                   }
                 });
               },

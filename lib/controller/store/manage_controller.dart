@@ -53,8 +53,10 @@ class ManageController extends GetxController {
   Future<void> findTables(int storeId) async {
     loaded.value = false;
     tables.value = await _storeRepository.findTables(storeId);
-    await changeAvailablePercent(storeId);
-    changeTableColor();
+    if (tables.value != null) {
+      await changeAvailablePercent(storeId);
+      changeTableColor();
+    }
     loaded.value = true;
   }
 
@@ -74,10 +76,10 @@ class ManageController extends GetxController {
     var result = await _storeRepository.updateTables(storeId, data.toJson());
     if (result.runtimeType == Tables) {
       tables.value = result;
+      await changeAvailablePercent(storeId);
+      changeTableColor();
       result = 1;
     }
-    await changeAvailablePercent(storeId);
-    changeTableColor();
     return result;
   }
 

@@ -31,29 +31,36 @@ class MenuInfoPage extends GetView<MenuController> {
         title: const Text('메뉴 관리'),
         elevation: 0.5,
       ),
-      body: Obx(
-        () => controller.loaded.value
-            ? Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Container(
-                    width: 600,
-                    margin: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // 최종수정일
-                        ModifiedText(
-                            modifiedDate: controller.menu!.modifiedDate),
-                        const SizedBox(height: 50),
-                        _buildMenuInfoBox(context),
-                      ],
-                    ),
+      body: Obx(() {
+        if (controller.loaded.value) {
+          if (controller.menu != null) {
+            return Align(
+              alignment: Alignment.topCenter,
+              child: SingleChildScrollView(
+                child: Container(
+                  width: 600,
+                  margin: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 최종수정일
+                      ModifiedText(modifiedDate: controller.menu!.modifiedDate),
+                      const SizedBox(height: 50),
+                      _buildMenuInfoBox(context),
+                    ],
                   ),
                 ),
-              )
-            : const LoadingIndicator(),
-      ),
+              ),
+            );
+          } else {
+            return const Center(
+              child: Text('네트워크 연결을 확인해 주세요.'),
+            );
+          }
+        } else {
+          return const LoadingIndicator();
+        }
+      }),
     );
   }
 
@@ -106,10 +113,19 @@ class MenuInfoPage extends GetView<MenuController> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 메뉴 수정 진행
-        controller.updateMenu(storeId).then((value) {
+        controller.updateMenu(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          Get.back(result: value);
+          if (result == 1) {
+            showToast(context, '메뉴를 수정하였습니다.', null);
+            Get.back(result: 1);
+          } else if (result == -1) {
+            showToast(context, '입력한 정보를 다시 확인해 주세요.', null);
+          } else if (result == -2) {
+            showToast(context, '권한이 없는 사용자입니다.', null);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
+          }
         });
 
         return const LoadingContainer(text: '수정중');

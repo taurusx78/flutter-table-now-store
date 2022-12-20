@@ -177,16 +177,18 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
       barrierColor: Colors.transparent,
       builder: (BuildContext context2) {
         // 매장 삭제 진행
-        controller.deleteById(storeId).then((value) {
+        controller.deleteById(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (value == 1) {
+          if (result == 1) {
             showToast(context, '매장이 삭제되었습니다.', null);
             Get.offAllNamed(Routes.main);
-          } else if (value == -2) {
+          } else if (result == -1) {
             showToast(context, '비밀번호가 일치하지 않습니다.', null);
-          } else {
+          } else if (result == -2) {
             showToast(context, '권한이 없는 사용자입니다.', null);
+          } else if (result == -3) {
+            showNetworkDisconnectedToast(context);
           }
         });
 

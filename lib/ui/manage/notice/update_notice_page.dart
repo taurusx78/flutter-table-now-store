@@ -155,16 +155,16 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
       builder: (BuildContext context2) {
         if (text == '수정') {
           // 알림 수정 진행
-          controller.updateById(storeId, notice).then((value) {
+          controller.updateById(storeId, notice).then((result) {
             // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
             Navigator.pop(context);
-            Get.back(result: [text, value]);
+            Get.back(result: [text, result]);
           });
         } else {
           // 알림 삭제 진행
-          controller.deleteById(storeId, notice.id).then((value) {
+          controller.deleteById(storeId, notice.id).then((result) {
             Navigator.pop(context);
-            Get.back(result: [text, value]);
+            Get.back(result: [text, result]);
           });
         }
 
