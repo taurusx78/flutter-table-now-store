@@ -7,6 +7,7 @@ import 'package:table_now_store/ui/components/hours_list.dart';
 import 'package:table_now_store/ui/components/info_row_text.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
@@ -74,8 +75,11 @@ class HoursInfoPage extends GetView<HoursController> {
               ),
             );
           } else {
-            return const Center(
-              child: Text('네트워크 연결을 확인해 주세요.'),
+            return NetworkDisconnectedText(
+              retryFunc: () {
+                // 영업시간 조회 및 초기화 (비동기 실행)
+                controller.findHours(storeId);
+              },
             );
           }
         } else {

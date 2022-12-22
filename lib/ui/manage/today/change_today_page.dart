@@ -216,7 +216,7 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
         controller.updateToday(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result >= 0) {
+          if (result.runtimeType == Today || result == 0) {
             Get.back(result: result);
           } else if (result == -1) {
             showToast(context, '입력한 정보를 다시 확인해 주세요.', null);

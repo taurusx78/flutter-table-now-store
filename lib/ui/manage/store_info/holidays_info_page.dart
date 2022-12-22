@@ -6,6 +6,7 @@ import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/holiday_select_button.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/manage/store_info/components/modified_text.dart';
@@ -67,8 +68,11 @@ class HolidaysInfoPage extends GetView<HolidaysController> {
               ),
             );
           } else {
-            return const Center(
-              child: Text('네트워크 연결을 확인해 주세요.'),
+            return NetworkDisconnectedText(
+              retryFunc: () {
+                // 정기휴무 조회 및 초기화 (비동기 실행)
+                controller.findHolidays(storeId);
+              },
             );
           }
         } else {

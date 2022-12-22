@@ -7,7 +7,7 @@ class NoticeRepository {
   final NoticeProvider _noticeProvider = NoticeProvider();
 
   // 알림 전체조회
-  Future<List<Notice>> findAll(int storeId) async {
+  Future<List<Notice>?> findAll(int storeId) async {
     Response response = await _noticeProvider.findAll(storeId);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
@@ -16,7 +16,7 @@ class NoticeRepository {
         return temp.map((notice) => Notice.fromJson(notice)).toList();
       }
     }
-    return <Notice>[]; // 네트워크 연결 안됨
+    return null; // 네트워크 연결 안됨
   }
 
   // 알림 등록

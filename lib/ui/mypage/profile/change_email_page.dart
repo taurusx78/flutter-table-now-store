@@ -257,11 +257,9 @@ class ChangeEmailPage extends GetView<ChangeEmailController> {
                     showToast(context, '이메일이 변경되었습니다.', null);
                     Get.back(result: controller.email.text);
                   } else if (result == -1) {
-                    showToast(
-                      context,
-                      '이메일 변경에 실패하였습니다.\n입력한 이메일을 다시 확인해 주세요.',
-                      3000,
-                    );
+                    showToast(context, '올바른 형식의 이메일을 입력해 주세요.', 2000);
+                  } else if (result == -2) {
+                    showToast(context, '권한이 없는 사용자입니다.', 2000);
                   } else if (result == -3) {
                     showNetworkDisconnectedToast(context);
                   }

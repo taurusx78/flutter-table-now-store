@@ -8,6 +8,7 @@ import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/store_state_text.dart';
@@ -56,8 +57,11 @@ class TodayPage extends GetView<ManageController> {
             ),
           );
         } else {
-          return const Center(
-            child: Text('네크워크 연결을 확인해 주세요.'),
+          return NetworkDisconnectedText(
+            retryFunc: () {
+              // 오늘의 영업시간 조회 (비동기 실행)
+              controller.findToday(storeId);
+            },
           );
         }
       } else {
@@ -134,34 +138,37 @@ class TodayPage extends GetView<ManageController> {
       tapFunc: () async {
         // 1. 오늘의 영업시간 다시조회 (데이터 동기화)
         await controller.findToday(storeId);
-        // 2. 페이지 이동 전 데이터 세팅
-        Get.put(UpdateTodayController()).initializeTodayData(today);
-        // 3. 오늘의 영업시간 변경 페이지로 이동
-        Get.toNamed(Routes.changeToday, arguments: [storeId, today])!
-            .then((result) {
-          // 뒤로가기 시 null 리턴
-          if (result != null) {
-            if (result.runtimeType == Today) {
-              // 수정된 오늘의 영업시간 반영
-              controller.changeToday(result);
-              showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
-            } else if (result == 0) {
-              // 정기휴무 -> 임시휴무 영업상태 변경 반영
-              controller.changeToday(Today(
-                holidayType: 3,
-                businessHours: '없음',
-                breakTime: '없음',
-                lastOrder: '없음',
-                state: '임시휴무',
-              ));
-              showToast(
-                context,
-                '영업시간 변경에 실패하였습니다.\n오늘 임시휴무가 설정된 알림을 수정 또는 삭제해 주세요.',
-                3500,
-              );
+        print('today: ${controller.today.value}');
+        if (controller.today.value != null) {
+          // 2. 페이지 이동 전 데이터 세팅
+          Get.put(UpdateTodayController()).initializeTodayData(today);
+          // 3. 오늘의 영업시간 변경 페이지로 이동
+          Get.toNamed(Routes.changeToday, arguments: [storeId, today])!
+              .then((result) {
+            // 뒤로가기 시 null 리턴
+            if (result != null) {
+              if (result.runtimeType == Today) {
+                // 수정된 오늘의 영업시간 반영
+                controller.changeToday(result);
+                showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
+              } else if (result == 0) {
+                // 정기휴무 -> 임시휴무 영업상태 변경 반영
+                controller.changeToday(Today(
+                  holidayType: 3,
+                  businessHours: '없음',
+                  breakTime: '없음',
+                  lastOrder: '없음',
+                  state: '임시휴무',
+                ));
+                showToast(
+                  context,
+                  '영업시간 변경에 실패하였습니다.\n오늘 임시휴무가 설정된 알림을 수정 또는 삭제해 주세요.',
+                  3500,
+                );
+              }
             }
-          }
-        });
+          });
+        }
       },
     );
   }

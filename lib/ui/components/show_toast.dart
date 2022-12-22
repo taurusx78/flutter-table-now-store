@@ -60,7 +60,7 @@ void showNetworkDisconnectedToast(context) {
       color: const Color(0xBB000000),
     ),
     child: const Text(
-      '네트워크 연결을 확인해 주세요.',
+      '네트워크 연결 상태를 확인해 주세요.',
       style: TextStyle(color: Colors.white),
       textAlign: TextAlign.center,
     ),

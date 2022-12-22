@@ -19,6 +19,7 @@ class MainController extends GetxController {
   final RxInt curIndex = 0.obs; // 메인 페이지 네이게이션바 현재 인덱스
   final RxBool userLoaded = true.obs; // 회원 정보 조회 완료 여부
   final RxBool loaded = false.obs; // 매장 조회 완료 여부
+  final RxBool connected = true.obs; // 네트워크 연결 여부
 
   @override
   void onInit() async {
@@ -38,7 +39,16 @@ class MainController extends GetxController {
   // 나의 매장 전체조회
   Future<void> findAllMyStore() async {
     loaded.value = false;
-    myStoreList.value = await _storeRepository.findAllMyStore(jwtToken);
+    connected.value = true;
+    var result = await _storeRepository.findAllMyStore(jwtToken);
+    if (result.runtimeType == List<MyStoreRespDto>) {
+      myStoreList.value = result;
+    } else if (result == -2) {
+      myStoreList.value = [];
+    } else if (result == -3) {
+      myStoreList.value = [];
+      connected.value = false;
+    }
     loaded.value = true;
   }
 

@@ -5,6 +5,7 @@ import 'package:table_now_store/controller/notice/save_notice_controller.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/icon_text_round_button.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 import 'package:table_now_store/ui/screen_size.dart';
@@ -15,84 +16,94 @@ class NoticePage extends StatelessWidget {
 
   NoticePage({Key? key, required this.storeId}) : super(key: key);
 
-  final NoticeController controller = Get.put(NoticeController());
+  late NoticeController controller;
 
   @override
   Widget build(BuildContext context) {
     // 알림 전체조회
-    print('알림 전체조회');
-    controller.findAll(storeId);
+    print('알림 페이지 빌드');
+    controller = Get.put(NoticeController(storeId));
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
-        child: Obx(
-          () => controller.loaded.value
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 헤더
-                    Text(
-                      '총 ${controller.noticeList.length}개',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+    return Obx(
+      () => controller.loaded.value
+          ? controller.connected.value
+              ? Container(
+                  color: lightGrey2,
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // 헤더
+                          Text(
+                            '총 ${controller.noticeList.length}개',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          // 안내 문구
+                          const Text(
+                            'ⓘ 매장 알림은 최대 5개까지 등록 가능합니다.',
+                            style:
+                                TextStyle(fontSize: 15, color: Colors.black54),
+                          ),
+                          const SizedBox(height: 15),
+                          // 알림 목록
+                          controller.noticeList.isNotEmpty
+                              ? _buildNoticeList()
+                              : _buildNoNoticeBox(),
+                          const SizedBox(height: 30),
+                          // 알림등록 버튼
+                          Align(
+                            alignment: Alignment.center,
+                            child: IconTextRoundButton(
+                              icon: Icons.notifications_none_rounded,
+                              text: '알림등록하기',
+                              tapFunc: () {
+                                // 알림 등록 페이지 데이터 초기화
+                                Get.put(SaveNoticeController())
+                                    .initializeSaveNoticePage();
+                                Get.toNamed(Routes.writeNotice,
+                                        arguments: storeId)!
+                                    .then((result) {
+                                  // 뒤로가기 시 null 리턴
+                                  if (result != null) {
+                                    if (result == 1) {
+                                      showToast(context, '알림이 등록되었습니다.', null);
+                                      // 알림 전체 다시 조회
+                                      controller.findAll(storeId);
+                                    } else if (result == -1) {
+                                      showToast(
+                                        context,
+                                        '알림 등록에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
+                                        3000,
+                                      );
+                                    } else if (result == -2) {
+                                      showToast(
+                                          context, '권한이 없는 사용자입니다.', 2000);
+                                    } else if (result == -3) {
+                                      showNetworkDisconnectedToast(context);
+                                    }
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    // 안내 문구
-                    const Text(
-                      'ⓘ 매장 알림은 최대 5개까지 등록 가능합니다.',
-                      style: TextStyle(fontSize: 15, color: Colors.black54),
-                    ),
-                    const SizedBox(height: 15),
-                    // 알림 목록
-                    controller.noticeList.isNotEmpty
-                        ? _buildNoticeList()
-                        : _buildNoNoticeBox(),
-                    const SizedBox(height: 30),
-                    // 알림등록 버튼
-                    Align(
-                      alignment: Alignment.center,
-                      child: IconTextRoundButton(
-                        icon: Icons.notifications_none_rounded,
-                        text: '알림등록하기',
-                        tapFunc: () {
-                          // 알림 등록 페이지 데이터 초기화
-                          Get.put(SaveNoticeController())
-                              .initializeSaveNoticePage();
-                          Get.toNamed(Routes.writeNotice, arguments: storeId)!
-                              .then((result) {
-                            // 뒤로가기 시 null 리턴
-                            if (result != null) {
-                              if (result == 1) {
-                                showToast(context, '알림이 등록되었습니다.', null);
-                                // 알림 전체 다시 조회
-                                controller.findAll(storeId);
-                              } else if (result == -1) {
-                                showToast(
-                                  context,
-                                  '알림 등록에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                                  3000,
-                                );
-                              } else if (result == -2) {
-                                showToast(context, '권한이 없는 사용자입니다.', 2000);
-                              } else if (result == -3) {
-                                showNetworkDisconnectedToast(context);
-                              }
-                            }
-                          });
-                        },
-                      ),
-                    ),
-                  ],
+                  ),
                 )
-              : const SizedBox(
-                  height: 200,
-                  child: LoadingIndicator(),
-                ),
-        ),
-      ),
+              : NetworkDisconnectedText(
+                  retryFunc: () {
+                    // 알림 전체조회 (비동기 호출)
+                    controller.findAll(storeId);
+                  },
+                )
+          : const LoadingIndicator(),
     );
   }
 
@@ -112,7 +123,15 @@ class NoticePage extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
               border: Border.all(color: blueGrey),
-              color: lightGrey2,
+              color: Colors.white,
+              boxShadow: const [
+                BoxShadow(
+                  color: lightGrey,
+                  spreadRadius: 0,
+                  blurRadius: 1,
+                  offset: Offset(0, 1),
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -194,6 +213,7 @@ class NoticePage extends StatelessWidget {
                   // 알림 전체 다시 조회
                   controller.findAll(storeId);
                 } else if (result[1] == -1) {
+                  print('여기 출력됨');
                   showToast(
                     context,
                     '알림 ${result[0]}에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
@@ -236,19 +256,24 @@ class NoticePage extends StatelessWidget {
   Widget _buildHolidayText(String holidayStart, String holidayEnd) {
     return RichText(
       text: TextSpan(
+        style: const TextStyle(fontSize: 15, color: darkNavy2),
         children: [
           const WidgetSpan(
             alignment: PlaceholderAlignment.middle,
             child: Padding(
               padding: EdgeInsets.only(right: 5),
-              child: Icon(Icons.event_note, color: red, size: 18),
+              child: Icon(
+                Icons.event_note,
+                color: darkNavy2,
+                size: 18,
+              ),
             ),
           ),
           TextSpan(
-            text:
-                '${holidayStart.substring(2)} - ${holidayEnd.substring(2)} 휴무',
-            style: const TextStyle(color: Colors.black),
-          )
+            text: '${holidayStart.substring(2)} - ${holidayEnd.substring(2)}',
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const TextSpan(text: ' 휴무')
         ],
       ),
       overflow: TextOverflow.ellipsis,
@@ -262,7 +287,15 @@ class NoticePage extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: blueGrey),
-        color: lightGrey2,
+        color: Colors.white,
+        boxShadow: const [
+          BoxShadow(
+            color: lightGrey,
+            spreadRadius: 0,
+            blurRadius: 1,
+            offset: Offset(0, 1),
+          ),
+        ],
       ),
       child: const Center(
         child: Text(

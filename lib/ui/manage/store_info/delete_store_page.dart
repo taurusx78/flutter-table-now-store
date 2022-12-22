@@ -48,10 +48,10 @@ class DeleteStorePage extends GetView<DeleteStoreController> {
                     '매장삭제 안내',
                     style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 50),
                   Image.asset(
-                    'assets/images/fail.png',
-                    width: 80,
+                    'assets/images/delete.png',
+                    width: 100,
                     color: darkNavy,
                   ),
                   const SizedBox(height: 50),

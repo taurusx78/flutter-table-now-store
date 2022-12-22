@@ -181,7 +181,7 @@ class ManagePage extends GetView<ManageController> {
                 // 메뉴 관리
                 _buildBodyButton(context, '메뉴 관리', () {
                   Navigator.pop(context);
-                  // 메뉴정보 조회 및 초기화 (비동기 실행)
+                  // 메뉴 조회 및 초기화 (비동기 실행)
                   Get.put(MenuController()).findMenu(storeId);
                   Get.toNamed(Routes.menuInfo, arguments: storeId);
                 }),

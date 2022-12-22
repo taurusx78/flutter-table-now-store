@@ -6,6 +6,7 @@ import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/table_count_text_field.dart';
@@ -62,8 +63,11 @@ class InsideInfoPage extends GetView<InsideController> {
                 ),
               );
             } else {
-              return const Center(
-                child: Text('네트워크 연결을 확인해 주세요.'),
+              return NetworkDisconnectedText(
+                retryFunc: () {
+                  // 매장내부정보 조회 및 초기화 (비동기 실행)
+                  controller.findInside(storeId);
+                },
               );
             }
           } else {

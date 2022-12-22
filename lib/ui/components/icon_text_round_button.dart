@@ -22,6 +22,7 @@ class IconTextRoundButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           border: Border.all(color: blueGrey),
+          color: Colors.white,
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

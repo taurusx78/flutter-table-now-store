@@ -17,16 +17,18 @@ class StoreRepository {
   final StoreProvider _storeProvider = StoreProvider();
 
   // 나의 매장 전체조회
-  Future<List<MyStoreRespDto>> findAllMyStore(String? jwtToken) async {
+  Future<dynamic> findAllMyStore(String? jwtToken) async {
     Response response = await _storeProvider.findAllMyStore(jwtToken);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
       if (dto.code == 1) {
         List<dynamic> temp = dto.response;
         return temp.map((store) => MyStoreRespDto.fromJson(store)).toList();
+      } else {
+        return -2; // 권한 없음 (인증되지 않은 사용자)
       }
     }
-    return <MyStoreRespDto>[]; // 인증되지 않은 사용자 or 네트워크 연결 안됨
+    return -3; // 네트워크 연결 안됨
   }
 
   // 등록여부조회

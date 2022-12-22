@@ -155,7 +155,7 @@ class UserRepository {
     Response response = await _userProvider.changePassword(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 변경 성공 (1), 유효성검사 실패 (-1), 비밀번호 불일치 (-2)
+      return dto.code; // 변경 성공 (1), 비밀번호 불일치 or 유효성검사 실패 (-1), 권한 없음 (-2)
     } else {
       return -3; // 네트워크 연결 안됨
     }
@@ -166,7 +166,7 @@ class UserRepository {
     Response response = await _userProvider.changeEmail(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 변경 성공 (1), 유효성검사 실패 (-1)
+      return dto.code; // 변경 성공 (1), 유효성검사 실패 (-1), 권한 없음 (-2)
     } else {
       return -3; // 네트워크 연결 안됨
     }
@@ -177,7 +177,7 @@ class UserRepository {
     Response response = await _userProvider.withdrawal(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 탈퇴 성공 (1), 비밀번호 불일치 or 유효성검사 실패 (-1)
+      return dto.code; // 탈퇴 성공 (1), 비밀번호 불일치 or 유효성검사 실패 (-1), 권한 없음 (-2)
     } else {
       return -3; // 네트워크 연결 안됨
     }

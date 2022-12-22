@@ -153,9 +153,9 @@ class ChangePwPage extends GetView<ChangePwController> {
             Get.offAllNamed(Routes.login);
             showToast(context, '비밀번호가 변경되었습니다.\n다시 로그인해 주세요.', 3000);
           } else if (result == -1) {
-            showToast(context, '비밀번호 변경에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.', 3000);
-          } else if (result == -2) {
             showToast(context, '현재 비밀번호가 일치하지 않습니다.', 2000);
+          } else if (result == -2) {
+            showToast(context, '권한이 없는 사용자입니다.', 2000);
           } else if (result == -3) {
             showNetworkDisconnectedToast(context);
           }

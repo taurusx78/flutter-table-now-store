@@ -10,6 +10,7 @@ import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/phone_text_form_field.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
@@ -78,8 +79,11 @@ class BasicInfoPage extends GetView<BasicController> {
                 ),
               );
             } else {
-              return const Center(
-                child: Text('네트워크 연결을 확인해 주세요.'),
+              return NetworkDisconnectedText(
+                retryFunc: () {
+                  // 기본정보 조회 (비동기 실행)
+                  controller.findBasic(storeId);
+                },
               );
             }
           } else {

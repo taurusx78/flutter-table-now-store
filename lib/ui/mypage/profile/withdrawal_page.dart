@@ -289,6 +289,8 @@ class WithdrawalPage extends GetView<WithdrawalController> {
             Get.offAllNamed(Routes.login);
           } else if (result == -1) {
             showToast(context, '비밀번호가 일치하지 않습니다.', 2000);
+          } else if (result == -2) {
+            showToast(context, '권한이 없는 사용자입니다.', 2000);
           } else if (result == -3) {
             showNetworkDisconnectedToast(context);
           }
