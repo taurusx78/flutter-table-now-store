@@ -107,14 +107,14 @@ class LoginPage extends GetView<LoginController> {
                   activated: controller.activated.value,
                   tapFunc: () async {
                     int result = await controller.login();
-                    if (result == 1) {
+                    if (result == 200) {
                       // 1. 로그인 성공
                       // 로그아웃 하지 않는 이상 로그인 페이지로의 이동 막음
                       Get.offAllNamed(Routes.main);
-                    } else if (result == -1) {
+                    } else if (result == 400) {
                       // 2. 로그인 실패 (유효성검사 실패 포함)
-                      showToast(context, '아이디 또는 비밀번호가 일치하지 않습니다.', 1500);
-                    } else if (result == -3) {
+                      showToast(context, '아이디 또는 비밀번호가 일치하지 않습니다.', null);
+                    } else if (result == 500) {
                       // 3. 네트워크 연결 안됨
                       showNetworkDisconnectedToast(context);
                     }

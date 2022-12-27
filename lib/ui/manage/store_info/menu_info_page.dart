@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/store/menu_controller.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
@@ -120,15 +121,16 @@ class MenuInfoPage extends GetView<MenuController> {
         controller.updateMenu(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result == 1) {
+          if (result == 200) {
             showToast(context, '메뉴를 수정하였습니다.', null);
             Get.back(result: 1);
-          } else if (result == -1) {
-            showToast(context, '입력한 정보를 다시 확인해 주세요.', null);
-          } else if (result == -2) {
-            showToast(context, '권한이 없는 사용자입니다.', null);
-          } else if (result == -3) {
+          } else if (result == 403) {
+            Get.offAllNamed(Routes.login);
+            Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

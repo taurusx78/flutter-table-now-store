@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
 import 'package:table_now_store/ui/components/round_button.dart';
+import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/util/validator_util.dart';
 
 import 'components/holiday_switch.dart';
@@ -179,7 +181,16 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
         controller.save(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          Get.back(result: result);
+          if (result == 201) {
+            Get.back(result: result);
+          } else if (result == 403) {
+            Get.offAllNamed(Routes.login);
+            Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+          } else if (result == 500) {
+            showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
+          }
         });
 
         return const LoadingContainer(text: '등록중');

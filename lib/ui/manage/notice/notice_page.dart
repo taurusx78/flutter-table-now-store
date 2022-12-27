@@ -57,41 +57,7 @@ class NoticePage extends StatelessWidget {
                               : _buildNoNoticeBox(),
                           const SizedBox(height: 30),
                           // 알림등록 버튼
-                          Align(
-                            alignment: Alignment.center,
-                            child: IconTextRoundButton(
-                              icon: Icons.notifications_none_rounded,
-                              text: '알림등록하기',
-                              tapFunc: () {
-                                // 알림 등록 페이지 데이터 초기화
-                                Get.put(SaveNoticeController())
-                                    .initializeSaveNoticePage();
-                                Get.toNamed(Routes.writeNotice,
-                                        arguments: storeId)!
-                                    .then((result) {
-                                  // 뒤로가기 시 null 리턴
-                                  if (result != null) {
-                                    if (result == 1) {
-                                      showToast(context, '알림이 등록되었습니다.', null);
-                                      // 알림 전체 다시 조회
-                                      controller.findAll(storeId);
-                                    } else if (result == -1) {
-                                      showToast(
-                                        context,
-                                        '알림 등록에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                                        3000,
-                                      );
-                                    } else if (result == -2) {
-                                      showToast(
-                                          context, '권한이 없는 사용자입니다.', 2000);
-                                    } else if (result == -3) {
-                                      showNetworkDisconnectedToast(context);
-                                    }
-                                  }
-                                });
-                              },
-                            ),
-                          ),
+                          _buildRegisterButton(context),
                         ],
                       ),
                     ),
@@ -208,22 +174,13 @@ class NoticePage extends StatelessWidget {
                 .then((result) {
               // 뒤로가기 시 null 리턴
               if (result != null) {
-                if (result[1] == 1) {
+                if (result[1] == 200) {
                   showToast(context, '알림이 ${result[0]}되었습니다.', null);
-                  // 알림 전체 다시 조회
-                  controller.findAll(storeId);
-                } else if (result[1] == -1) {
-                  print('여기 출력됨');
-                  showToast(
-                    context,
-                    '알림 ${result[0]}에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                    3000,
-                  );
-                } else if (result[1] == -2) {
-                  showToast(context, '권한이 없는 사용자입니다.', 2000);
-                } else if (result[1] == -3) {
-                  showNetworkDisconnectedToast(context);
+                } else if (result[1] == 404) {
+                  showToast(context, '이미 삭제된 알림입니다.', null);
                 }
+                // 알림 전체 다시 조회
+                controller.findAll(storeId);
               }
             });
           },
@@ -302,6 +259,28 @@ class NoticePage extends StatelessWidget {
           '등록된 알림이 없습니다.',
           style: TextStyle(fontSize: 15, color: Colors.black54),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRegisterButton(context) {
+    return Align(
+      alignment: Alignment.center,
+      child: IconTextRoundButton(
+        icon: Icons.notifications_none_rounded,
+        text: '알림등록하기',
+        tapFunc: () {
+          // 알림 등록 페이지 데이터 초기화
+          Get.put(SaveNoticeController()).initializeSaveNoticePage();
+          Get.toNamed(Routes.writeNotice, arguments: storeId)!.then((result) {
+            // 뒤로가기 시 null 리턴
+            if (result != null) {
+              showToast(context, '알림이 등록되었습니다.', null);
+              // 알림 전체 다시 조회
+              controller.findAll(storeId);
+            }
+          });
+        },
       ),
     );
   }

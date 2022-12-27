@@ -146,19 +146,13 @@ class ResetPwPage extends GetView<ChangePwController> {
         controller.resetPassword(username, authNumber).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result == 1) {
-            // 1. 재설정 성공
+          if (result == 200) {
             Get.back(); // 로그인 페이지로 이동
             showToast(context, '비밀번호가 재설정되었습니다.\n다시 로그인해 주세요.', 3000);
-          } else if (result == -1) {
-            // 2. 재설정 실패 (-1)
-            showToast(
-                context, '비밀번호 재설정에 실패하였습니다.\n입력한 비밀번호를 다시 확인해 주세요.', 3000);
-          } else if (result == -2) {
-            showToast(context, '인증되지 않은 사용자입니다.\n다시 시도해 주세요.', 3000);
-          } else if (result == -3) {
-            // 3. 네트워크 연결 안됨
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

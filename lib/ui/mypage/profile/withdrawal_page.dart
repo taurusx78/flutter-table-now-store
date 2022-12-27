@@ -284,15 +284,18 @@ class WithdrawalPage extends GetView<WithdrawalController> {
         controller.withdrawal().then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result == 1) {
-            Get.snackbar('알림', '회원탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.');
+          if (result == 200) {
             Get.offAllNamed(Routes.login);
-          } else if (result == -1) {
+            Get.snackbar('알림', '회원탈퇴가 완료되었습니다.\n그동안 이용해주셔서 감사합니다.');
+          } else if (result == 401) {
             showToast(context, '비밀번호가 일치하지 않습니다.', 2000);
-          } else if (result == -2) {
-            showToast(context, '권한이 없는 사용자입니다.', 2000);
-          } else if (result == -3) {
+          } else if (result == 403) {
+            Get.offAllNamed(Routes.login);
+            Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

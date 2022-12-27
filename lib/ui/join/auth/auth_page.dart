@@ -147,10 +147,10 @@ class AuthPage extends GetView<JoinController> {
                         showToast(context, '이미 가입한 회원입니다.', 2000);
                       } else if (result == 0) {
                         controller.changeUserCanJoin(true);
-                      } else if (result == -1) {
-                        showToast(context, '본인인증에 실패하였습니다.\n다시 시도해 주세요.', 3000);
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   } else {

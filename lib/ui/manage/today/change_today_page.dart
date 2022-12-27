@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:table_now_store/controller/store/update_today_controller.dart';
 import 'package:table_now_store/data/store/model/today.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_divider.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
@@ -216,14 +217,15 @@ class ChangeTodayPage extends GetView<UpdateTodayController> {
         controller.updateToday(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result.runtimeType == Today || result == 0) {
+          if (result.runtimeType == Today || result == 417) {
             Get.back(result: result);
-          } else if (result == -1) {
-            showToast(context, '입력한 정보를 다시 확인해 주세요.', null);
-          } else if (result == -2) {
-            showToast(context, '권한이 없는 사용자입니다.', null);
-          } else if (result == -3) {
+          } else if (result == 403) {
+            Get.offAllNamed(Routes.login);
+            Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

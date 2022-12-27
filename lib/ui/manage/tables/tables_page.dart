@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:table_now_store/controller/store/manage_controller.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
+import 'package:table_now_store/ui/components/network_disconnected_text.dart';
 import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/custom_color.dart';
 
@@ -43,8 +45,11 @@ class TablesPage extends GetView<ManageController> {
             ),
           );
         } else {
-          return const Center(
-            child: Text('네트워크 연결을 확인해 주세요.'),
+          return NetworkDisconnectedText(
+            retryFunc: () {
+              // 잔여테이블 수 조회 (비동기 실행)
+              controller.findTables(storeId);
+            },
           );
         }
       } else {
@@ -219,13 +224,13 @@ class TablesPage extends GetView<ManageController> {
                     }
                   }
 
-                  // 유효성검사 실패 (-1), 권한 없음 (-2), 네트워크 연결 안됨 (-3)
-                  if (result == -1) {
-                    showToast(context, '부적절한 접근이 감지되었습니다.', null);
-                  } else if (result == -2) {
-                    showToast(context, '권한이 없는 사용자입니다.', null);
-                  } else if (result == -3) {
+                  if (result == 403) {
+                    Get.offAllNamed(Routes.login);
+                    Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+                  } else if (result == 500) {
                     showNetworkDisconnectedToast(context);
+                  } else {
+                    showErrorToast(context);
                   }
                 } else {
                   showToast(

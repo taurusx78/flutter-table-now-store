@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
 import 'package:table_now_store/data/notice/notice.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
 import 'package:table_now_store/ui/components/image_uploader.dart';
 import 'package:table_now_store/ui/components/loading_container.dart';
+import 'package:table_now_store/ui/components/show_toast.dart';
 import 'package:table_now_store/ui/components/two_round_buttons.dart';
 import 'package:table_now_store/util/validator_util.dart';
 
@@ -158,13 +160,31 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
           controller.updateById(storeId, notice).then((result) {
             // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
             Navigator.pop(context);
-            Get.back(result: [text, result]);
+            if (result == 200 || result == 404) {
+              Get.back(result: [text, result]);
+            } else if (result == 403) {
+              Get.offAllNamed(Routes.login);
+              Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+            } else if (result == 500) {
+              showNetworkDisconnectedToast(context);
+            } else {
+              showErrorToast(context);
+            }
           });
         } else {
           // 알림 삭제 진행
           controller.deleteById(storeId, notice.id).then((result) {
             Navigator.pop(context);
-            Get.back(result: [text, result]);
+            if (result == 200 || result == 404) {
+              Get.back(result: [text, result]);
+            } else if (result == 403) {
+              Get.offAllNamed(Routes.login);
+              Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+            } else if (result == 500) {
+              showNetworkDisconnectedToast(context);
+            } else {
+              showErrorToast(context);
+            }
           });
         }
 

@@ -47,7 +47,7 @@ class JoinController extends GetxController {
   // 아이디 중복확인
   Future<int> checkUsername() async {
     int result = await _userRepository.checkUsername(username.text);
-    if (result != -3) {
+    if (result <= 1) {
       usernameState.value = result;
     }
     return result;

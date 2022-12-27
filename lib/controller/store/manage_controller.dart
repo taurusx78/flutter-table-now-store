@@ -78,7 +78,7 @@ class ManageController extends GetxController {
       tables.value = result;
       await changeAvailablePercent(storeId);
       changeTableColor();
-      result = 1;
+      result = 200;
     }
     return result;
   }

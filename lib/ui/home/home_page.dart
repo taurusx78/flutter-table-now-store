@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
@@ -243,7 +242,12 @@ class HomePage extends GetView<MainController> {
                     Get.toNamed(Routes.manage, arguments: store.id)!
                         .then((value) {
                       // 뒤로가기 시, 나의 매장 전체 다시조회
-                      controller.findAllMyStore();
+                      controller.findAllMyStore().then((result) {
+                        if (result == 403) {
+                          Get.offAllNamed(Routes.login);
+                          Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+                        }
+                      });
                     });
                   },
                 );

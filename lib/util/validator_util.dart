@@ -85,6 +85,8 @@ Function validateNewPassword(String? curPassword) {
       } else {
         return null;
       }
+    } else if (!regExp.hasMatch(value!)) {
+      return '영어 대소문자, 숫자, 특수문자를 포함한 8~20자로 입력해 주세요.';
     } else {
       return null;
     }

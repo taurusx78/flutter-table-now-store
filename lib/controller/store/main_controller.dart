@@ -37,19 +37,21 @@ class MainController extends GetxController {
   }
 
   // 나의 매장 전체조회
-  Future<void> findAllMyStore() async {
+  Future<int> findAllMyStore() async {
     loaded.value = false;
     connected.value = true;
     var result = await _storeRepository.findAllMyStore(jwtToken);
     if (result.runtimeType == List<MyStoreRespDto>) {
       myStoreList.value = result;
-    } else if (result == -2) {
-      myStoreList.value = [];
-    } else if (result == -3) {
+      result = 200;
+    } else if (result == 500) {
       myStoreList.value = [];
       connected.value = false;
+    } else {
+      myStoreList.value = [];
     }
     loaded.value = true;
+    return result;
   }
 
   // 네이게이션바 현재 인덱스 변경

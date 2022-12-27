@@ -8,7 +8,7 @@ class FindIdResultPage extends StatelessWidget {
   FindIdResultPage({Key? key}) : super(key: key);
 
   final String method = Get.arguments[0]; // 인증방법
-  final dynamic result = Get.arguments[1]; // 아이디찾기 결과 (FindIdRespDto 또는 0)
+  final dynamic result = Get.arguments[1]; // 아이디찾기 결과 (FindIdRespDto 또는 200)
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class FindIdResultPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 50),
                 // 결과 정보
-                result != 0 ? _buildUserInfoBox() : _buildNoUserBox(),
+                result != 200 ? _buildUserInfoBox() : _buildNoUserBox(),
               ],
             ),
           ),

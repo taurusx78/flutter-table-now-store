@@ -60,7 +60,7 @@ class FindController extends GetxController {
   }
 
   // 비밀번호 찾기
-  Future<int> findPassword(String method) async {
+  Future<dynamic> findPassword(String method) async {
     FindPwReqDto dto = FindPwReqDto(
       method: method,
       data: data.text,

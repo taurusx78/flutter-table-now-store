@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/user/change_email_controller.dart';
 import 'package:table_now_store/controller/user/timer_controller.dart';
+import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/auth_number_guide_text.dart';
 import 'package:table_now_store/ui/components/custom_dialog.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
@@ -98,20 +99,16 @@ class ChangeEmailPage extends GetView<ChangeEmailController> {
                     controller.changeClicked(true);
                     // 이메일 인증번호 요청
                     controller.sendAuthNumber().then((result) {
-                      if (result == 1) {
+                      if (result == 200) {
                         // 유효시간 5분 카운터 시작
                         _timerController.startTimer();
                         showToast(context, '입력한 메일로 인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필드 포커스 주기
                         controller.authNumberFocusNode.requestFocus();
-                      } else if (result == -1) {
-                        showToast(
-                          context,
-                          '인증번호 발송에 실패하였습니다.\n입력한 메일을 다시 확인해 주세요.',
-                          3000,
-                        );
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   },
@@ -183,20 +180,16 @@ class ChangeEmailPage extends GetView<ChangeEmailController> {
                     controller.initializeAuthTextField();
                     // 이메일 인증번호 요청
                     controller.sendAuthNumber().then((result) {
-                      if (result == 1) {
+                      if (result == 200) {
                         // 유효시간 5분 카운터 시작
                         _timerController.startTimer();
                         showToast(context, '입력한 메일로 인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필드 포커스 주기
                         controller.authNumberFocusNode.requestFocus();
-                      } else if (result == -1) {
-                        showToast(
-                          context,
-                          '인증번호 발송에 실패하였습니다.\n입력한 메일을 다시 확인해 주세요.',
-                          3000,
-                        );
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   },
@@ -220,12 +213,14 @@ class ChangeEmailPage extends GetView<ChangeEmailController> {
             controller.verifyEmail().then((result) {
               // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
               Navigator.pop(context);
-              if (result == 1) {
+              if (result == 200) {
                 _showDialog(context);
-              } else if (result == -1) {
+              } else if (result == 401) {
                 showToast(context, '인증번호가 일치하지 않습니다.', null);
-              } else if (result == -3) {
+              } else if (result == 500) {
                 showNetworkDisconnectedToast(context);
+              } else {
+                showErrorToast(context);
               }
             });
 
@@ -253,15 +248,16 @@ class ChangeEmailPage extends GetView<ChangeEmailController> {
                 controller.changeEmail().then((result) {
                   // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
                   Navigator.pop(context);
-                  if (result == 1) {
+                  if (result == 200) {
                     showToast(context, '이메일이 변경되었습니다.', null);
                     Get.back(result: controller.email.text);
-                  } else if (result == -1) {
-                    showToast(context, '올바른 형식의 이메일을 입력해 주세요.', 2000);
-                  } else if (result == -2) {
-                    showToast(context, '권한이 없는 사용자입니다.', 2000);
-                  } else if (result == -3) {
+                  } else if (result == 403) {
+                    Get.offAllNamed(Routes.login);
+                    Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
+                  } else if (result == 500) {
                     showNetworkDisconnectedToast(context);
+                  } else {
+                    showErrorToast(context);
                   }
                 });
 

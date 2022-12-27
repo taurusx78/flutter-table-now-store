@@ -15,13 +15,11 @@ class UserRepository {
   // 로그인
   Future<int> login(Map data) async {
     Response response = await _userProvider.login(data);
-    dynamic headers = response.headers;
-
-    if (headers != null) {
-      // (주의) 'Authorization' 표기 시 에러남
-      if (headers['authorization'] != null) {
-        // 1. 로그인 성공
-        String token = headers['authorization'];
+    if (response.body != null) {
+      CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+      if (dto.code == 200) {
+        // (주의) 'Authorization' 표기 시 에러남
+        String token = response.headers!['authorization']!;
         print('토큰: ' + token);
 
         // 로컬저장소에 토큰 저장 (앱이 꺼져도 토큰 유효시간 동안 로그인 유지)
@@ -34,14 +32,10 @@ class UserRepository {
         User user = User.fromJson(codeMsgRespDto.response);
         pref!.setStringList(
             'user', [user.username, user.name, user.phone, user.email]);
-        return 1;
-      } else {
-        // 2. 로그인 실패 or 유효성검사 실패
-        return -1;
       }
+      return dto.code; // 로그인 성공 (200), 실패 (400)
     } else {
-      // 3. 네트워크 연결 안됨
-      return -3;
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -50,13 +44,9 @@ class UserRepository {
     Response response = await _userProvider.join(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      if (dto.code == 1) {
-        return 1; // 가입 성공
-      } else {
-        return -1; // 유효성검사 실패
-      }
+      return dto.code; // 회원가입 완료 (201)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -65,9 +55,9 @@ class UserRepository {
     Response response = await _userProvider.sendAuthNumber(email, phone);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 요청 성공 (1), 유효성검사 실패 (-1)
+      return dto.code; // 요청 완료 (200)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -76,25 +66,29 @@ class UserRepository {
     Response response = await _userProvider.findId(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      if (dto.code == 1) {
-        dynamic temp = dto.response;
-        return FindIdRespDto.fromJson(temp); // 인증 성공 & 회원 존재 (FindIdRespDto)
-      } else {
-        return dto.code; // 인증 성공 & 회원 없음 (0), 인증 or 유효성검사 실패 (-1)
+      if (dto.code == 200) {
+        if (dto.message == '아이디 찾기 성공') {
+          dynamic temp = dto.response;
+          return FindIdRespDto.fromJson(temp); // 일치 회원 존재 (FindIdRespDto)
+        }
       }
+      return dto.code; // 일치 회원 없음 (200), 인증 실패 (401)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
   // 비밀번호 찾기
-  Future<int> findPassword(Map data) async {
+  Future<dynamic> findPassword(Map data) async {
     Response response = await _userProvider.findPassword(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 회원존재 (1), 회원없음 (0), 인증 or 유효성검사 실패 (-1)
+      if (dto.code == 200) {
+        return dto.message; // 인증 성공
+      }
+      return dto.code; // 인증 실패 (401)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -103,9 +97,9 @@ class UserRepository {
     Response response = await _userProvider.resetPassword(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 재설정 성공 (1), 유효성검사 실패 (-1) , 인증되지 않은 사용자 (-2)
+      return dto.code; // 재설정 완료 (200), 인증 실패 (401)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -114,13 +108,12 @@ class UserRepository {
     Response response = await _userProvider.checkJoined(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      if (dto.code == 1) {
+      if (dto.code == 200) {
         return dto.response; // 회원 존재 (1), 가입 가능 (0)
-      } else {
-        return -1; // 유효성검사 실패 (-1)
       }
+      return dto.code;
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -131,11 +124,10 @@ class UserRepository {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
       if (dto.code == 1) {
         return dto.response; // 이미 사용중 (1), 사용가능 (0)
-      } else {
-        return -1; // 유효성검사 실패 (-1)
       }
+      return dto.code;
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -144,9 +136,9 @@ class UserRepository {
     Response response = await _userProvider.verifyEmail(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 인증 성공 (1), 인증 or 유효성검사 실패 (-1)
+      return dto.code; // 인증 성공 (200), 인증 실패 (401)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -155,9 +147,9 @@ class UserRepository {
     Response response = await _userProvider.changePassword(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 변경 성공 (1), 비밀번호 불일치 or 유효성검사 실패 (-1), 권한 없음 (-2)
+      return dto.code; // 변경 완료 (200), 인증 실패 (401), 이미 로그아웃 또는 탈퇴 (403)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -166,9 +158,9 @@ class UserRepository {
     Response response = await _userProvider.changeEmail(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 변경 성공 (1), 유효성검사 실패 (-1), 권한 없음 (-2)
+      return dto.code; // 변경 완료 (200), 이미 로그아웃 또는 탈퇴 (403)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 
@@ -177,9 +169,9 @@ class UserRepository {
     Response response = await _userProvider.withdrawal(data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 탈퇴 성공 (1), 비밀번호 불일치 or 유효성검사 실패 (-1), 권한 없음 (-2)
+      return dto.code; // 탈퇴 완료 (200), 인증 실패 (401), 이미 로그아웃 또는 탈퇴 (403)
     } else {
-      return -3; // 네트워크 연결 안됨
+      return 500; // 네트워크 연결 안됨
     }
   }
 }

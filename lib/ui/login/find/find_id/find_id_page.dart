@@ -116,20 +116,16 @@ class FindIdPage extends GetView<FindController> {
                     controller.changeClicked(true);
                     // 인증번호 요청
                     controller.sendAuthNumber().then((result) {
-                      if (result == 1) {
+                      if (result == 200) {
                         // 유효시간 5분 카운터 시작
                         Get.put(TimerController()).startTimer();
                         showToast(context, '인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필트 포커스 주기
                         controller.authNumberFocusNode.requestFocus();
-                      } else if (result == -1) {
-                        showToast(
-                          context,
-                          '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                          3000,
-                        );
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   },
@@ -210,20 +206,16 @@ class FindIdPage extends GetView<FindController> {
                     controller.clearAuthTextField();
                     // 인증번호 요청
                     controller.sendAuthNumber().then((result) {
-                      if (result == 1) {
+                      if (result == 200) {
                         // 유효시간 5분 카운터 시작
                         _timerController.startTimer();
                         showToast(context, '인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필트 포커스 주기
                         controller.authNumberFocusNode.requestFocus();
-                      } else if (result == -1) {
-                        showToast(
-                          context,
-                          '인증번호 발송에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                          3000,
-                        );
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   },
@@ -242,20 +234,21 @@ class FindIdPage extends GetView<FindController> {
         controller.findId(method).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result.runtimeType == FindIdRespDto || result == 0) {
+          if (result.runtimeType == FindIdRespDto || result == 200) {
             // 1. 인증 성공 (회원 존재 FindIdRespDto, 회원 없음 0)
             // FindId 페이지 제거
             Navigator.pop(context);
             // Find 페이지 제거 및 FindIdResult 페이지로 이동
             Get.offNamed(Routes.findIdResult, arguments: [method, result]);
-          } else if (result == -1) {
-            // 2. 인증 or 유효성검사 실패
+          } else if (result == 401) {
+            // 2. 인증 실패
             showToast(context, '인증번호를 다시 확인해주세요.', null);
             // 인증번호 텍스트필트 포커스 주기
             controller.authNumberFocusNode.requestFocus();
-          } else if (result == -3) {
-            // 3. 네트워크 연결 안됨
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

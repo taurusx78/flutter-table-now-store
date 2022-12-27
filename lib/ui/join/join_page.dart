@@ -199,9 +199,10 @@ class JoinPage extends GetView<JoinController> {
                       if (controller.usernameFormKey.currentState!.validate()) {
                         // 아이디 중복확인
                         controller.checkUsername().then((result) {
-                          // 네트워크가 연결되지 않은 경우
-                          if (result == -3) {
+                          if (result == 500) {
                             showNetworkDisconnectedToast(context);
+                          } else if (result > 1) {
+                            showErrorToast(context);
                           }
                         });
                         // 텍스트필드 포커스 해제 (다른 텍스트필드로의 포커스 이동 방지)
@@ -337,18 +338,17 @@ class JoinPage extends GetView<JoinController> {
                       if (controller.emailFormKey.currentState!.validate()) {
                         // 이메일 인증번호 요청
                         controller.sendAuthNumber().then((result) {
-                          if (result == 1) {
+                          if (result == 200) {
                             controller.changeEmailClicked();
                             // 유효시간 5분 카운터 시작
                             _timerController.startTimer();
                             showToast(context, '입력한 메일로 인증번호가 발송되었습니다.', null);
                             // 인증번호 텍스트필드 포커스 부여
                             controller.authNumberFocusNode.requestFocus();
-                          } else if (result == -1) {
-                            showToast(context,
-                                '메일 전송에 실패하였습니다.\n입력한 메일을 다시 확인해 주세요.', 2500);
-                          } else if (result == -3) {
+                          } else if (result == 500) {
                             showNetworkDisconnectedToast(context);
+                          } else {
+                            showErrorToast(context);
                           }
                         });
                       }
@@ -453,12 +453,14 @@ class JoinPage extends GetView<JoinController> {
                 FocusScope.of(context).unfocus();
                 // 이메일 인증번호 검증
                 controller.verityEmail().then((result) {
-                  if (result == 1) {
+                  if (result == 200) {
                     controller.changeEmailVerified();
-                  } else if (result == -1) {
+                  } else if (result == 401) {
                     showToast(context, '인증번호가 일치하지 않습니다.', null);
-                  } else if (result == -3) {
+                  } else if (result == 500) {
                     showNetworkDisconnectedToast(context);
+                  } else {
+                    showErrorToast(context);
                   }
                 });
               }
@@ -493,20 +495,16 @@ class JoinPage extends GetView<JoinController> {
                     controller.initializeAuthTextField();
                     // 이메일 인증번호 요청
                     controller.sendAuthNumber().then((result) {
-                      if (result == 1) {
+                      if (result == 200) {
                         // 유효시간 5분 카운터 시작
                         timerController.startTimer();
                         showToast(context, '입력한 메일로 인증번호가 발송되었습니다.', null);
                         // 인증번호 텍스트필드 포커스 부여
                         controller.authNumberFocusNode.requestFocus();
-                      } else if (result == -1) {
-                        showToast(
-                          context,
-                          '인증번호 발송에 실패하였습니다.\n입력한 메일을 다시 확인해 주세요.',
-                          3000,
-                        );
-                      } else if (result == -3) {
+                      } else if (result == 500) {
                         showNetworkDisconnectedToast(context);
+                      } else {
+                        showErrorToast(context);
                       }
                     });
                   },
@@ -541,19 +539,13 @@ class JoinPage extends GetView<JoinController> {
       builder: (BuildContext context2) {
         // 회원가입 진행
         controller.join().then((result) {
-          if (result == 1) {
-            // 1. 가입 성공 (가입 성공 페이지로 이동)
+          if (result == 200) {
+            // 가입 성공 (가입 성공 페이지로 이동)
             Get.offAllNamed(Routes.joinSuccess);
-          } else if (result == -1) {
-            // 2. 가입 실패 (유효성검사 실패)
-            showToast(
-              context,
-              '가입에 실패했습니다.\n입력한 정보를 다시 확인해 주세요.',
-              3000,
-            );
-          } else if (result == -3) {
-            // 3. 네트워크 연결 안됨
+          } else if (result == 500) {
             showNetworkDisconnectedToast(context);
+          } else {
+            showErrorToast(context);
           }
         });
 

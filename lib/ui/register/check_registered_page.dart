@@ -285,14 +285,10 @@ class CheckRegisteredPage extends GetView<BasicController> {
                         () {
                       Navigator.pop(context);
                     });
-                  } else if (result == -1) {
-                    showToast(
-                      context,
-                      '매장 조회에 실패하였습니다.\n입력한 정보를 다시 확인해 주세요.',
-                      3000,
-                    );
-                  } else if (result == -3) {
+                  } else if (result == 500) {
                     showNetworkDisconnectedToast(context);
+                  } else {
+                    showErrorToast(context);
                   }
                 });
               },

@@ -151,7 +151,7 @@ class TodayPage extends GetView<ManageController> {
                 // 수정된 오늘의 영업시간 반영
                 controller.changeToday(result);
                 showToast(context, '오늘의 영업시간이 변경되었습니다.', null);
-              } else if (result == 0) {
+              } else if (result == 417) {
                 // 정기휴무 -> 임시휴무 영업상태 변경 반영
                 controller.changeToday(Today(
                   holidayType: 3,
