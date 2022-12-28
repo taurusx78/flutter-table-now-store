@@ -229,7 +229,7 @@ class TablesPage extends GetView<ManageController> {
                     Get.snackbar('알림', '권한이 없는 사용자입니다.\n다시 로그인해 주세요.');
                   } else if (result == 500) {
                     showNetworkDisconnectedToast(context);
-                  } else {
+                  } else if (result >= 400) {
                     showErrorToast(context);
                   }
                 } else {

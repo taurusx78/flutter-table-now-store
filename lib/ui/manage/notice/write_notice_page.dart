@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
+import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
@@ -181,7 +182,7 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
         controller.save(storeId).then((result) {
           // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
           Navigator.pop(context);
-          if (result == 201) {
+          if (result.runtimeType == Today) {
             Get.back(result: result);
           } else if (result == 403) {
             Get.offAllNamed(Routes.login);

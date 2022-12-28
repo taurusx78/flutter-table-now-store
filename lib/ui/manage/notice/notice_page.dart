@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/notice_controller.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
+import 'package:table_now_store/controller/store/manage_controller.dart';
+import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/icon_text_round_button.dart';
 import 'package:table_now_store/ui/components/loading_indicator.dart';
@@ -174,8 +176,10 @@ class NoticePage extends StatelessWidget {
                 .then((result) {
               // 뒤로가기 시 null 리턴
               if (result != null) {
-                if (result[1] == 200) {
+                if (result[1].runtimeType == Today) {
                   showToast(context, '알림이 ${result[0]}되었습니다.', null);
+                  // 오늘의 영업시간 수정
+                  Get.put(ManageController()).today.value = result[1];
                 } else if (result[1] == 404) {
                   showToast(context, '이미 삭제된 알림입니다.', null);
                 }
@@ -274,10 +278,12 @@ class NoticePage extends StatelessWidget {
           Get.put(SaveNoticeController()).initializeSaveNoticePage();
           Get.toNamed(Routes.writeNotice, arguments: storeId)!.then((result) {
             // 뒤로가기 시 null 리턴
-            if (result != null) {
+            if (result.runtimeType == Today) {
               showToast(context, '알림이 등록되었습니다.', null);
               // 알림 전체 다시 조회
               controller.findAll(storeId);
+              // 오늘의 영업시간 수정
+              Get.put(ManageController()).today.value = result;
             }
           });
         },

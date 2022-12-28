@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/notice/save_notice_controller.dart';
 import 'package:table_now_store/data/notice/notice.dart';
+import 'package:table_now_store/data/store/model/today.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/custom_text_area.dart';
 import 'package:table_now_store/ui/components/custom_text_form_field.dart';
@@ -175,7 +176,7 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
           // 알림 삭제 진행
           controller.deleteById(storeId, notice.id).then((result) {
             Navigator.pop(context);
-            if (result == 200 || result == 404) {
+            if (result.runtimeType == Today || result == 404) {
               Get.back(result: [text, result]);
             } else if (result == 403) {
               Get.offAllNamed(Routes.login);

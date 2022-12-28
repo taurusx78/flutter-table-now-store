@@ -34,7 +34,7 @@ class SaveNoticeController extends GetxController {
   }
 
   // 알림 등록
-  Future<int> save(int storeId) async {
+  Future<dynamic> save(int storeId) async {
     // XFile 타입을 File 타입으로 변경
     List<File> fileList = imageList.map((image) => File(image.path)).toList();
     // File 타입을 MultipartFile 타입으로 변경
@@ -87,8 +87,8 @@ class SaveNoticeController extends GetxController {
   }
 
   // 알림 삭제
-  Future<int> deleteById(int storeId, int noticeId) async {
-    int result = await _noticeRepository.deleteById(storeId, noticeId);
+  Future<dynamic> deleteById(int storeId, int noticeId) async {
+    var result = await _noticeRepository.deleteById(storeId, noticeId);
     return result;
   }
 
