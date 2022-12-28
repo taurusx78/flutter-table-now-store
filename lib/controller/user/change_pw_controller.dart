@@ -57,8 +57,7 @@ class ChangePwController extends GetxController {
     // 영어 대소문자, 숫자, 특수문자를 포함한 8~20자
     Pattern pattern =
         r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?~^<>,.&+=])[A-Za-z\d$@$!%*#?~^<>,.&+=]{8,20}$';
-    RegExp regExp = RegExp(pattern.toString());
-    filled[1].value = regExp.hasMatch(newPassword.text);
+    filled[1].value = RegExp(pattern.toString()).hasMatch(newPassword.text);
 
     // 새 비밀번호 확인
     filled[2].value = newPassword.text == newPasswordCheck.text;

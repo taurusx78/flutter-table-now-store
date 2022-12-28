@@ -95,16 +95,16 @@ class FindController extends GetxController {
   void checkFilled() {
     // 이메일 또는 휴대폰번호
     if (method.value == 1) {
-      filled[0].value = isEmail(data.text);
+      Pattern pattern = r'^[\w-_]+@[\w-_\.]+\.[A-z]{2,6}$';
+      filled[0].value = RegExp(pattern.toString()).hasMatch(data.text);
     } else if (method.value == 2) {
-      filled[0].value = isNumeric(data.text) &&
-          data.text.length >= 10 &&
-          data.text.length <= 11;
+      Pattern pattern = r'^01(0|1|[6-9])\d{3,4}\d{4}$';
+      filled[0].value = RegExp(pattern.toString()).hasMatch(data.text);
     }
 
     // 아이디
-    filled[1].value =
-        username.text.length >= 4 && isAlphanumeric(username.text);
+    Pattern pattern = r'^(?=.*[a-z])[a-z\d]{4,20}$';
+    filled[1].value = RegExp(pattern.toString()).hasMatch(username.text);
 
     // 인증번호
     filled[2].value = authNumber.text.length == 6 && isNumeric(authNumber.text);

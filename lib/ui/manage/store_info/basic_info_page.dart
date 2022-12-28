@@ -151,7 +151,7 @@ class BasicInfoPage extends GetView<BasicController> {
             focusNode: controller.detailAddressFocusNode,
             keyboardType: TextInputType.streetAddress,
             maxLength: 50,
-            validator: validateTextField(),
+            validator: validateStoreAddress(),
           ),
           const SizedBox(height: 10),
           // 지도 불러오기

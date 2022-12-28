@@ -116,7 +116,7 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
             maxLength: 50,
             hint: '제목을 입력해 주세요.',
             controller: controller.title,
-            validator: validateNotice(),
+            validator: validateTextField(),
           ),
         ),
         const SizedBox(height: 40),
@@ -132,7 +132,7 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
           child: CustomTextArea(
             hint: '내용을 입력해 주세요.',
             controller: controller.content,
-            validator: validateNotice(),
+            validator: validateTextField(),
           ),
         ),
         const SizedBox(height: 70),

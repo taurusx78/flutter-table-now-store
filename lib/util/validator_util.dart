@@ -5,8 +5,13 @@ import 'package:validators/validators.dart';
 
 // 회원 이메일 유효성 검사
 Function validateEmail() {
+  Pattern pattern = r'^[\w-_]+@[\w-_\.]+\.[A-z]{2,6}$';
+  RegExp regExp = RegExp(pattern.toString());
+
   return (String? value) {
-    if (!isEmail(value!)) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (!regExp.hasMatch(value)) {
       return '올바른 이메일 형식으로 입력해 주세요.';
     } else {
       return null; // 유효성 검사 통과한 경우
@@ -16,12 +21,17 @@ Function validateEmail() {
 
 // 회원 휴대폰번호 유효성 검사
 Function validateUserPhone() {
+  Pattern pattern = r'^01(0|1|[6-9])\d{3,4}\d{4}$';
+  RegExp regExp = RegExp(pattern.toString());
+
   return (String? value) {
-    if (!isNumeric(value!)) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (!isNumeric(value)) {
       return '- 를 제외한 숫자로 입력해 주세요.';
     } else {
-      if (value.length < 10) {
-        return '휴대폰 번호가 너무 짧습니다.';
+      if (!regExp.hasMatch(value)) {
+        return '휴대폰 번호 형식이 올바르지 않습니다.';
       }
       return null;
     }
@@ -61,7 +71,9 @@ Function validateUsername() {
 // 현재 비밀번호 유효성 검사 (비밀번호 변경)
 Function validateCurPassword() {
   return (String? value) {
-    if (value!.length < 8) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (value.length < 8) {
       return '비밀번호는 8~20자로 입력해 주세요.';
     } else {
       return null;
@@ -77,15 +89,11 @@ Function validateNewPassword(String? curPassword) {
         r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?~^<>,.&+=])[A-Za-z\d$@$!%*#?~^<>,.&+=]{8,20}$';
     RegExp regExp = RegExp(pattern.toString());
 
-    if (curPassword != null) {
-      if (curPassword == value!) {
-        return '현재 비밀번호와 다른 새 비밀번호를 입력해 주세요.';
-      } else if (!regExp.hasMatch(value)) {
-        return '영어 대소문자, 숫자, 특수문자를 포함한 8~20자로 입력해 주세요.';
-      } else {
-        return null;
-      }
-    } else if (!regExp.hasMatch(value!)) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (curPassword != null && curPassword == value) {
+      return '현재 비밀번호와 다른 새 비밀번호를 입력해 주세요.';
+    } else if (!regExp.hasMatch(value)) {
       return '영어 대소문자, 숫자, 특수문자를 포함한 8~20자로 입력해 주세요.';
     } else {
       return null;
@@ -97,7 +105,9 @@ Function validateNewPassword(String? curPassword) {
 Function validatePasswordCheck() {
   return (String? value) {
     ChangePwController controller = Get.find();
-    if (value != controller.newPassword.text) {
+    if (value!.isEmpty) {
+      return '필수항목 입니다.';
+    } else if (value != controller.newPassword.text) {
       return '비밀번호가 서로 일치하지 않습니다.';
     } else {
       return null;
@@ -109,19 +119,10 @@ Function validatePasswordCheck() {
 Function validateJoinPasswordCheck() {
   return (String? value) {
     JoinController controller = Get.find();
-    if (value != controller.password.text) {
-      return '비밀번호가 서로 일치하지 않습니다.';
-    } else {
-      return null;
-    }
-  };
-}
-
-// 알림 제목 & 내용 유효성 검사
-Function validateNotice() {
-  return (String? value) {
     if (value!.isEmpty) {
       return '필수항목 입니다.';
+    } else if (value != controller.password.text) {
+      return '비밀번호가 서로 일치하지 않습니다.';
     } else {
       return null;
     }
@@ -143,24 +144,33 @@ Function validateStorePhone() {
   };
 }
 
-// URL 유효성 검사
-Function validateWebsite() {
+// 매장 주소 유효성 검사
+Function validateStoreAddress() {
   return (String? value) {
-    if (value!.isNotEmpty && !isURL(value)) {
-      return '올바른 URL 형식으로 입력해 주세요.';
-    }
-    return null;
-  };
-}
+    Pattern pattern = r'^([가-힣]|\w|[,-]|\s){2,50}$';
+    RegExp regExp = RegExp(pattern.toString());
 
-// 매장명 유효성 검사
-Function validateStoreName() {
-  return (String? value) {
     if (value!.isEmpty) {
       return '필수항목 입니다.';
+    } else if (!regExp.hasMatch(value)) {
+      return '주소 형식이 올바르지 않습니다.';
     } else {
       return null;
     }
+  };
+}
+
+// URL 유효성 검사
+Function validateWebsite() {
+  Pattern pattern =
+      r'(https?:\/\/)?(www\.)?[\w@:%.-_\+~#=]{2,256}\.[a-z]{2,6}\b([\w@:%-_\+.~#?&//=]*)|()';
+  RegExp regExp = RegExp(pattern.toString());
+
+  return (String? value) {
+    if (!regExp.hasMatch(value!)) {
+      return '올바른 URL 형식으로 입력해 주세요.';
+    }
+    return null;
   };
 }
 

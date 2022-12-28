@@ -46,7 +46,8 @@ class ChangeEmailController extends GetxController {
   // 텍스트필드 입력 여부
   void checkFilled() {
     // 이메일
-    filled[0].value = isEmail(email.text);
+    Pattern pattern = r'^[\w-_]+@[\w-_\.]+\.[A-z]{2,6}$';
+    filled[0].value = RegExp(pattern.toString()).hasMatch(email.text);
     // 인증번호
     filled[1].value = authNumber.text.length == 6 && isNumeric(authNumber.text);
   }

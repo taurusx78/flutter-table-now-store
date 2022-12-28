@@ -15,7 +15,7 @@ class AddressSearchButton extends GetView<BasicController> {
       hint: '매장 주소를 입력해 주세요.',
       controller: controller.address,
       readOnly: true,
-      validator: validateTextField(),
+      validator: validateStoreAddress(),
       tapFunc: () async {
         await Navigator.push(
           context,

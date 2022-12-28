@@ -111,7 +111,7 @@ class CheckRegisteredPage extends GetView<BasicController> {
             hint: '정확한 매장명을 입력해 주세요.',
             controller: controller.name,
             maxLength: 50,
-            validator: validateStoreName(),
+            validator: validateTextField(),
           ),
         ),
         const SizedBox(height: 40),
@@ -174,7 +174,7 @@ class CheckRegisteredPage extends GetView<BasicController> {
                     focusNode: controller.detailAddressFocusNode,
                     keyboardType: TextInputType.streetAddress,
                     maxLength: 50,
-                    validator: validateTextField(),
+                    validator: validateStoreAddress(),
                   )
                 : const SizedBox(),
           ),

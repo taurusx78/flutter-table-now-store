@@ -130,12 +130,15 @@ class BasicController extends GetxController {
 
   // 조회 버튼 활성화 여부 확인
   void checkButtonActivated() {
+    Pattern pattern = r'^([가-힣]|\w|[,-]|\s){2,50}$';
+    RegExp regExp = RegExp(pattern.toString());
+
     activated.value = name.text.isNotEmpty && // 매장명 공백 아님
         category.text.isNotEmpty && // 카테고리 공백 아님
         isNumeric(phone.text) && // 전화번호 7~8자 숫자
         phone.text.length >= 7 &&
-        address.text.isNotEmpty && // 주소 공백 아님
-        detailAddress.text.isNotEmpty;
+        regExp.hasMatch(address.text) && // 올바른 주소 형식
+        regExp.hasMatch(detailAddress.text);
   }
 
   // 등록여부조회 페이지에서 입력된 정보를 바탕으로 SaveStoreReqDto 객체 생성
