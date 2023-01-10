@@ -120,7 +120,11 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
           rightTapFunc: () {
             if (controller.titleFormKey.currentState!.validate() &&
                 controller.contentFormKey.currentState!.validate()) {
-              _showDialog(context, '수정');
+              if (controller.imageList.length > 2) {
+                showToast(context, '첨부사진을 2장 이하로 올려주세요.', null);
+              } else {
+                _showDialog(context, '수정');
+              }
             }
           },
           padding: 40,
@@ -161,7 +165,7 @@ class UpdateNoticePage extends GetView<SaveNoticeController> {
           controller.updateById(storeId, notice).then((result) {
             // 해당 showDialog는 AlertDialog가 아닌 Container를 리턴하기 때문에 context2가 아닌 context를 pop() 함
             Navigator.pop(context);
-            if (result == 200 || result == 404) {
+            if (result.runtimeType == Today || result == 404) {
               Get.back(result: [text, result]);
             } else if (result == 403) {
               Get.offAllNamed(Routes.login);

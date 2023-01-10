@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:table_now_store/controller/dto/store/save_store_req_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_basic_req_dto.dart';
 import 'package:table_now_store/data/store/model/basic.dart';
@@ -33,7 +32,6 @@ class BasicController extends GetxController {
 
   // 업로드된 대표사진 목록 (XFile 타입 ) or 조회한 대표사진 목록 (String 타입)
   RxList<dynamic> imageList = [].obs;
-  final ImagePicker _picker = ImagePicker();
 
   final RxBool activated = false.obs; // 조회 버튼 활성화 여부
   final RxBool loaded = true.obs; // 조회 완료 여부
@@ -47,14 +45,6 @@ class BasicController extends GetxController {
     phone.addListener(checkButtonActivated);
     address.addListener(checkButtonActivated);
     detailAddress.addListener(checkButtonActivated);
-  }
-
-  // 갤러리에서 사진 선택
-  Future<void> selectImages() async {
-    final List<dynamic>? _selectedImages = await _picker.pickMultiImage();
-    if (_selectedImages != null) {
-      imageList.addAll(_selectedImages);
-    }
   }
 
   // 기본정보 조회 및 초기화

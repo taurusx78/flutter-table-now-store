@@ -138,7 +138,6 @@ class TodayPage extends GetView<ManageController> {
       tapFunc: () async {
         // 1. 오늘의 영업시간 다시조회 (데이터 동기화)
         await controller.findToday(storeId);
-        print('today: ${controller.today.value}');
         if (controller.today.value != null) {
           // 2. 페이지 이동 전 데이터 세팅
           Get.put(UpdateTodayController()).initializeTodayData(today);

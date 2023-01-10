@@ -57,7 +57,11 @@ class AgreementPage extends GetView<JoinController> {
         RichText(
           text: const TextSpan(
             text: 'TABLE',
-            style: TextStyle(fontSize: 30, color: Colors.black),
+            style: TextStyle(
+              fontSize: 30,
+              color: Colors.black,
+              fontFamily: 'Jua',
+            ),
             children: [
               TextSpan(
                 text: ' NOW',

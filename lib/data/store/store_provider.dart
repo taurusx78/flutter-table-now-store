@@ -8,6 +8,11 @@ class StoreProvider extends GetConnect {
       await get('$host/manager/store',
           headers: {'authorization': jwtToken ?? ''});
 
+  // 나의 매장 1개 조회
+  Future<Response> findOneMyStore(int id, String? jwtToken) async =>
+      await get('$host/manager/store/$id',
+          headers: {'authorization': jwtToken ?? ''});
+
   // 등록여부조회
   Future<Response> checkExist(
           String name, String category, String phone, String address) async =>

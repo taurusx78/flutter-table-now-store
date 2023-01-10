@@ -218,7 +218,11 @@ class BasicInfoPage extends GetView<BasicController> {
             tapFunc: () {
               if (_formKey.currentState!.validate()) {
                 if (controller.imageList.isNotEmpty) {
-                  _showDialog(context);
+                  if (controller.imageList.length > 20) {
+                    showToast(context, '대표사진을 3장 이하로 올려주세요.', null);
+                  } else {
+                    _showDialog(context);
+                  }
                 } else {
                   showToast(context, '대표사진을 최소 1장 올려주세요.', null);
                 }

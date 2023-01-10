@@ -102,7 +102,11 @@ class InsideInfoPage extends GetView<InsideController> {
               // 테이블 수 0~500 범위의 숫자 여부
               if (controller.validateAllTableCount()) {
                 if (controller.imageList.isNotEmpty) {
-                  _showDialog(context);
+                  if (controller.imageList.length > 20) {
+                    showToast(context, '내부사진을 10장 이하로 올려주세요.', null);
+                  } else {
+                    _showDialog(context);
+                  }
                 } else {
                   showToast(context, '내부사진을 최소 1장 올려주세요.', null);
                 }

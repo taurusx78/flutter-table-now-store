@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:table_now_store/controller/dto/code_msg_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/my_store_resp_dto.dart';
+import 'package:table_now_store/controller/dto/store/one_my_store_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_basic_resp_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_inside_resp_dto.dart';
 import 'package:table_now_store/data/store/store_provider.dart';
@@ -24,6 +25,19 @@ class StoreRepository {
       if (dto.code == 200) {
         List<dynamic> temp = dto.response['items'];
         return temp.map((store) => MyStoreRespDto.fromJson(store)).toList();
+      }
+      return dto.code; // 이미 로그아웃 또는 탈퇴 (403)
+    }
+    return 500; // 네트워크 연결 안됨
+  }
+
+  // 나의 매장 1개 조회
+  Future<dynamic> findOneMyStore(int storeId, String? jwtToken) async {
+    Response response = await _storeProvider.findOneMyStore(storeId, jwtToken);
+    if (response.body != null) {
+      CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
+      if (dto.code == 200) {
+        return OneMyStoreRespDto.fromJson(dto.response);
       }
       return dto.code; // 이미 로그아웃 또는 탈퇴 (403)
     }
@@ -178,7 +192,7 @@ class StoreRepository {
     Response response = await _storeProvider.updateMenu(storeId, data);
     if (response.body != null) {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
-      return dto.code; // 수정 완료 (200), 이미 로그아웃 또는 탈퇴 (403)
+      return dto.code; // 수정 완료 (200), 이미지 크기 초과 (400), 이미 로그아웃 또는 탈퇴 (403)
     } else {
       return 500; // 네트워크 연결 안됨
     }

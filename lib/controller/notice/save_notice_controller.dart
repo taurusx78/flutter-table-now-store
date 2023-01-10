@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:table_now_store/controller/dto/notice/save_notice_req_dto.dart';
 import 'package:table_now_store/data/notice/notice.dart';
@@ -17,21 +16,12 @@ class SaveNoticeController extends GetxController {
 
   // 기존 이미지는 String, 새로 추가된 이미지는 XFile 타입
   RxList<dynamic> imageList = [].obs;
-  final ImagePicker _picker = ImagePicker();
 
   var title = TextEditingController();
   var content = TextEditingController();
 
   final titleFormKey = GlobalKey<FormState>();
   final contentFormKey = GlobalKey<FormState>();
-
-  // 갤러리에서 사진 선택
-  Future<void> selectImages() async {
-    final List<dynamic>? _selectedImages = await _picker.pickMultiImage();
-    if (_selectedImages != null) {
-      imageList.addAll(_selectedImages);
-    }
-  }
 
   // 알림 등록
   Future<dynamic> save(int storeId) async {
@@ -54,7 +44,7 @@ class SaveNoticeController extends GetxController {
   }
 
   // 알림 수정
-  Future<int> updateById(int storeId, Notice notice) async {
+  Future<dynamic> updateById(int storeId, Notice notice) async {
     List<String> deletedImageUrlList = [
       ...notice.imageUrlList
     ]; // 삭제된 이미지 Url 리스트 초기화

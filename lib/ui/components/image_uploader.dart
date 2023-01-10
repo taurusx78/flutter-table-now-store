@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:table_now_store/controller/store/select_image_controller.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/components/round_image.dart';
 
@@ -13,13 +14,16 @@ class ImageUploader extends StatelessWidget {
   final String guideText;
   final dynamic controller;
 
-  const ImageUploader({
+  ImageUploader({
     Key? key,
     required this.type,
     required this.title,
     required this.guideText,
     required this.controller,
   }) : super(key: key);
+
+  final SelectImageController _selectImageController =
+      Get.put(SelectImageController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +39,8 @@ class ImageUploader extends StatelessWidget {
         ListRowText(text: guideText, margin: 40),
         const SizedBox(height: 10),
         // 이미지 추가 버튼
-        AddImageButton(tapFunc: () {
-          controller.selectImages();
+        AddImageButton(tapFunc: () async {
+          controller.imageList = await _selectImageController.selectImages();
           // 텍스트필드 포커스 해제
           FocusScope.of(context).unfocus();
         }),

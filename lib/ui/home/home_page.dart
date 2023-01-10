@@ -232,12 +232,8 @@ class HomePage extends GetView<MainController> {
                   ),
                   onTap: () async {
                     // 1. 매장관리 페이지 이동 전, 데이터 세팅
-                    // *** 또는 나의 매장 1개 조회 후 데이터 세팅 ***
-                    ManageController _manageController =
-                        Get.put(ManageController());
-                    _manageController.initializeAllData(
+                    Get.put(ManageController()).initializeAllData(
                         store.id, store.name, store.basicImageUrl);
-
                     // 2. 매장관리 페이지로 이동
                     Get.toNamed(Routes.manage, arguments: store.id)!
                         .then((value) {

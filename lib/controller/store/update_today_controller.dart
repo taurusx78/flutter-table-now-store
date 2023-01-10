@@ -6,14 +6,14 @@ import 'package:table_now_store/data/store/store_repository.dart';
 class UpdateTodayController extends GetxController {
   final StoreRepository _storeRepository = StoreRepository();
 
-  final List<RxBool> switchState = [
+  List<RxBool> switchState = [
     false.obs, // 휴무 여부 (0)
     false.obs, // 24시영업 여부 (1)
     false.obs, // 휴게시간 유무 (2)
     false.obs, // 주문마감시간 유무 (3)
   ];
 
-  final List<RxString> timeList = [
+  List<RxString> timeList = [
     '10:00'.obs, // 오픈시간 (0)
     '22:00'.obs, // 마감시간 (1)
     '15:00'.obs, // 휴게 시작시간 (2)
@@ -52,9 +52,15 @@ class UpdateTodayController extends GetxController {
     // 영업일인 경우
     if (!switchState[0].value) {
       // 1. 영업시간
-      timeList[0].value = today.businessHours.split(' - ')[0];
-      timeList[1].value = today.businessHours.split(' - ')[1];
-      switchState[1].value = (timeList[0].value == timeList[1].value);
+      if (today.businessHours == '24시 영업') {
+        timeList[0].value = '00:00';
+        timeList[1].value = '00:00';
+        switchState[1].value = true;
+      } else {
+        timeList[0].value = today.businessHours.split(' - ')[0];
+        timeList[1].value = today.businessHours.split(' - ')[1];
+        switchState[1].value = false;
+      }
       // 2. 휴게시간
       switchState[2].value = today.breakTime == '없음' ? false : true;
       if (switchState[2].value) {
@@ -68,6 +74,15 @@ class UpdateTodayController extends GetxController {
       } else {
         timeList[4].value = timeList[1].value;
       }
+    } else {
+      switchState = [switchState[0], false.obs, false.obs, false.obs];
+      timeList = [
+        '10:00'.obs,
+        '22:00'.obs,
+        '15:00'.obs,
+        '17:00'.obs,
+        '22:00'.obs
+      ];
     }
   }
 
@@ -80,8 +95,8 @@ class UpdateTodayController extends GetxController {
         timeList[0].value = '00:00';
         timeList[1].value = '00:00';
       } else {
-        timeList[0].value = today.businessHours.split(' - ')[0];
-        timeList[1].value = today.businessHours.split(' - ')[1];
+        timeList[0].value = '10:00';
+        timeList[1].value = '22:00';
       }
     }
   }

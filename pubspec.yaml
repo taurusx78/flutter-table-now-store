@@ -30,6 +30,8 @@ dependencies:
   shared_preferences: ^2.0.8 # 로컬 저장용 라이브러리
   path: ^1.8.0 # 로컬 저장소 경로 관련 라이브러리
 
+  flutter_dotenv: ^5.0.2 # API KEY 보관 라이브러리
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -42,3 +44,9 @@ flutter:
   assets:
     - assets/images/
     - assets/images/icons/
+    - .env
+
+  fonts:
+    - family: Jua
+      fonts:
+        - asset: assets/fonts/Jua-Regular.ttf

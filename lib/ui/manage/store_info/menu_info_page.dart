@@ -85,7 +85,11 @@ class MenuInfoPage extends GetView<MenuController> {
           text: '수정',
           tapFunc: () {
             if (controller.imageList.isNotEmpty) {
-              _showDialog(context);
+              if (controller.imageList.length > 20) {
+                showToast(context, '메뉴사진을 20장 이하로 올려주세요.', null);
+              } else {
+                _showDialog(context);
+              }
             } else {
               showToast(context, '메뉴사진을 최소 1장 올려주세요.', null);
             }

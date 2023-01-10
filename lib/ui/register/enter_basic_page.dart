@@ -216,8 +216,12 @@ class EnterBasicPage extends GetView<BasicController> {
             if (controller.imageList.isNotEmpty) {
               if (_descriptionFormKey.currentState!.validate() &&
                   _websiteFormKey.currentState!.validate()) {
-                controller.setBasicInfo(store);
-                Get.toNamed(Routes.enterInside, arguments: store);
+                if (controller.imageList.length > 3) {
+                  showToast(context, '대표사진을 3장 이하로 올려주세요.', null);
+                } else {
+                  controller.setBasicInfo(store);
+                  Get.toNamed(Routes.enterInside, arguments: store);
+                }
               }
             } else {
               showToast(context, '대표사진을 최소 1장 올려주세요.', null);

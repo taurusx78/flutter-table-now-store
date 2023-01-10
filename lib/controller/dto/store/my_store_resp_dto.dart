@@ -1,3 +1,5 @@
+// 나의 매장 전체조회 시 응답 받은 데이터를 전달하는 DTO
+
 class MyStoreRespDto {
   final int id; // 매장 id
   final String name; // 매장명
@@ -26,16 +28,28 @@ class MyStoreRespDto {
   });
 
   // JSON 데이터를 Dart 오브젝트로 변경
-  MyStoreRespDto.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        address = json['address'],
-        detailAddress = json['detailAddress'],
-        phone = json['phone'],
-        basicImageUrl = json['basicImageUrl'],
-        holidayType = json['holidayType'],
-        businessHours = json['businessHours'],
-        breakTime = json['breakTime'],
-        lastOrder = json['lastOrder'],
-        state = json['state'];
+  static MyStoreRespDto fromJson(Map<String, dynamic> json) {
+    // 24시 영업 여부
+    String businessHours = json['businessHours'];
+    if (businessHours != '없음') {
+      List<String> businessHoursPart = json['businessHours'].split(' - ');
+      if (businessHoursPart[0] == businessHoursPart[1]) {
+        businessHours = '24시 영업';
+      }
+    }
+
+    return MyStoreRespDto(
+      id: json['id'],
+      name: json['name'],
+      address: json['address'],
+      detailAddress: json['detailAddress'],
+      phone: json['phone'],
+      basicImageUrl: json['basicImageUrl'],
+      holidayType: json['holidayType'],
+      businessHours: businessHours,
+      breakTime: json['breakTime'],
+      lastOrder: json['lastOrder'],
+      state: json['state'],
+    );
+  }
 }

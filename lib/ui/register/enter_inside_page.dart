@@ -104,8 +104,12 @@ class EnterInsidePage extends GetView<InsideController> {
               // 테이블 수 0~500 범위의 숫자 여부
               if (controller.validateAllTableCount()) {
                 if (controller.imageList.isNotEmpty) {
-                  controller.setInsideInfo(store);
-                  Get.toNamed(Routes.enterMenu, arguments: store);
+                  if (controller.imageList.length > 3) {
+                    showToast(context, '내부사진을 10장 이하로 올려주세요.', null);
+                  } else {
+                    controller.setInsideInfo(store);
+                    Get.toNamed(Routes.enterMenu, arguments: store);
+                  }
                 } else {
                   showToast(context, '내부사진을 최소 1장 올려주세요.', null);
                 }

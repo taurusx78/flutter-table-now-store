@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,9 +15,9 @@ class LocationController extends GetxController {
 
     Map<String, String> headers = {
       // Client ID
-      'X-NCP-APIGW-API-KEY-ID': 'xp4321t0oj',
+      'X-NCP-APIGW-API-KEY-ID': dotenv.env['naverMapClientId']!,
       // Client Secret
-      'X-NCP-APIGW-API-KEY': 'otkaLK0p58qTf9UrTeNvAc4s4VJ6nkA9Dwhi22QU',
+      'X-NCP-APIGW-API-KEY': dotenv.env['naverMapClientSecret']!,
     };
 
     var response = await http.get(

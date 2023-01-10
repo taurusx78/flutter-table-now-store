@@ -55,7 +55,11 @@ class LoginPage extends GetView<LoginController> {
         RichText(
           text: const TextSpan(
             text: 'TABLE ',
-            style: TextStyle(fontSize: 40, color: Colors.black),
+            style: TextStyle(
+              fontSize: 40,
+              color: Colors.black,
+              fontFamily: 'Jua',
+            ),
             children: [
               TextSpan(
                 text: 'NOW',

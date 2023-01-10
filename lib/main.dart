@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:table_now_store/route/routes.dart';
 import 'package:table_now_store/ui/my_scroll_behavior.dart';
 import 'package:table_now_store/ui/theme.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env"); // 추가
+
   runApp(const MyApp());
 }
 

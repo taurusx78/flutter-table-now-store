@@ -84,8 +84,12 @@ class EnterMenuPage extends GetView<MenuController> {
           text: '다음',
           tapFunc: () {
             if (controller.imageList.isNotEmpty) {
-              controller.setMenuInfo(store);
-              Get.toNamed(Routes.enterHolidays, arguments: store);
+              if (controller.imageList.length > 3) {
+                showToast(context, '메뉴사진을 20장 이하로 올려주세요.', null);
+              } else {
+                controller.setMenuInfo(store);
+                Get.toNamed(Routes.enterHolidays, arguments: store);
+              }
             } else {
               showToast(context, '메뉴 사진을 최소 1장 올려주세요.', null);
             }

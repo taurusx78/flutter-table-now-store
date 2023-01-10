@@ -143,7 +143,11 @@ class WriteNoticePage extends GetView<SaveNoticeController> {
           tapFunc: () {
             if (controller.titleFormKey.currentState!.validate() &&
                 controller.contentFormKey.currentState!.validate()) {
-              _showDialog(context);
+              if (controller.imageList.length > 2) {
+                showToast(context, '첨부사진을 2장 이하로 올려주세요.', null);
+              } else {
+                _showDialog(context);
+              }
             }
           },
         )

@@ -66,37 +66,41 @@ class TablesPage extends GetView<ManageController> {
           radius: 110,
           lineWidth: 10,
           percent: controller.availablePercent.value,
-          center: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RichText(
-                text: TextSpan(
+          center: controller.operated.value
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 잔여테이블 수
-                    TextSpan(
-                      text: '${tables.tableCount}',
-                      style: TextStyle(
-                        fontSize: 45,
-                        color: controller.tableColor.value,
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          // 잔여테이블 수
+                          TextSpan(
+                            text: '${tables.tableCount}',
+                            style: TextStyle(
+                              fontSize: 45,
+                              color: controller.tableColor.value,
+                              fontFamily: 'Jua',
+                            ),
+                          ),
+                          // 전체테이블 수
+                          TextSpan(
+                            text: ' / ${tables.allTableCount}',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                              fontFamily: 'Jua',
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // 전체테이블 수
-                    TextSpan(
-                      text: ' / ${tables.allTableCount}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                      ),
+                    const Text(
+                      '(잔여 / 전체)',
+                      style: TextStyle(color: Colors.black54),
                     ),
                   ],
-                ),
-              ),
-              const Text(
-                '(잔여 / 전체)',
-                style: TextStyle(color: Colors.black54),
-              ),
-            ],
-          ),
+                )
+              : const LoadingIndicator(),
           progressColor: controller.tableColor.value,
           animation: true,
           animateFromLastPercent: true,

@@ -179,7 +179,7 @@ class NoticePage extends StatelessWidget {
                 if (result[1].runtimeType == Today) {
                   showToast(context, '알림이 ${result[0]}되었습니다.', null);
                   // 오늘의 영업시간 수정
-                  Get.put(ManageController()).today.value = result[1];
+                  Get.find<ManageController>().today.value = result[1];
                 } else if (result[1] == 404) {
                   showToast(context, '이미 삭제된 알림입니다.', null);
                 }
@@ -283,7 +283,7 @@ class NoticePage extends StatelessWidget {
               // 알림 전체 다시 조회
               controller.findAll(storeId);
               // 오늘의 영업시간 수정
-              Get.put(ManageController()).today.value = result;
+              Get.find<ManageController>().today.value = result;
             }
           });
         },

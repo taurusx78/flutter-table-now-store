@@ -15,8 +15,6 @@ ThemeData theme() {
       ),
       elevation: 0,
     ),
-    // splashColor: primaryColor.withOpacity(0.1),
-    // highlightColor: primaryColor.withOpacity(0.1),
     checkboxTheme: CheckboxThemeData(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5),

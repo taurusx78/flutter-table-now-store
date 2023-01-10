@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:table_now_store/controller/dto/store/save_store_req_dto.dart';
 import 'package:table_now_store/controller/dto/store/update_menu_req_dto.dart';
 import 'package:table_now_store/data/store/model/menu.dart';
@@ -13,17 +12,8 @@ class MenuController extends GetxController {
 
   // 업로드된 메뉴사진 목록 (XFile 타입 ) or 조회한 메뉴사진 목록 (String 타입)
   RxList<dynamic> imageList = [].obs;
-  final ImagePicker _picker = ImagePicker();
 
   final RxBool loaded = true.obs; // 조회 완료 여부
-
-  // 갤러리에서 사진 선택
-  Future<void> selectImages() async {
-    final List<dynamic>? _selectedImages = await _picker.pickMultiImage();
-    if (_selectedImages != null) {
-      imageList.addAll(_selectedImages);
-    }
-  }
 
   // 메뉴 조회 및 초기화
   Future<void> findMenu(int storeId) async {

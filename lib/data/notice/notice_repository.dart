@@ -27,7 +27,6 @@ class NoticeRepository {
       CodeMsgRespDto dto = CodeMsgRespDto.fromJson(response.body);
       if (dto.code == 201) {
         Today today = Today.fromJson(dto.response);
-        print(today);
         return today; // 등록 완료 (Today)
       }
       return dto.code; // 이미 로그아웃 또는 탈퇴 (403)
