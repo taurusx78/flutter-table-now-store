@@ -40,7 +40,8 @@ Flutter를 이용한 크로스플랫폼 앱으로 매장을 이용하려는 고�
 ```
 Error: Unhandled Exception: Bad state: Stream has already been listened to.
 ```
-<br>
+Stream으로 전달되는 데이터(이벤트) 사용(구독)은 한 번만 가능한데, 같은 데이터를 여러 번 사용하려고 하는 경우 해당 에러 발생함
+<br><br><br>
 
 ## 추가할 기능
 - (예정) 일 조회수, 즐겨찾기 고객수, 정보수정제안 수 표시
