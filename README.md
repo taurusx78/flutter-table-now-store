@@ -40,14 +40,14 @@ Flutter를 이용한 크로스플랫폼 앱으로 매장을 이용하려는 고�
 ```
 Error: Unhandled Exception: Bad state: Stream has already been listened to.
 ```
-Stream으로 전달되는 데이터(이벤트) 사용(구독)은 한 번만 가능한데, 같은 데이터를 여러 번 사용하려고 하는 경우 해당 에러 발생함
+Stream은 기본적으로 싱글 구독(Single Subscription)이기 때문에, 단 한 곳에서만 listen할 수 있다. 이때 여러 곳에서 listen을 시도하면 해당 에러가 발생한다.
 ```
 import 'dart:async';
 
 final controller = StreamController();
 final stream = controller.stream.asBroadcastStream();
 ```
-asBroadcastStream() 함수 이용하면 하나의 stream을 여러 번 listen 가능함
+asBroadcastStream() 함수 이용하면 여러 곳에서 listen 가능하다.
 <br><br><br>
 
 ## 추가할 기능
